@@ -11,10 +11,10 @@ export function Conservation() {
         sizes="100vw"
       />
       <div className="conservation-scene__veil" />
-      <div className="section-marker">
+      <div className="section-marker" data-reveal data-reveal-delay="0">
         04 <span>/</span> A species worth protecting
       </div>
-      <div className="conservation-scene__copy">
+      <div className="conservation-scene__copy" data-reveal data-reveal-delay="100">
         <p className="kicker">The work ahead</p>
         <h2>
           White.
@@ -28,7 +28,7 @@ export function Conservation() {
           careful protection, restored habitat, and a future built patiently.
         </p>
       </div>
-      <p className="conservation-scene__stamp">
+      <p className="conservation-scene__stamp" data-reveal data-reveal-delay="280">
         CRITICALLY
         <br />
         ENDANGERED
@@ -36,3 +36,4 @@ export function Conservation() {
     </section>
   );
 }
+

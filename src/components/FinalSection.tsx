@@ -9,16 +9,16 @@ export function FinalSection() {
         fill
         sizes="100vw"
       />
-      <div className="final-scene__veil" />
       <div className="final-scene__bird">
         <Image
-          src="/assets/Jalak Bali.png"
+          src="/assets/Jalak Bali Biru.png"
           alt="Jalak Bali perched in the sunset"
           fill
           sizes="35vw"
         />
       </div>
-      <div className="final-scene__copy">
+      <div className="final-scene__veil" />
+      <div className="final-scene__copy" data-reveal data-reveal-delay="80">
         <p className="kicker">The story is still being written</p>
         <h2>
           Let the song
@@ -42,3 +42,4 @@ export function FinalSection() {
     </section>
   );
 }
+

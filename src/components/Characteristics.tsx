@@ -36,11 +36,11 @@ export function Characteristics() {
   const current = details.find((item) => item.id === active) ?? details[0];
   return (
     <section className="characteristics" id="characteristics">
-      <div className="section-characteristics">
+      <div className="section-marker">
         02 <span>/</span> Designed by nature
       </div>
       <div className="characteristics__title">
-        <p className="kicker section-characteristics">Field notes</p>
+        <p className="kicker">Field notes</p>
         <h2>
           Every detail
           <br />

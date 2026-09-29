@@ -10,7 +10,7 @@ const images = [
 export function Gallery() {
   return (
     <section className="gallery" id="gallery">
-      <div className="gallery__heading">
+      <div className="gallery__heading" data-reveal data-reveal-delay="0">
         <div className="section-marker">
           07 <span>/</span> Field journal
         </div>
@@ -29,6 +29,8 @@ export function Gallery() {
           <figure
             className={`gallery__item gallery__item--${index + 1}`}
             key={src}
+            data-reveal
+            data-reveal-delay={String(index * 90)}
           >
             <Image
               src={src}
@@ -46,3 +48,4 @@ export function Gallery() {
     </section>
   );
 }
+

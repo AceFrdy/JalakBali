@@ -11,10 +11,10 @@ export function Habitat() {
         sizes="100vw"
       />
       <div className="habitat-scene__wash" />
-      <div className="section-marker">
+      <div className="section-marker" data-reveal data-reveal-delay="0">
         03 <span>/</span> Where the wings belong
       </div>
-      <div className="habitat-scene__content">
+      <div className="habitat-scene__content" data-reveal data-reveal-delay="100">
         <p className="kicker">A home in the wild</p>
         <h2>
           Listen
@@ -28,7 +28,7 @@ export function Habitat() {
           the warm, changing light of Bali.
         </p>
       </div>
-      <p className="habitat-scene__annotation">
+      <p className="habitat-scene__annotation" data-reveal data-reveal-delay="260">
         West Bali National Park
         <br />
         <span>the remaining range</span>
@@ -36,3 +36,4 @@ export function Habitat() {
     </section>
   );
 }
+

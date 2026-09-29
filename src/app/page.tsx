@@ -9,10 +9,12 @@ import { Hero } from "@/components/Hero";
 import { Statistics } from "@/components/Statistics";
 import { Timeline } from "@/components/Timeline";
 import { Navbar } from "@/components/Navbar";
+import { RevealInit } from "@/components/RevealInit";
 
 export default function Home() {
   return (
     <main className="experience">
+      <RevealInit />
       <Navbar />
       <Hero />
       <BirdIntroduction />
@@ -27,3 +29,4 @@ export default function Home() {
     </main>
   );
 }
+
