@@ -57,9 +57,15 @@ export function HandoverScheduleSection() {
         </div>
 
         {/* ── 4-Step Handover Progression ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="mb-16 flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto pb-4 no-scrollbar md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0 lg:grid-cols-4">
           {steps.map((s, idx) => (
-            <FadeIn key={s.step} direction="up" delay={idx * 0.1}>
+            <FadeIn
+              key={s.step}
+              direction="up"
+              delay={idx * 0.1}
+              viewportMargin="0px"
+              className="w-[84%] shrink-0 snap-start md:w-auto"
+            >
               <div className="p-6 rounded-2xl border border-[#d6be8c]/15 bg-[#0d1811] h-full flex flex-col justify-between space-y-4 font-mono">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.25em] text-[#b39257] mb-2">
@@ -82,9 +88,8 @@ export function HandoverScheduleSection() {
         </div>
 
         {/* ── Metode Serah Terima ── */}
-        <FadeIn direction="up" delay={0.2}>
+        {/* <FadeIn direction="up" delay={0.2}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 sm:p-12 rounded-3xl border border-[#d6be8c]/25 bg-[#0d1811] font-mono text-xs shadow-2xl">
-            {/* Metode A */}
             <div className="space-y-4 border-b md:border-b-0 md:border-r border-[#d6be8c]/20 pb-8 md:pb-0 md:pr-8">
               <div className="flex items-center space-x-2 text-[#b39257]">
                 <MapPin className="w-4 h-4" />
@@ -103,7 +108,6 @@ export function HandoverScheduleSection() {
               </div>
             </div>
 
-            {/* Metode B */}
             <div className="space-y-4 md:pl-4">
               <div className="flex items-center space-x-2 text-[#38bdf8]">
                 <Truck className="w-4 h-4" />
@@ -122,7 +126,7 @@ export function HandoverScheduleSection() {
               </div>
             </div>
           </div>
-        </FadeIn>
+        </FadeIn> */}
       </div>
     </section>
   );

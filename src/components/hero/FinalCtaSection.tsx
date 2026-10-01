@@ -21,7 +21,7 @@ export function FinalCtaSection({
       <div
         className="absolute inset-0 bg-cover bg-center pointer-events-none opacity-25"
         style={{
-          backgroundImage: "url('/assets/01_sisi_hutan_gabungan_detail.png')",
+          backgroundImage: "url('/assets/Background.png')",
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-[#060e08]" />
@@ -74,7 +74,7 @@ export function FinalCtaSection({
               onClick={onJoinWaitlist}
               className="px-9 py-4 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[11px] uppercase tracking-[0.25em] font-medium transition-colors text-center backdrop-blur-sm cursor-pointer"
             >
-              <span>Bergabung Daftar Tunggu</span>
+              <span>Hubungi Kami</span>
             </motion.button>
           </div>
         </FadeIn>

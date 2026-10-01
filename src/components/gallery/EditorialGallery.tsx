@@ -31,89 +31,97 @@ export function EditorialGallery() {
         </div>
 
         {/* ── Asymmetrical Archival Photo Plates ── */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-          {/* Main Large Plate (Col 1-7) */}
-          <div className="md:col-span-7">
-            <ImageReveal direction="bottom" duration={1.1}>
-              <div
-                data-cursor="VIEW"
-                className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#d6be8c]/25 group shadow-2xl cursor-pointer"
-              >
-                <Image
-                  src="/assets/jalak-habitat.png"
-                  alt="Captive-bred Jalak Bali perched on natural branch"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 60vw"
-                  className="object-cover object-center group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-95"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80" />
-                <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end text-xs font-mono">
-                  <div>
-                    <span className="font-serif text-xl text-[#f5efeb] block">Kanopi Terbang Naturalisasi</span>
-                    <span className="text-[#d6be8c] text-[10px]">Koridor Aviari Terbuka · Bali</span>
-                  </div>
-                  <span className="text-[10px] text-[#b39257] uppercase tracking-widest border border-[#b39257]/30 px-2 py-0.5 rounded">
-                    Plat 01
-                  </span>
+        <div className="flex snap-x snap-mandatory items-start gap-4 overflow-x-auto pb-4 no-scrollbar md:grid md:grid-cols-12 md:gap-8 md:overflow-visible md:pb-0">
+          <ImageReveal
+            direction="bottom"
+            duration={1.1}
+            className="w-[84%] shrink-0 snap-start md:col-span-7 md:row-span-2 md:w-auto"
+          >
+            <div
+              data-cursor="VIEW"
+              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#d6be8c]/25 group shadow-2xl cursor-pointer"
+            >
+              <Image
+                src="/assets/jalak-habitat.png"
+                alt="Captive-bred Jalak Bali perched on natural branch"
+                fill
+                sizes="(max-width: 768px) 75vw, 60vw"
+                className="object-cover object-center group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-95"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80" />
+              <div className="absolute bottom-3 left-3 right-3 flex flex-col items-start gap-2 text-xs font-mono md:bottom-6 md:left-6 md:right-6 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <span className="block font-serif text-sm text-[#f5efeb] md:text-xl">Kanopi Terbang Naturalisasi</span>
+                    <span className="text-[9px] text-[#d6be8c] md:text-[10px]">Koridor Aviari Terbuka · Bali</span>
                 </div>
+                  <span className="rounded border border-[#b39257]/30 px-2 py-0.5 text-[8px] uppercase tracking-widest text-[#b39257] md:text-[10px]">
+                  Plat 01
+                </span>
               </div>
-            </ImageReveal>
-          </div>
+            </div>
+          </ImageReveal>
 
-          {/* Right Column Stack (Col 8-12) */}
-          <div className="md:col-span-5 space-y-8">
-            {/* Top Plate */}
-            <ImageReveal direction="bottom" duration={1.0} delay={0.15}>
-              <div
-                data-cursor="VIEW"
-                className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-[#d6be8c]/25 group shadow-2xl cursor-pointer"
-              >
-                <Image
-                  src="/assets/jalak-portrait.png"
-                  alt="Plumage detail and cobalt eye ring inspection"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 40vw"
-                  className="object-cover object-center group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-95"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80" />
-                <div className="absolute bottom-5 left-5 right-5 flex justify-between items-end text-xs font-mono">
-                  <div>
-                    <span className="font-serif text-lg text-[#f5efeb] block">Audit Bulu Biometrik</span>
-                    <span className="text-[#d6be8c] text-[10px]">Ruang Penyaringan Klinis</span>
-                  </div>
-                  <span className="text-[10px] text-[#b39257] uppercase tracking-widest border border-[#b39257]/30 px-2 py-0.5 rounded">
-                    Plat 02
-                  </span>
+          <ImageReveal
+            direction="bottom"
+            duration={1.0}
+            delay={0.15}
+            viewportAmount={0.05}
+            className="w-[84%] shrink-0 snap-start md:col-span-5 md:w-auto"
+          >
+            <div
+              data-cursor="VIEW"
+              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#d6be8c]/25 group shadow-2xl cursor-pointer md:aspect-[4/3]"
+            >
+              <Image
+                src="/assets/jalak-portrait.png"
+                alt="Plumage detail and cobalt eye ring inspection"
+                fill
+                sizes="(max-width: 768px) 75vw, 40vw"
+                className="object-cover object-center group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-95"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80" />
+              <div className="absolute bottom-3 left-3 right-3 flex flex-col items-start gap-2 text-xs font-mono md:bottom-5 md:left-5 md:right-5 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <span className="block font-serif text-sm text-[#f5efeb] md:text-lg">Audit Bulu Biometrik</span>
+                    <span className="text-[9px] text-[#d6be8c] md:text-[10px]">Ruang Penyaringan Klinis</span>
                 </div>
+                  <span className="rounded border border-[#b39257]/30 px-2 py-0.5 text-[8px] uppercase tracking-widest text-[#b39257] md:text-[10px]">
+                  Plat 02
+                </span>
               </div>
-            </ImageReveal>
+            </div>
+          </ImageReveal>
 
-            {/* Bottom Plate */}
-            <ImageReveal direction="bottom" duration={1.0} delay={0.25}>
-              <div
-                data-cursor="VIEW"
-                className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-[#d6be8c]/25 group shadow-2xl cursor-pointer"
-              >
-                <Image
-                  src="/assets/jalak-hero.png"
-                  alt="Avian caretaker monitoring social interaction"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 40vw"
-                  className="object-cover object-center group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-95"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80" />
-                <div className="absolute bottom-5 left-5 right-5 flex justify-between items-end text-xs font-mono">
-                  <div>
-                    <span className="font-serif text-lg text-[#f5efeb] block">Observasi Hierarki Sosial</span>
-                    <span className="text-[#d6be8c] text-[10px]">Kandang Penjodohan 04</span>
-                  </div>
-                  <span className="text-[10px] text-[#b39257] uppercase tracking-widest border border-[#b39257]/30 px-2 py-0.5 rounded">
-                    Plat 03
-                  </span>
+          <ImageReveal
+            direction="bottom"
+            duration={1.0}
+            delay={0.25}
+            viewportAmount={0.05}
+            className="w-[84%] shrink-0 snap-start md:col-span-5 md:w-auto"
+          >
+            <div
+              data-cursor="VIEW"
+              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#d6be8c]/25 group shadow-2xl cursor-pointer md:aspect-[4/3]"
+            >
+              <Image
+                src="/assets/jalak-hero.png"
+                alt="Avian caretaker monitoring social interaction"
+                fill
+                sizes="(max-width: 768px) 75vw, 40vw"
+                className="object-cover object-center group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-95"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80" />
+              <div className="absolute bottom-3 left-3 right-3 flex flex-col items-start gap-2 text-xs font-mono md:bottom-5 md:left-5 md:right-5 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <span className="block font-serif text-sm text-[#f5efeb] md:text-lg">Observasi Hierarki Sosial</span>
+                    <span className="text-[9px] text-[#d6be8c] md:text-[10px]">Kandang Penjodohan 04</span>
                 </div>
+                  <span className="rounded border border-[#b39257]/30 px-2 py-0.5 text-[8px] uppercase tracking-widest text-[#b39257] md:text-[10px]">
+                  Plat 03
+                </span>
               </div>
-            </ImageReveal>
-          </div>
+            </div>
+          </ImageReveal>
         </div>
       </div>
     </section>

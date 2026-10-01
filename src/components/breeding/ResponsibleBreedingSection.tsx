@@ -37,16 +37,16 @@ export function ResponsibleBreedingSection() {
         </div>
 
         {/* ── Asymmetrical Editorial Layout: Left Photo Study, Right Staggered Pillars ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-stretch">
           {/* Left Column: Overlapping Photographic Plates */}
           <div className="lg:col-span-5 relative space-y-6">
-            <ImageReveal direction="bottom" duration={1.1}>
+            <ImageReveal direction="bottom" duration={1.1} className="h-full">
               <div
                 data-cursor="VIEW"
-                className="relative aspect-[3/4] rounded-3xl overflow-hidden border border-[#d6be8c]/25 shadow-2xl group cursor-pointer"
+                className="relative h-full aspect-[3/4] overflow-hidden rounded-3xl border border-[#d6be8c]/25 shadow-2xl group cursor-pointer lg:aspect-auto"
               >
                 <Image
-                  src="/assets/jalak-conservation.png"
+                  src="/assets/Jalak Bali Biru berdiri.png"
                   alt="Responsible aviary care and flight conditioning"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
@@ -65,18 +65,6 @@ export function ResponsibleBreedingSection() {
               </div>
             </ImageReveal>
 
-            {/* Overlapping small plate */}
-            <FadeIn direction="up" delay={0.2}>
-              <div className="p-6 rounded-2xl bg-[#0d1811] border border-[#d6be8c]/20 space-y-3 font-mono text-xs">
-                <div className="flex items-center space-x-2 text-[#38bdf8]">
-                  <ShieldCheck className="w-4 h-4" />
-                  <span className="text-[10px] uppercase tracking-widest">Standar Veteriner</span>
-                </div>
-                <p className="font-sans font-light text-xs text-[#f5efeb]/75 leading-relaxed">
-                  Pengujian PCR bulu DNA unggas secara berkala, penyaringan patogen feses, serta pengayaan pakan dengan buah ara asli Bali dan wadah mencari makan serangga hidup.
-                </p>
-              </div>
-            </FadeIn>
           </div>
 
           {/* Right Column: 6 Pillars in Asymmetric Stagger */}
@@ -85,9 +73,12 @@ export function ResponsibleBreedingSection() {
               Enam Komitmen Pemeliharaan
             </div>
 
-            <StaggerChildren stagger={0.06} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <StaggerChildren
+              stagger={0.06}
+              className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 no-scrollbar sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0"
+            >
               {RESPONSIBLE_BREEDING_PILLARS.map((pillar) => (
-                <StaggerItem key={pillar.id}>
+                <StaggerItem key={pillar.id} className="w-[84%] shrink-0 snap-start sm:w-auto">
                   <div className="p-6 rounded-2xl border border-[#d6be8c]/15 bg-[#0d1811]/70 hover:border-[#b39257]/50 hover:bg-[#112117] transition-all duration-300 space-y-3 font-mono h-full flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.25em] text-[#b39257] mb-2">
@@ -116,6 +107,20 @@ export function ResponsibleBreedingSection() {
                 </StaggerItem>
               ))}
             </StaggerChildren>
+            <div>
+              {/* Overlapping small plate */}
+              <FadeIn direction="up" delay={0.2}>
+                <div className="p-6 rounded-2xl bg-[#0d1811] border border-[#d6be8c]/20 space-y-3 font-mono text-xs">
+                  <div className="flex items-center space-x-2 text-[#38bdf8]">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span className="text-[10px] uppercase tracking-widest">Standar Veteriner</span>
+                  </div>
+                  <p className="font-sans font-light text-xs text-[#f5efeb]/75 leading-relaxed">
+                    Pengujian PCR bulu DNA unggas secara berkala, penyaringan patogen feses, serta pengayaan pakan dengan buah ara asli Bali dan wadah mencari makan serangga hidup.
+                  </p>
+                </div>
+              </FadeIn>
+            </div>
           </div>
         </div>
       </div>

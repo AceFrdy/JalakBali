@@ -11,6 +11,7 @@ interface FadeInProps {
   distance?: number;
   className?: string;
   viewportOnce?: boolean;
+  viewportMargin?: string;
 }
 
 export function FadeIn({
@@ -21,6 +22,7 @@ export function FadeIn({
   distance = 24,
   className = "",
   viewportOnce = true,
+  viewportMargin = "-40px",
 }: FadeInProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -54,7 +56,7 @@ export function FadeIn({
         x: 0,
         y: 0,
       }}
-      viewport={{ once: viewportOnce, margin: "-40px" }}
+      viewport={{ once: viewportOnce, margin: viewportMargin }}
       transition={{
         duration: shouldReduceMotion ? 0.3 : duration,
         delay,

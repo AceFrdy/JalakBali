@@ -40,7 +40,7 @@ export function ReviewSection() {
               </div>
             </FadeIn>
             <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-light text-[#f5efeb] tracking-tight">
-              <TextReveal text="Refleksi" as="span" /> <span className="italic font-serif text-[#d6be8c]">Pelanggan</span>
+              <TextReveal text="Review" as="span" /> <span className="italic font-serif text-[#d6be8c]">Pelanggan</span>
             </h2>
           </div>
 

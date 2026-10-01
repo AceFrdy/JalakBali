@@ -44,7 +44,7 @@ export const BIRDS_COLLECTION: Bird[] = [
     legalNote: "Dokumentasi hukum tersedia setelah verifikasi · Tunduk pada regulasi yang berlaku",
     description: "Individu betina anggun dengan ujung sayap hitam pekat murni dan kerapatan bulu yang tebal. Menunjukkan kompatibilitas sosial yang sangat baik dan bersikap tenang terhadap interaksi perawat rutin.",
     images: [
-      "/assets/Jalak Bali Biru.png",
+      "/assets/pexels-photo-26754369.avif",
       "/assets/jalak-portrait.png",
       "/assets/360_F_2117665522_2kIbVRvDDYTIuP3xUrxRctjMFc4pX3Rl.jpg",
     ],
@@ -68,7 +68,7 @@ export const BIRDS_COLLECTION: Bird[] = [
     legalNote: "Sedang diverifikasi · Dokumentasi hukum tersedia setelah verifikasi",
     description: "Memiliki ciri khas jambul mahkota yang memanjang dan siulan nada ganda yang merdu. Saat ini dalam penangguhan reservasi selama pemeriksaan dokumen patron sebelum penjadwalan transfer akhir.",
     images: [
-      "/assets/jalak-habitat.png",
+      "/assets/jalak-bali.webp",
       "/assets/istockphoto-177439037-612x612.jpg",
       "/assets/jalak-hero.png",
     ],

@@ -84,7 +84,7 @@ export default function Home() {
       <Navbar onOpenReservation={() => handleOpenReservation("individual")} />
 
       {/* Floating CTA for Desktop & Sticky Bottom Bar for Mobile */}
-      <FloatingReserveButton onOpenReservation={() => handleOpenReservation("individual")} />
+      <FloatingReserveButton />
 
       {/* 01: Hero Experience with Multi-Layer Parallax */}
       <HeroExperience

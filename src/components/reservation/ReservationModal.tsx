@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   X,
@@ -9,9 +9,9 @@ import {
   ChevronLeft,
   Shield,
   ArrowRight,
-  Upload,
   QrCode,
   Landmark,
+  Upload,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WEEKLY_RELEASES, CURRENT_RELEASE } from "@/data/weeklyReleases";
@@ -20,10 +20,10 @@ import {
   Bird,
   BreedingPair,
   WeeklyRelease,
-  ReservationDocument,
   VerificationStatus,
 } from "@/types";
-import { INITIAL_DOCUMENTS_TEMPLATE } from "@/lib/reservations";
+import { createReservation, INITIAL_DOCUMENTS_TEMPLATE } from "@/lib/reservations";
+import { redirectToWhatsApp } from "@/lib/whatsapp";
 
 interface ReservationModalProps {
   isOpen: boolean;
@@ -32,6 +32,23 @@ interface ReservationModalProps {
   initialBirdId?: string;
   initialPairId?: string;
   initialType?: "individual" | "pair";
+}
+
+function hasReleaseAvailability(
+  release: WeeklyRelease,
+  type: "individual" | "pair"
+) {
+  return (
+    release.status !== "closed" &&
+    (type === "individual" ? release.availableSingle : release.availablePair) > 0
+  );
+}
+
+function isReleaseSoldOut(release: WeeklyRelease) {
+  return (
+    !hasReleaseAvailability(release, "individual") &&
+    !hasReleaseAvailability(release, "pair")
+  );
 }
 
 export function ReservationModal({
@@ -43,7 +60,7 @@ export function ReservationModal({
   initialType = "individual",
 }: ReservationModalProps) {
   // Step 1 to 5
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [currentStep, setCurrentStep] = useState<number>(2);
   const [direction, setDirection] = useState<number>(1);
 
   // Step 1: Release
@@ -70,6 +87,8 @@ export function ReservationModal({
       BREEDING_PAIRS[0]
     );
   });
+  const isIndividualAvailable = hasReleaseAvailability(selectedRelease, "individual");
+  const isPairAvailable = hasReleaseAvailability(selectedRelease, "pair");
 
   // Step 3: Customer Information
   const [customerName, setCustomerName] = useState("");
@@ -81,10 +100,11 @@ export function ReservationModal({
     "facility_handover" | "certified_wildlife_courier"
   >("certified_wildlife_courier");
 
-  // KTP upload is part of customer information
-  const [documents, setDocuments] = useState<ReservationDocument[]>(
-    INITIAL_DOCUMENTS_TEMPLATE
+  const [documents, setDocuments] = useState(() =>
+    INITIAL_DOCUMENTS_TEMPLATE.map((document) => ({ ...document }))
   );
+  const [documentError, setDocumentError] = useState("");
+  const identityDocumentInputRef = useRef<HTMLInputElement>(null);
 
   // Step 4: Verification State Machine
   const [verificationState, setVerificationState] =
@@ -122,24 +142,9 @@ export function ReservationModal({
       ? selectedBird.deposit || 5000000
       : selectedPair.deposit;
   const remaining = price - deposit;
-  const handleSimulateUpload = (docId: string) => {
-    setDocuments((prev) =>
-      prev.map((doc) => {
-        if (doc.id === docId) {
-          return {
-            ...doc,
-            status: "uploaded",
-            fileName: `${doc.title.toLowerCase().replace(/[^a-z0-9]/g, "_")}_doc.pdf`,
-            uploadedAt: new Date().toISOString(),
-          };
-        }
-        return doc;
-      })
-    );
-  };
-
   const handleNextStep = () => {
-    // Step 3 Validation
+    if (!hasReleaseAvailability(selectedRelease, reservationType)) return;
+
     if (currentStep === 3) {
       if (!customerName.trim() || !customerEmail.trim() || !customerPhone.trim()) {
         alert("Mohon lengkapi Nama Lengkap, Email, dan Nomor Telepon.");
@@ -149,68 +154,80 @@ export function ReservationModal({
         alert("Mohon masukkan alamat email yang valid.");
         return;
       }
-
-      const pendingKtp = documents.some(
-        (document) => document.id === "doc-identity" && document.status === "not_uploaded"
-      );
-      if (pendingKtp) {
-        const proceedAnyway = confirm(
-          "KTP Anda belum diunggah. Apakah Anda tetap ingin melanjutkan ke tinjauan verifikasi?"
-        );
-        if (!proceedAnyway) return;
+      if (!documents.some((document) => document.id === "doc-identity" && document.status === "uploaded")) {
+        setDocumentError("Pilih dokumen KTP sebelum melanjutkan.");
+        return;
       }
+
       setVerificationState("under_review");
     }
 
     setDirection(1);
-    setCurrentStep((prev) => Math.min(prev + 1, 5));
+    setCurrentStep((prev) => (prev === 3 ? 5 : prev + 1));
   };
 
-  const handleSubmitToWhatsApp = () => {
-    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "");
-    if (!whatsappNumber) {
+  const handleSubmitToWhatsApp = async () => {
+    if (!process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && process.env.NODE_ENV === "production") {
       alert("Nomor WhatsApp belum dikonfigurasi.");
       return;
     }
 
-    const specimen = reservationType === "individual"
-      ? `Individu - ${selectedBird.publicId} (${selectedBird.name})`
-      : `Pasangan - ${selectedPair.pairId}`;
-    const handover = handoverMethod === "facility_handover"
-      ? "Serah terima di fasilitas"
-      : "Kurir satwa liar bersertifikat";
-    const message = [
-      "Halo, saya ingin mengajukan reservasi Jalak Bali dengan deposit.",
-      "",
-      `Nama: ${customerName}`,
-      `Email: ${customerEmail}`,
-      `Nomor WhatsApp: ${customerPhone}`,
-      `Rilis: ${selectedRelease.formattedDate}`,
-      `Pilihan: ${specimen}`,
-      `Deposit reservasi: Rp ${deposit.toLocaleString("id-ID")}`,
-      `Nilai total: Rp ${price.toLocaleString("id-ID")}`,
-      `Sisa pembayaran: Rp ${remaining.toLocaleString("id-ID")}`,
-      `Metode pembayaran pilihan: ${paymentMethod === "qris" ? "QRIS" : "Transfer bank"}`,
-      `Metode serah terima: ${handover}`,
-      `Kota: ${city || "Belum diisi"}`,
-      `Alamat aviari: ${address || "Belum diisi"}`,
-    ].filter(Boolean).join("\n");
+    const reservation = await createReservation({
+      type: reservationType,
+      weeklyReleaseId: selectedRelease.id,
+      birdId: reservationType === "individual" ? selectedBird.id : undefined,
+      pairId: reservationType === "pair" ? selectedPair.id : undefined,
+      customer: {
+        fullName: customerName,
+        email: customerEmail,
+        phone: customerPhone,
+        address,
+        city,
+        province: "",
+        postalCode: "",
+        preferredHandoverMethod: handoverMethod,
+      },
+      paymentType: "deposit",
+      paymentMethod,
+      documents,
+    });
 
-    window.location.assign(
-      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+    const result = redirectToWhatsApp(
+      process.env.NEXT_PUBLIC_WHATSAPP_NUMBER,
+      [
+        "Halo, saya ingin mengajukan reservasi Jalak Bali dengan deposit.",
+        "",
+        `Kode pengajuan: ${reservation.bookingCode}`,
+        `Nama: ${customerName}`,
+        `Email: ${customerEmail}`,
+        `Nomor WhatsApp: ${customerPhone}`,
+        `Rilis: ${selectedRelease.formattedDate}`,
+        `Pilihan: ${reservationType === "individual" ? `Individu - ${selectedBird.publicId} (${selectedBird.name})` : `Pasangan - ${selectedPair.pairId}`}`,
+        `Deposit reservasi: Rp ${deposit.toLocaleString("id-ID")}`,
+        `Nilai total: Rp ${price.toLocaleString("id-ID")}`,
+        `Sisa pembayaran: Rp ${remaining.toLocaleString("id-ID")}`,
+        `Metode pembayaran pilihan: ${paymentMethod === "qris" ? "QRIS" : "Transfer bank"}`,
+        `Metode serah terima: ${handoverMethod === "facility_handover" ? "Serah terima di fasilitas" : "Kurir satwa liar bersertifikat"}`,
+        `Kota: ${city || "Belum diisi"}`,
+        `Alamat aviari: ${address || "Belum diisi"}`,
+      ].filter(Boolean).join("\n")
     );
+
+    if (result === "missing") {
+      alert("Nomor WhatsApp belum dikonfigurasi.");
+      return;
+    }
   };
 
   const handlePrevStep = () => {
     setDirection(-1);
-    setCurrentStep((prev) => Math.max(prev - 1, 1));
+    setCurrentStep((prev) => (prev === 5 ? 3 : Math.max(prev - 1, 2)));
   };
 
+  const visibleStep = currentStep === 2 ? 1 : currentStep === 3 ? 2 : 3;
   const stepLabels = [
-    "Pilih Rilis",
     "Individu / Pasangan",
     "Informasi Pemesan",
-    "Verifikasi",
     "Pembayaran",
   ];
 
@@ -307,16 +324,16 @@ export function ReservationModal({
               <div className="mb-6">
                 <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.25em] text-[#b39257] font-mono mb-2">
                   <span>
-                    LANGKAH 0{currentStep} / 05 · {stepLabels[currentStep - 1]}
+                    LANGKAH 0{visibleStep} / 03 · {stepLabels[visibleStep - 1]}
                   </span>
                   <span className="text-[#38bdf8]">
-                    {currentStep === 4 ? "Audit Kepatuhan" : "Reservasi Terkendali"}
+                    Reservasi Terkendali
                   </span>
                 </div>
                 <div className="w-full bg-[#132218] h-[3px] rounded-full overflow-hidden">
                   <motion.div
                     className="bg-[#b39257] h-full"
-                    animate={{ width: `${(currentStep / 5) * 100}%` }}
+                    animate={{ width: `${(visibleStep / 3) * 100}%` }}
                     transition={{ duration: 0.35, ease: "easeOut" }}
                   />
                 </div>
@@ -353,14 +370,31 @@ export function ReservationModal({
                         <div className="space-y-3 font-mono">
                           {WEEKLY_RELEASES.map((release) => {
                             const isSelected = selectedRelease.id === release.id;
+                            const isSoldOut = isReleaseSoldOut(release);
                             return (
-                              <div
+                              <button
                                 key={release.id}
-                                onClick={() => setSelectedRelease(release)}
-                                className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
+                                type="button"
+                                disabled={isSoldOut}
+                                aria-pressed={isSelected}
+                                onClick={() => {
+                                  setSelectedRelease(release);
+                                  if (!hasReleaseAvailability(release, reservationType)) {
+                                    setReservationType(
+                                      hasReleaseAvailability(release, "individual")
+                                        ? "individual"
+                                        : "pair"
+                                    );
+                                  }
+                                }}
+                                className={`w-full text-left p-4 rounded-xl border transition-all flex items-center justify-between ${
                                   isSelected
                                     ? "bg-[#16271c] border-[#b39257] shadow-lg"
-                                    : "bg-[#08110b] border-[#d6be8c]/15 hover:border-[#d6be8c]/35"
+                                    : "bg-[#08110b] border-[#d6be8c]/15"
+                                } ${
+                                  isSoldOut
+                                    ? "cursor-not-allowed opacity-45"
+                                    : "cursor-pointer hover:border-[#d6be8c]/35"
                                 }`}
                               >
                                 <div className="flex items-center space-x-4">
@@ -385,15 +419,21 @@ export function ReservationModal({
                                 <div className="text-right">
                                   <span
                                     className={`text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border ${
-                                      release.status === "open"
+                                      isSoldOut
+                                        ? "border-[#f5efeb]/20 bg-[#f5efeb]/5 text-[#f5efeb]/45"
+                                        : release.status === "open"
                                         ? "border-[#38bdf8]/40 bg-[#38bdf8]/10 text-[#38bdf8]"
                                         : "border-[#b39257]/40 bg-[#b39257]/10 text-[#b39257]"
                                     }`}
                                   >
-                                    {release.status === "open" ? "Dibuka" : "Terjadwal"}
+                                    {isSoldOut
+                                      ? "Habis"
+                                      : release.status === "open"
+                                        ? "Dibuka"
+                                        : "Terjadwal"}
                                   </span>
                                 </div>
-                              </div>
+                              </button>
                             );
                           })}
                         </div>
@@ -405,7 +445,7 @@ export function ReservationModal({
                       <div className="space-y-6">
                         <div>
                           <h4 className="font-serif text-2xl sm:text-3xl text-[#f5efeb] font-light mb-1">
-                            Langkah 02 — Pilih Individu atau Pasangan
+                            Langkah 01 — Pilih Individu atau Pasangan
                           </h4>
                           <p className="text-xs text-[#f5efeb]/70 font-mono">
                             Tentukan pilihan antara mereservasi satu spesimen individu atau sepasang indukan bonding.
@@ -414,18 +454,29 @@ export function ReservationModal({
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono">
                           {/* Option A: Individual */}
-                          <div
+                          <button
+                            type="button"
+                            disabled={!isIndividualAvailable}
+                            aria-pressed={reservationType === "individual"}
                             onClick={() => setReservationType("individual")}
-                            className={`p-6 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between space-y-4 ${
+                            className={`w-full text-left p-6 rounded-2xl border transition-all flex flex-col justify-between space-y-4 ${
                               reservationType === "individual"
                                 ? "bg-[#16271c] border-[#b39257] shadow-xl"
-                                : "bg-[#08110b] border-[#d6be8c]/15 hover:border-[#d6be8c]/35"
+                                : "bg-[#08110b] border-[#d6be8c]/15"
+                            } ${
+                              isIndividualAvailable
+                                ? "cursor-pointer hover:border-[#d6be8c]/35"
+                                : "cursor-not-allowed opacity-45"
                             }`}
                           >
                             <div>
                               <div className="flex items-center justify-between text-[10px] text-[#b39257] uppercase tracking-widest mb-2">
                                 <span>Alokasi Individu</span>
-                                {reservationType === "individual" && <Check className="w-4 h-4 text-[#b39257]" />}
+                                {isIndividualAvailable ? (
+                                  reservationType === "individual" && <Check className="w-4 h-4 text-[#b39257]" />
+                                ) : (
+                                  <span className="text-[#f5efeb]/40">Kuota Habis</span>
+                                )}
                               </div>
                               <h5 className="font-serif text-2xl text-[#f5efeb] font-light">
                                 Individu (1 Burung)
@@ -440,21 +491,32 @@ export function ReservationModal({
                                 Rp {selectedBird.deposit?.toLocaleString("id-ID")}
                               </span>
                             </div>
-                          </div>
+                          </button>
 
                           {/* Option B: Pair */}
-                          <div
+                          <button
+                            type="button"
+                            disabled={!isPairAvailable}
+                            aria-pressed={reservationType === "pair"}
                             onClick={() => setReservationType("pair")}
-                            className={`p-6 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between space-y-4 ${
+                            className={`w-full text-left p-6 rounded-2xl border transition-all flex flex-col justify-between space-y-4 ${
                               reservationType === "pair"
                                 ? "bg-[#16271c] border-[#b39257] shadow-xl"
-                                : "bg-[#08110b] border-[#d6be8c]/15 hover:border-[#d6be8c]/35"
+                                : "bg-[#08110b] border-[#d6be8c]/15"
+                            } ${
+                              isPairAvailable
+                                ? "cursor-pointer hover:border-[#d6be8c]/35"
+                                : "cursor-not-allowed opacity-45"
                             }`}
                           >
                             <div>
                               <div className="flex items-center justify-between text-[10px] text-[#b39257] uppercase tracking-widest mb-2">
                                 <span>Pasangan Bonding</span>
-                                {reservationType === "pair" && <Check className="w-4 h-4 text-[#b39257]" />}
+                                {isPairAvailable ? (
+                                  reservationType === "pair" && <Check className="w-4 h-4 text-[#b39257]" />
+                                ) : (
+                                  <span className="text-[#f5efeb]/40">Kuota Habis</span>
+                                )}
                               </div>
                               <h5 className="font-serif text-2xl text-[#f5efeb] font-light">
                                 Pasangan (2 Burung)
@@ -469,7 +531,7 @@ export function ReservationModal({
                                 Rp {selectedPair.deposit?.toLocaleString("id-ID")}
                               </span>
                             </div>
-                          </div>
+                          </button>
                         </div>
 
                         {/* Pair Information Note */}
@@ -490,7 +552,7 @@ export function ReservationModal({
                       <div className="space-y-4">
                         <div>
                           <h4 className="font-serif text-2xl sm:text-3xl text-[#f5efeb] font-light mb-1">
-                            Langkah 03 — Informasi Pemesan
+                            Langkah 02 — Informasi Pemesan
                           </h4>
                           <p className="text-xs text-[#f5efeb]/70 font-mono">
                             Daftarkan penjaga aviari yang ditunjuk atau pemelihara institusional.
@@ -563,7 +625,94 @@ export function ReservationModal({
                             />
                           </div>
 
-                          <div className="sm:col-span-2">
+                          <div className="sm:col-span-2 rounded-xl border border-[#d6be8c]/20 bg-[#08110b] p-4">
+                            <label htmlFor="identity-document" className="block text-[10px] uppercase tracking-wider text-[#b39257]">
+                              Dokumen KTP *
+                            </label>
+                            <p className="mt-1 text-[11px] text-[#f5efeb]/55">
+                              PDF, DOC, DOCX, JPG, PNG, atau WebP · Maksimal 10 MB
+                            </p>
+                            <input
+                              ref={identityDocumentInputRef}
+                              id="identity-document"
+                              type="file"
+                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
+                              aria-describedby="identity-document-help identity-document-error"
+                              onChange={(event) => {
+                                const file = event.currentTarget.files?.[0];
+                                if (!file) return;
+
+                                const extension = file.name.split(".").pop()?.toLowerCase();
+                                const supportedExtensions = ["pdf", "doc", "docx", "jpg", "jpeg", "png", "webp"];
+                                if (!extension || !supportedExtensions.includes(extension)) {
+                                  setDocumentError("Format berkas tidak didukung.");
+                                  event.currentTarget.value = "";
+                                  return;
+                                }
+                                if (file.size > 10 * 1024 * 1024) {
+                                  setDocumentError("Ukuran berkas maksimal 10 MB.");
+                                  event.currentTarget.value = "";
+                                  return;
+                                }
+
+                                setDocuments((currentDocuments) =>
+                                  currentDocuments.map((document) =>
+                                    document.id === "doc-identity"
+                                      ? {
+                                          ...document,
+                                          status: "uploaded",
+                                          fileName: file.name,
+                                          uploadedAt: new Date().toISOString(),
+                                        }
+                                      : document
+                                  )
+                                );
+                                setDocumentError("");
+                                event.currentTarget.value = "";
+                              }}
+                              className="mt-3 block w-full cursor-pointer text-xs text-[#f5efeb]/70 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#b39257] file:px-3 file:py-2 file:text-[10px] file:font-semibold file:uppercase file:tracking-wider file:text-[#08110b] hover:file:bg-[#d6be8c]"
+                            />
+                            <span id="identity-document-help" className="sr-only">
+                              Pilih satu berkas KTP dalam format PDF, DOC, DOCX, JPG, PNG, atau WebP dengan ukuran maksimal 10 MB.
+                            </span>
+                            {documents.find((document) => document.id === "doc-identity")?.fileName && (
+                              <div className="mt-3 flex items-center justify-between gap-3 rounded-md border border-[#38bdf8]/20 bg-[#38bdf8]/5 px-3 py-2 text-xs text-[#f5efeb]/80">
+                                <span className="flex min-w-0 items-center gap-2">
+                                  <Upload className="h-3.5 w-3.5 shrink-0 text-[#38bdf8]" />
+                                  <span className="truncate">{documents.find((document) => document.id === "doc-identity")?.fileName}</span>
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setDocuments((currentDocuments) =>
+                                      currentDocuments.map((document) =>
+                                        document.id === "doc-identity"
+                                          ? { ...document, status: "not_uploaded", fileName: undefined, uploadedAt: undefined }
+                                          : document
+                                      )
+                                    );
+                                    setDocumentError("");
+                                    if (identityDocumentInputRef.current) {
+                                      identityDocumentInputRef.current.value = "";
+                                    }
+                                  }}
+                                  aria-label="Hapus berkas KTP"
+                                  className="shrink-0 text-[#f5efeb]/60 transition-colors hover:text-[#f5efeb]"
+                                >
+                                  <X className="h-4 w-4" />
+                                </button>
+                              </div>
+                            )}
+                            {documentError && (
+                              <p id="identity-document-error" role="alert" className="mt-2 text-xs text-red-300">
+                                {documentError}
+                              </p>
+                            )}
+                          </div>
+
+                          
+
+                          {/* <div className="sm:col-span-2">
                             <label className="block text-[10px] uppercase tracking-wider text-[#b39257] mb-1">
                               Metode Serah Terima Pilihan
                             </label>
@@ -593,45 +742,8 @@ export function ReservationModal({
                                 <span className="text-[10px] text-[#f5efeb]/50">Janji temu langsung & tur aviari</span>
                               </button>
                             </div>
-                          </div>
+                          </div> */}
 
-                          <div className="sm:col-span-2 p-4 rounded-xl bg-[#08110b] border border-[#d6be8c]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-[#f5efeb] font-semibold">Dokumen Identitas KTP</span>
-                                <span className="text-[8px] uppercase tracking-wider text-[#b39257] border border-[#b39257]/40 px-1.5 py-0.5 rounded">
-                                  Wajib
-                                </span>
-                              </div>
-                              <p className="text-[11px] text-[#f5efeb]/60 font-sans mt-1">
-                                Unggah KTP penjaga terdaftar untuk verifikasi identitas.
-                              </p>
-                              {documents[0]?.fileName && (
-                                <span className="text-[10px] text-[#38bdf8] block mt-1">
-                                  File: {documents[0].fileName}
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-3 self-end sm:self-center">
-                              <span
-                                className={`text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border ${
-                                  documents[0]?.status === "uploaded" || documents[0]?.status === "verified"
-                                    ? "border-[#38bdf8]/40 bg-[#38bdf8]/10 text-[#38bdf8]"
-                                    : "border-[#d6be8c]/20 text-[#f5efeb]/40"
-                                }`}
-                              >
-                                {documents[0]?.status === "uploaded" ? "Terunggah" : documents[0]?.status === "verified" ? "Terverifikasi" : "Belum Diunggah"}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() => handleSimulateUpload("doc-identity")}
-                                className="px-3 py-1.5 rounded-lg border border-[#d6be8c]/30 hover:border-[#b39257] text-[#f5efeb] hover:text-[#b39257] text-[10px] uppercase tracking-wider flex items-center space-x-1 cursor-pointer"
-                              >
-                                <Upload className="w-3 h-3" />
-                                <span>{documents[0]?.status === "uploaded" ? "Ganti" : "Unggah KTP"}</span>
-                              </button>
-                            </div>
-                          </div>
                         </div>
                       </div>
                     )}
@@ -714,7 +826,7 @@ export function ReservationModal({
                       <div className="space-y-6">
                         <div>
                           <h4 className="font-serif text-2xl sm:text-3xl text-[#f5efeb] font-light mb-1">
-                            Langkah 05 — Deposit Reservasi
+                            Langkah 03 — Deposit Reservasi
                           </h4>
                           <p className="text-xs text-[#f5efeb]/70 font-mono">
                             Ajukan reservasi dengan deposit. Tim kami akan mengonfirmasi instruksi pembayaran melalui WhatsApp.
@@ -794,7 +906,7 @@ export function ReservationModal({
               {/* Stepper Navigation Footer */}
               {currentStep <= 5 && (
                 <div className="flex items-center justify-between pt-6 border-t border-[#d6be8c]/15 mt-6 font-mono">
-                  {currentStep > 1 ? (
+                  {currentStep > 2 ? (
                     <button
                       type="button"
                       onClick={handlePrevStep}

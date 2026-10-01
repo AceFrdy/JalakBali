@@ -7,7 +7,7 @@ import {
   WaitingListEntry,
 } from "@/types";
 import { BIRDS_COLLECTION, BREEDING_PAIRS } from "@/data/birds";
-import { CURRENT_RELEASE } from "@/data/weeklyReleases";
+import { CURRENT_RELEASE, WEEKLY_RELEASES } from "@/data/weeklyReleases";
 
 const RESERVATION_STORAGE_KEY = "jalak_bali_reservations_v2";
 const WAITLIST_STORAGE_KEY = "jalak_bali_waitlist_v2";
@@ -123,6 +123,8 @@ export async function createReservation(
   const currentList = getStoredReservations();
   const codeNum = String(currentList.length + 2).padStart(3, "0");
   const bookingCode = `JB-2026-${codeNum}`;
+  const selectedRelease =
+    WEEKLY_RELEASES.find((release) => release.id === params.weeklyReleaseId) || CURRENT_RELEASE;
 
   let price = 32500000;
   let depositAmount = 5000000;
@@ -154,7 +156,7 @@ export async function createReservation(
     id: `res-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
     bookingCode,
     weeklyReleaseId: params.weeklyReleaseId || CURRENT_RELEASE.id,
-    releaseDate: CURRENT_RELEASE.formattedDate,
+    releaseDate: selectedRelease.formattedDate,
     type: params.type,
     birdId: params.birdId,
     pairId: params.pairId,
@@ -172,7 +174,7 @@ export async function createReservation(
     transactionState: "under_verification",
     reservedAt: new Date().toISOString(),
     holdExpiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 min hold
-    handoverDateEstimate: CURRENT_RELEASE.handoverEstimate,
+    handoverDateEstimate: selectedRelease.handoverEstimate,
   };
 
   const updated = [newReservation, ...currentList];

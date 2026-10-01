@@ -8,6 +8,7 @@ interface ImageRevealProps {
   className?: string;
   delay?: number;
   duration?: number;
+  viewportAmount?: number;
   direction?: "bottom" | "top" | "left" | "right" | "fade";
 }
 
@@ -16,6 +17,7 @@ export function ImageReveal({
   className = "",
   delay = 0,
   duration = 1.0,
+  viewportAmount = 0.15,
   direction = "bottom",
 }: ImageRevealProps) {
   const shouldReduceMotion = useReducedMotion();
@@ -44,7 +46,7 @@ export function ImageReveal({
     <motion.div
       initial={getInitialPosition()}
       whileInView={{ x: 0, y: 0, opacity: 1 }}
-      viewport={{ once: true, amount: 0.15 }}
+      viewport={{ once: true, amount: viewportAmount }}
       transition={{
         duration,
         delay,
@@ -55,7 +57,7 @@ export function ImageReveal({
       <motion.div
         initial={{ scale: 1.04 }}
         whileInView={{ scale: 1 }}
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={{ once: true, amount: viewportAmount }}
         transition={{
           duration: duration * 1.25,
           delay,
