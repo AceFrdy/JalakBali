@@ -1,19 +1,20 @@
-const MOCK_WHATSAPP_NUMBER = "0000000000";
+const TEST_WHATSAPP_NUMBER = "082182579496";
 
-export type WhatsAppRedirectResult = "mocked" | "redirected" | "missing";
+export type WhatsAppRedirectResult = "redirected" | "missing";
 
 export function redirectToWhatsApp(
   phoneNumber: string | undefined,
   message: string
 ): WhatsAppRedirectResult {
-  const normalizedNumber = phoneNumber?.replace(/\D/g, "");
+  const number =
+    process.env.NODE_ENV === "development" ? TEST_WHATSAPP_NUMBER : phoneNumber;
+  const digits = number?.replace(/\D/g, "");
+  const normalizedNumber = digits?.startsWith("0")
+    ? `62${digits.slice(1)}`
+    : digits;
 
   if (!normalizedNumber) {
-    if (process.env.NODE_ENV === "production") return "missing";
-
-    const mockUrl = `https://api.whatsapp.com/send?phone=${MOCK_WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`;
-    console.info("[WhatsApp mock redirect]", mockUrl);
-    return "mocked";
+    return "missing";
   }
 
   const url = `https://api.whatsapp.com/send?phone=${normalizedNumber}&text=${encodeURIComponent(message)}`;
