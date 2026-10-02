@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ReservationApplications\Schemas;
 
 use App\Models\ReservationDocument;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -39,6 +40,33 @@ class ReservationApplicationForm
                         TextInput::make('city')->label('Kota')->disabled(),
                         Textarea::make('address')->label('Alamat Aviari')->disabled()->columnSpanFull(),
                     ]),
+                Section::make('Rincian Keuangan & Pembayaran')
+                    ->columns(4)
+                    ->schema([
+                        TextInput::make('price')
+                            ->label('Nilai Total')
+                            ->prefix('Rp')
+                            ->formatStateUsing(fn ($state) => number_format((float) $state, 0, ',', '.'))
+                            ->disabled(),
+                        TextInput::make('deposit_amount')
+                            ->label('Deposit Reservasi')
+                            ->prefix('Rp')
+                            ->formatStateUsing(fn ($state) => number_format((float) $state, 0, ',', '.'))
+                            ->disabled(),
+                        TextInput::make('remaining_amount')
+                            ->label('Sisa saat Serah Terima')
+                            ->prefix('Rp')
+                            ->formatStateUsing(fn ($state) => number_format((float) $state, 0, ',', '.'))
+                            ->disabled(),
+                        TextInput::make('payment_method')
+                            ->label('Metode Pembayaran')
+                            ->formatStateUsing(fn ($state) => match ($state) {
+                                'qris' => 'QRIS',
+                                'bank_transfer' => 'Transfer Bank',
+                                default => strtoupper((string) $state),
+                            })
+                            ->disabled(),
+                    ]),
                 Section::make('Verifikasi')
                     ->columns(3)
                     ->schema([
@@ -48,7 +76,7 @@ class ReservationApplicationForm
                                 'submitted' => 'Diajukan',
                                 'under_review' => 'Sedang Ditinjau',
                                 'approved' => 'Disetujui',
-                                'completed' => 'Selesai',
+                                'completed' => 'Selesai (Burung Diserahkan)',
                                 'rejected' => 'Ditolak',
                                 'cancelled' => 'Dibatalkan',
                             ])
@@ -66,9 +94,10 @@ class ReservationApplicationForm
                         Select::make('payment_status')
                             ->label('Status Pembayaran')
                             ->options([
-                                'pending' => 'Menunggu',
-                                'processing' => 'Sedang Diproses',
-                                'paid' => 'Lunas',
+                                'pending' => 'Menunggu Pembayaran',
+                                'processing' => 'Sedang Diproses (Bukti Diunggah)',
+                                'deposit_paid' => 'Deposit Lunas (Menunggu Pelunasan Sisa)',
+                                'paid' => 'Lunas Penuh (100%)',
                                 'failed' => 'Gagal',
                                 'cancelled' => 'Dibatalkan',
                             ])
@@ -101,6 +130,16 @@ class ReservationApplicationForm
 
                                 return static::renderDocumentPreviewHtml($doc, 'Bukti Pembayaran');
                             }),
+
+                        FileUpload::make('admin_payment_proof')
+                            ->label('Unggah / Lampirkan Bukti Bayar Baru (dari WhatsApp / Manual)')
+                            ->disk('local')
+                            ->directory(fn ($record) => $record ? 'private/payments/' . $record->id : 'private/payments')
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
+                            ->maxSize(10240)
+                            ->columnSpanFull()
+                            ->dehydrated(false)
+                            ->helperText('Pilih berkas jika customer mengirimkan bukti transfer via WhatsApp atau admin mengunggah bukti bayar secara manual.'),
                     ]),
             ]);
     }

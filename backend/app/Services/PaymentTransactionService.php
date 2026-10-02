@@ -14,7 +14,7 @@ class PaymentTransactionService
             'transaction_code' => 'TXN-'.now()->format('Ymd').'-'.Str::upper(Str::random(8)),
             'type' => 'deposit',
             'payment_method' => $application->payment_method,
-            'provider' => $application->payment_method === 'bank_transfer' ? 'manual' : 'pending',
+            'provider' => in_array($application->payment_method, ['bank_transfer', 'qris']) ? 'manual' : 'pending',
             'amount' => $application->deposit_amount ?? 0,
             'currency' => 'IDR',
             'status' => 'pending',

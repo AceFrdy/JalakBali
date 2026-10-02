@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, ShieldCheck, Tag, Info, Check } from "lucide-react";
+import { ArrowUpRight, ShieldCheck, Tag, Info } from "lucide-react";
 import { motion } from "framer-motion";
-import { BIRDS_COLLECTION } from "@/data/birds";
+import { getCatalogBirds } from "@/lib/api";
+import { Bird } from "@/types";
 import { TextReveal } from "@/components/motion/TextReveal";
 import { ImageReveal } from "@/components/motion/ImageReveal";
 import { FadeIn } from "@/components/motion/FadeIn";
@@ -14,9 +16,32 @@ interface AvailableBirdsSectionProps {
 }
 
 export function AvailableBirdsSection({ onReserveBird }: AvailableBirdsSectionProps) {
-  const bird1 = BIRDS_COLLECTION[0]; // Ananta - Large Portrait
-  const bird2 = BIRDS_COLLECTION[1]; // Candra - Offset smaller detail card
-  const bird3 = BIRDS_COLLECTION[2]; // Danapati - Large Landscape
+  const [birds, setBirds] = useState<Bird[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+
+  useEffect(() => {
+    getCatalogBirds()
+      .then(setBirds)
+      .catch((error: unknown) => setLoadError(error instanceof Error ? error.message : "Katalog bird tidak dapat dimuat."))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  if (isLoading || loadError || birds.length < 3) {
+    return (
+      <section id="collection" className="relative py-28 md:py-36 bg-[#060e08] text-[#f5efeb] border-t border-[#d6be8c]/15">
+        <div className="max-w-[1760px] mx-auto site-gutter">
+          <p className="text-xs font-mono text-[#d6be8c]">
+            {isLoading ? "Memuat katalog aviari..." : loadError || "Katalog bird belum tersedia."}
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  const bird1 = birds[0];
+  const bird2 = birds[1];
+  const bird3 = birds[2];
 
   return (
     <section id="collection" className="relative py-28 md:py-36 bg-[#060e08] text-[#f5efeb] border-t border-[#d6be8c]/15">

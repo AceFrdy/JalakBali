@@ -13,12 +13,13 @@ class ReviewForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
                 Section::make('Review')
                     ->schema([
-                        TextInput::make('customer_name')->label('Customer')->disabled(),
-                        TextInput::make('rating')->label('Rating')->numeric()->minValue(1)->maxValue(5)->disabled(),
-                        Textarea::make('body')->label('Isi Review')->disabled()->columnSpanFull(),
+                        TextInput::make('customer_name')->label('Customer')->required(),
+                        TextInput::make('rating')->label('Rating')->numeric()->minValue(1)->maxValue(5)->required(),
+                        Textarea::make('body')->label('Isi Review')->required()->columnSpanFull(),
                         Select::make('status')
                             ->label('Status Moderasi')
                             ->options([

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   X,
@@ -22,8 +23,9 @@ import {
   WeeklyRelease,
   VerificationStatus,
 } from "@/types";
-import { createReservation, INITIAL_DOCUMENTS_TEMPLATE } from "@/lib/reservations";
-import { redirectToWhatsApp } from "@/lib/whatsapp";
+import { INITIAL_DOCUMENTS_TEMPLATE } from "@/lib/documents";
+import { submitReservationApplication } from "@/lib/api";
+import { buildReservationWhatsAppMessage, redirectToWhatsApp } from "@/lib/whatsapp";
 
 interface ReservationModalProps {
   isOpen: boolean;
@@ -59,6 +61,7 @@ export function ReservationModal({
   initialPairId,
   initialType = "individual",
 }: ReservationModalProps) {
+  const router = useRouter();
   // Step 1 to 5
   const [currentStep, setCurrentStep] = useState<number>(2);
   const [direction, setDirection] = useState<number>(1);
@@ -75,13 +78,13 @@ export function ReservationModal({
   const [reservationType, setReservationType] = useState<"individual" | "pair">(
     initialType
   );
-  const [selectedBird, setSelectedBird] = useState<Bird>(() => {
+  const [selectedBird] = useState<Bird>(() => {
     return (
       BIRDS_COLLECTION.find((b) => b.id === initialBirdId || b.publicId === initialBirdId) ||
       BIRDS_COLLECTION[0]
     );
   });
-  const [selectedPair, setSelectedPair] = useState<BreedingPair>(() => {
+  const [selectedPair] = useState<BreedingPair>(() => {
     return (
       BREEDING_PAIRS.find((p) => p.id === initialPairId || p.pairId === initialPairId) ||
       BREEDING_PAIRS[0]
@@ -96,7 +99,7 @@ export function ReservationModal({
   const [customerPhone, setCustomerPhone] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
-  const [handoverMethod, setHandoverMethod] = useState<
+  const [handoverMethod] = useState<
     "facility_handover" | "certified_wildlife_courier"
   >("certified_wildlife_courier");
 
@@ -105,33 +108,19 @@ export function ReservationModal({
   );
   const [documentError, setDocumentError] = useState("");
   const identityDocumentInputRef = useRef<HTMLInputElement>(null);
+  const [identityDocumentFile, setIdentityDocumentFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState("");
 
   // Step 4: Verification State Machine
   const [verificationState, setVerificationState] =
     useState<VerificationStatus>("under_review");
   const [paymentMethod, setPaymentMethod] = useState<"qris" | "bank_transfer">("qris");
 
-  // Sync initial props when opened
-  useEffect(() => {
-    if (initialBirdId) {
-      const b = BIRDS_COLLECTION.find(
-        (bird) => bird.id === initialBirdId || bird.publicId === initialBirdId
-      );
-      if (b) {
-        setSelectedBird(b);
-        setReservationType("individual");
-      }
-    }
-    if (initialPairId) {
-      const p = BREEDING_PAIRS.find(
-        (pair) => pair.id === initialPairId || pair.pairId === initialPairId
-      );
-      if (p) {
-        setSelectedPair(p);
-        setReservationType("pair");
-      }
-    }
-  }, [initialBirdId, initialPairId]);
+  // Step 5: Payment proof (for bank_transfer, optional at submission)
+  const paymentProofInputRef = useRef<HTMLInputElement>(null);
+  const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
+  const [paymentProofFileName, setPaymentProofFileName] = useState<string>("");
 
   const price =
     reservationType === "individual"
@@ -167,57 +156,58 @@ export function ReservationModal({
   };
 
   const handleSubmitToWhatsApp = async () => {
-    if (!process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && process.env.NODE_ENV === "production") {
-      alert("Nomor WhatsApp belum dikonfigurasi.");
+    if (!identityDocumentFile) {
+      setSubmissionError("Dokumen KTP wajib diunggah sebelum pengajuan dikirim.");
       return;
     }
 
-    const reservation = await createReservation({
-      type: reservationType,
-      weeklyReleaseId: selectedRelease.id,
-      birdId: reservationType === "individual" ? selectedBird.id : undefined,
-      pairId: reservationType === "pair" ? selectedPair.id : undefined,
-      customer: {
-        fullName: customerName,
-        email: customerEmail,
-        phone: customerPhone,
+    setIsSubmitting(true);
+    setSubmissionError("");
+
+    try {
+      const application = await submitReservationApplication({
+        customerName,
+        customerEmail,
+        customerPhone,
         address,
         city,
-        province: "",
-        postalCode: "",
-        preferredHandoverMethod: handoverMethod,
-      },
-      paymentType: "deposit",
-      paymentMethod,
-      documents,
-    });
+        handoverMethod,
+        reservationType,
+        weeklyReleaseId: selectedRelease.id,
+        birdId: reservationType === "individual" ? selectedBird.id : undefined,
+        pairId: reservationType === "pair" ? selectedPair.id : undefined,
+        paymentType: "deposit",
+        paymentMethod,
+        price,
+        depositAmount: deposit,
+        remainingAmount: remaining,
+        identityDocument: identityDocumentFile,
+        paymentProof: paymentProofFile ?? undefined,
+      });
 
-    const result = redirectToWhatsApp(
-      process.env.NEXT_PUBLIC_WHATSAPP_NUMBER,
-      [
-        "Halo, saya ingin mengajukan reservasi Jalak Bali dengan deposit.",
-        "",
-        `Kode pengajuan: ${reservation.bookingCode}`,
-        `Nama: ${customerName}`,
-        `Email: ${customerEmail}`,
-        `Nomor WhatsApp: ${customerPhone}`,
-        `Rilis: ${selectedRelease.formattedDate}`,
-        `Pilihan: ${reservationType === "individual" ? `Individu - ${selectedBird.publicId} (${selectedBird.name})` : `Pasangan - ${selectedPair.pairId}`}`,
-        `Deposit reservasi: Rp ${deposit.toLocaleString("id-ID")}`,
-        `Nilai total: Rp ${price.toLocaleString("id-ID")}`,
-        `Sisa pembayaran: Rp ${remaining.toLocaleString("id-ID")}`,
-        `Metode pembayaran pilihan: ${paymentMethod === "qris" ? "QRIS" : "Transfer bank"}`,
-        `Metode serah terima: ${handoverMethod === "facility_handover" ? "Serah terima di fasilitas" : "Kurir satwa liar bersertifikat"}`,
-        `Kota: ${city || "Belum diisi"}`,
-        `Alamat aviari: ${address || "Belum diisi"}`,
-      ].filter(Boolean).join("\n")
-    );
+      // Build minimal WhatsApp message — only booking code + customer name.
+      // All full data (KTP, documents, transaction) is in backend / Filament Admin.
+      const message = buildReservationWhatsAppMessage({
+        bookingCode: application.bookingCode,
+        customerName,
+      });
 
-    if (result === "missing") {
-      alert("Nomor WhatsApp belum dikonfigurasi.");
-      return;
+      const ownerPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+      redirectToWhatsApp(ownerPhone, message, "_blank");
+
+      // Navigate to confirmation page so when user returns from WhatsApp/re-opens the web,
+      // they land on the official confirmation page (not the homepage).
+      router.push(
+        `/reservation/${application.bookingCode}/confirmation?token=${encodeURIComponent(application.accessToken)}`
+      );
+      onClose();
+    } catch (error) {
+      setSubmissionError(error instanceof Error ? error.message : "Pengajuan reservasi gagal dikirim.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
 
   const handlePrevStep = () => {
     setDirection(-1);
@@ -668,6 +658,7 @@ export function ReservationModal({
                                   )
                                 );
                                 setDocumentError("");
+                                setIdentityDocumentFile(file);
                                 event.currentTarget.value = "";
                               }}
                               className="mt-3 block w-full cursor-pointer text-xs text-[#f5efeb]/70 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#b39257] file:px-3 file:py-2 file:text-[10px] file:font-semibold file:uppercase file:tracking-wider file:text-[#08110b] hover:file:bg-[#d6be8c]"
@@ -691,6 +682,7 @@ export function ReservationModal({
                                           : document
                                       )
                                     );
+                                    setIdentityDocumentFile(null);
                                     setDocumentError("");
                                     if (identityDocumentInputRef.current) {
                                       identityDocumentInputRef.current.value = "";
@@ -823,17 +815,18 @@ export function ReservationModal({
 
                     {/* ── STEP 05: RESERVATION DEPOSIT ── */}
                     {currentStep === 5 && (
-                      <div className="space-y-6">
+                      <div className="space-y-5">
                         <div>
                           <h4 className="font-serif text-2xl sm:text-3xl text-[#f5efeb] font-light mb-1">
                             Langkah 03 — Deposit Reservasi
                           </h4>
                           <p className="text-xs text-[#f5efeb]/70 font-mono">
-                            Ajukan reservasi dengan deposit. Tim kami akan mengonfirmasi instruksi pembayaran melalui WhatsApp.
+                            Pilih metode pembayaran lalu kirim pengajuan. Anda akan diarahkan ke WhatsApp setelah reservasi berhasil dibuat.
                           </p>
                         </div>
 
-                        <div className="p-6 rounded-2xl bg-[#08110b] border border-[#b39257]/50 font-mono">
+                        {/* Deposit Amount Card */}
+                        <div className="p-5 rounded-2xl bg-[#08110b] border border-[#b39257]/50 font-mono">
                           <span className="text-[10px] uppercase tracking-widest text-[#b39257]">
                             Deposit Reservasi
                           </span>
@@ -851,6 +844,8 @@ export function ReservationModal({
                             </div>
                           </div>
                         </div>
+
+                        {/* Payment Method Selector */}
                         <div className="space-y-3 font-mono">
                           <span className="text-[10px] uppercase tracking-widest text-[#b39257]">
                             Pilih Metode Pembayaran
@@ -859,7 +854,11 @@ export function ReservationModal({
                             <button
                               type="button"
                               aria-pressed={paymentMethod === "qris"}
-                              onClick={() => setPaymentMethod("qris")}
+                              onClick={() => {
+                                setPaymentMethod("qris");
+                                setPaymentProofFile(null);
+                                setPaymentProofFileName("");
+                              }}
                               className={`p-4 rounded-xl border text-left transition-colors ${
                                 paymentMethod === "qris"
                                   ? "bg-[#b39257]/15 border-[#b39257] text-[#f5efeb]"
@@ -871,13 +870,17 @@ export function ReservationModal({
                                 QRIS
                               </span>
                               <span className="block mt-1 text-[10px] text-[#f5efeb]/55">
-                                Detail pembayaran dikirim admin
+                                Scan QR di bawah untuk pembayaran
                               </span>
                             </button>
                             <button
                               type="button"
                               aria-pressed={paymentMethod === "bank_transfer"}
-                              onClick={() => setPaymentMethod("bank_transfer")}
+                              onClick={() => {
+                                setPaymentMethod("bank_transfer");
+                                setPaymentProofFile(null);
+                                setPaymentProofFileName("");
+                              }}
                               className={`p-4 rounded-xl border text-left transition-colors ${
                                 paymentMethod === "bank_transfer"
                                   ? "bg-[#b39257]/15 border-[#b39257] text-[#f5efeb]"
@@ -889,16 +892,224 @@ export function ReservationModal({
                                 Transfer Bank
                               </span>
                               <span className="block mt-1 text-[10px] text-[#f5efeb]/55">
-                                Detail pembayaran dikirim admin
+                                Transfer ke rekening yang tertera
                               </span>
                             </button>
                           </div>
                         </div>
+
+                        {/* QRIS Dummy Display */}
+                        {paymentMethod === "qris" && (
+                          <div className="rounded-2xl border border-[#d6be8c]/20 bg-[#08110b] p-5 space-y-3 font-mono">
+                            <span className="text-[10px] uppercase tracking-widest text-[#b39257] block">
+                              Kode QR Pembayaran (Demo)
+                            </span>
+                            {/* Dummy QRIS pattern — placeholder testing only */}
+                            <div className="flex flex-col items-center gap-3">
+                              <div className="w-44 h-44 rounded-xl bg-white flex items-center justify-center border border-[#d6be8c]/30 p-3">
+                                <svg viewBox="0 0 200 200" className="w-full h-full" aria-label="QRIS dummy placeholder">
+                                  {/* Outer frame */}
+                                  <rect x="10" y="10" width="60" height="60" rx="4" fill="none" stroke="#111" strokeWidth="8"/>
+                                  <rect x="22" y="22" width="36" height="36" fill="#111"/>
+                                  <rect x="130" y="10" width="60" height="60" rx="4" fill="none" stroke="#111" strokeWidth="8"/>
+                                  <rect x="142" y="22" width="36" height="36" fill="#111"/>
+                                  <rect x="10" y="130" width="60" height="60" rx="4" fill="none" stroke="#111" strokeWidth="8"/>
+                                  <rect x="22" y="142" width="36" height="36" fill="#111"/>
+                                  {/* Inner dots */}
+                                  <rect x="82" y="10" width="10" height="10" fill="#111"/>
+                                  <rect x="96" y="10" width="10" height="10" fill="#111"/>
+                                  <rect x="110" y="10" width="10" height="10" fill="#111"/>
+                                  <rect x="82" y="24" width="10" height="10" fill="#111"/>
+                                  <rect x="110" y="24" width="10" height="10" fill="#111"/>
+                                  <rect x="82" y="38" width="10" height="10" fill="#111"/>
+                                  <rect x="96" y="38" width="10" height="10" fill="#111"/>
+                                  <rect x="110" y="38" width="10" height="10" fill="#111"/>
+                                  <rect x="82" y="52" width="10" height="10" fill="#111"/>
+                                  <rect x="82" y="80" width="10" height="10" fill="#111"/>
+                                  <rect x="96" y="80" width="10" height="10" fill="#111"/>
+                                  <rect x="82" y="94" width="10" height="10" fill="#111"/>
+                                  <rect x="110" y="94" width="10" height="10" fill="#111"/>
+                                  <rect x="82" y="108" width="10" height="10" fill="#111"/>
+                                  <rect x="96" y="108" width="10" height="10" fill="#111"/>
+                                  <rect x="110" y="108" width="10" height="10" fill="#111"/>
+                                  <rect x="130" y="80" width="10" height="10" fill="#111"/>
+                                  <rect x="144" y="80" width="10" height="10" fill="#111"/>
+                                  <rect x="158" y="80" width="10" height="10" fill="#111"/>
+                                  <rect x="130" y="94" width="10" height="10" fill="#111"/>
+                                  <rect x="130" y="108" width="10" height="10" fill="#111"/>
+                                  <rect x="144" y="108" width="10" height="10" fill="#111"/>
+                                  <rect x="158" y="108" width="10" height="10" fill="#111"/>
+                                  <rect x="82" y="130" width="10" height="10" fill="#111"/>
+                                  <rect x="96" y="130" width="10" height="10" fill="#111"/>
+                                  <rect x="110" y="130" width="10" height="10" fill="#111"/>
+                                  <rect x="82" y="144" width="10" height="10" fill="#111"/>
+                                  <rect x="110" y="144" width="10" height="10" fill="#111"/>
+                                  <rect x="130" y="130" width="10" height="10" fill="#111"/>
+                                  <rect x="158" y="130" width="10" height="10" fill="#111"/>
+                                  <rect x="130" y="158" width="10" height="10" fill="#111"/>
+                                  <rect x="144" y="158" width="10" height="10" fill="#111"/>
+                                  <rect x="158" y="158" width="10" height="10" fill="#111"/>
+                                </svg>
+                              </div>
+                              <div className="text-center space-y-1">
+                                <p className="text-[10px] text-[#b39257] uppercase tracking-wider">Jalak Bali Penangkaran</p>
+                                <p className="text-xs text-[#f5efeb]/70">Rp {deposit.toLocaleString("id-ID")}</p>
+                                <span className="inline-block text-[9px] bg-[#b39257]/20 text-[#b39257] px-2 py-0.5 rounded border border-[#b39257]/30 uppercase tracking-wider">
+                                  Testing / Demo — bukan QRIS asli
+                                </span>
+                              </div>
+                            </div>
+                            <p className="text-[10px] text-[#f5efeb]/50 font-sans text-center">
+                              QR ini hanya untuk keperluan testing. QRIS asli akan dikirim oleh admin melalui WhatsApp setelah pengajuan diterima.
+                            </p>
+
+                            {/* Upload Bukti Pembayaran QRIS */}
+                            <div className="pt-3 border-t border-[#d6be8c]/15 space-y-2">
+                              <label htmlFor="payment-proof-qris" className="block text-[10px] uppercase tracking-wider text-[#b39257]">
+                                Upload Bukti Pembayaran QRIS <span className="text-[#f5efeb]/40 normal-case">(opsional — bisa dikirim setelah reservasi)</span>
+                              </label>
+                              <input
+                                ref={paymentProofInputRef}
+                                id="payment-proof-qris"
+                                type="file"
+                                accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                onChange={(event) => {
+                                  const file = event.currentTarget.files?.[0];
+                                  if (!file) return;
+                                  if (file.size > 10 * 1024 * 1024) {
+                                    alert("Ukuran berkas maksimal 10 MB.");
+                                    event.currentTarget.value = "";
+                                    return;
+                                  }
+                                  setPaymentProofFile(file);
+                                  setPaymentProofFileName(file.name);
+                                  event.currentTarget.value = "";
+                                }}
+                                className="block w-full cursor-pointer text-xs text-[#f5efeb]/70 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#b39257] file:px-3 file:py-2 file:text-[10px] file:font-semibold file:uppercase file:tracking-wider file:text-[#08110b] hover:file:bg-[#d6be8c]"
+                              />
+                              {paymentProofFileName && (
+                                <div className="flex items-center justify-between gap-3 rounded-md border border-[#38bdf8]/20 bg-[#38bdf8]/5 px-3 py-2 text-xs text-[#f5efeb]/80">
+                                  <span className="flex min-w-0 items-center gap-2">
+                                    <Upload className="h-3.5 w-3.5 shrink-0 text-[#38bdf8]" />
+                                    <span className="truncate">{paymentProofFileName}</span>
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setPaymentProofFile(null);
+                                      setPaymentProofFileName("");
+                                      if (paymentProofInputRef.current) {
+                                        paymentProofInputRef.current.value = "";
+                                      }
+                                    }}
+                                    aria-label="Hapus bukti pembayaran"
+                                    className="shrink-0 text-[#f5efeb]/60 hover:text-[#f5efeb] transition-colors"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              )}
+                              <p className="text-[10px] text-[#f5efeb]/50 font-sans">
+                                Bukti pembayaran tersimpan di backend dan dapat dilihat oleh admin melalui panel.
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Bank Transfer Info + Upload Bukti */}
+                        {paymentMethod === "bank_transfer" && (
+                          <div className="rounded-2xl border border-[#d6be8c]/20 bg-[#08110b] p-5 space-y-4 font-mono">
+                            <div>
+                              <span className="text-[10px] uppercase tracking-widest text-[#b39257] block mb-2">
+                                Rekening Tujuan Transfer (Demo)
+                              </span>
+                              <div className="space-y-1.5 text-xs text-[#f5efeb]/80">
+                                <div className="flex justify-between">
+                                  <span className="text-[#f5efeb]/50">Bank</span>
+                                  <span className="font-semibold text-[#f5efeb]">BCA</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-[#f5efeb]/50">No. Rekening</span>
+                                  <span className="font-semibold text-[#f5efeb] tracking-wider">1234 5678 90</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-[#f5efeb]/50">Atas Nama</span>
+                                  <span className="font-semibold text-[#f5efeb]">Jalak Bali Penangkaran</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-[#f5efeb]/50">Jumlah</span>
+                                  <span className="font-bold text-[#d6be8c]">Rp {deposit.toLocaleString("id-ID")}</span>
+                                </div>
+                              </div>
+                              <p className="mt-2 text-[9px] text-[#b39257]/70 uppercase tracking-wider">
+                                * Data rekening ini hanya untuk testing. Rekening asli dikirim admin via WhatsApp.
+                              </p>
+                            </div>
+
+                            {/* Upload Bukti Transfer */}
+                            <div className="pt-3 border-t border-[#d6be8c]/15 space-y-2">
+                              <label htmlFor="payment-proof" className="block text-[10px] uppercase tracking-wider text-[#b39257]">
+                                Upload Bukti Transfer <span className="text-[#f5efeb]/40 normal-case">(opsional — bisa dikirim setelah reservasi)</span>
+                              </label>
+                              <input
+                                ref={paymentProofInputRef}
+                                id="payment-proof"
+                                type="file"
+                                accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                onChange={(event) => {
+                                  const file = event.currentTarget.files?.[0];
+                                  if (!file) return;
+                                  if (file.size > 10 * 1024 * 1024) {
+                                    alert("Ukuran berkas maksimal 10 MB.");
+                                    event.currentTarget.value = "";
+                                    return;
+                                  }
+                                  setPaymentProofFile(file);
+                                  setPaymentProofFileName(file.name);
+                                  event.currentTarget.value = "";
+                                }}
+                                className="block w-full cursor-pointer text-xs text-[#f5efeb]/70 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#b39257] file:px-3 file:py-2 file:text-[10px] file:font-semibold file:uppercase file:tracking-wider file:text-[#08110b] hover:file:bg-[#d6be8c]"
+                              />
+                              {paymentProofFileName && (
+                                <div className="flex items-center justify-between gap-3 rounded-md border border-[#38bdf8]/20 bg-[#38bdf8]/5 px-3 py-2 text-xs text-[#f5efeb]/80">
+                                  <span className="flex min-w-0 items-center gap-2">
+                                    <Upload className="h-3.5 w-3.5 shrink-0 text-[#38bdf8]" />
+                                    <span className="truncate">{paymentProofFileName}</span>
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setPaymentProofFile(null);
+                                      setPaymentProofFileName("");
+                                      if (paymentProofInputRef.current) {
+                                        paymentProofInputRef.current.value = "";
+                                      }
+                                    }}
+                                    aria-label="Hapus bukti transfer"
+                                    className="shrink-0 text-[#f5efeb]/60 hover:text-[#f5efeb] transition-colors"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              )}
+                              <p className="text-[10px] text-[#f5efeb]/50 font-sans">
+                                Bukti transfer tersimpan di backend dan dapat dilihat oleh admin melalui panel.
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
                         <p className="text-[11px] text-[#f5efeb]/60 font-sans">
-                          Jangan melakukan pembayaran sebelum menerima instruksi resmi melalui WhatsApp.
+                          Setelah pengajuan berhasil, Anda akan diarahkan ke WhatsApp dengan kode reservasi Anda.
                         </p>
+                        {submissionError && (
+                          <p role="alert" className="text-xs text-red-300 font-sans">
+                            {submissionError}
+                          </p>
+                        )}
                       </div>
                     )}
+
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -936,9 +1147,11 @@ export function ReservationModal({
                       whileTap={{ scale: 0.98 }}
                       type="button"
                       onClick={handleSubmitToWhatsApp}
+                      disabled={isSubmitting}
+                      aria-busy={isSubmitting}
                       className="px-8 py-3.5 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-semibold transition-all shadow-[0_10px_25px_rgba(179,146,87,0.25)] flex items-center space-x-2 cursor-pointer"
                     >
-                      <span>Lanjutkan ke WhatsApp</span>
+                      <span>{isSubmitting ? "Mengirim Pengajuan..." : "Kirim Pengajuan"}</span>
                       <ArrowRight className="w-4 h-4" />
                     </motion.button>
                   )}

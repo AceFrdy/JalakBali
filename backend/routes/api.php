@@ -13,6 +13,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/reservations', [ReservationApplicationController::class, 'store']);
+Route::post('/reservations/lookup', [CustomerReservationController::class, 'lookup']);
 Route::get('/reservations/{bookingCode}', [CustomerReservationController::class, 'show']);
 Route::post('/reservations/{bookingCode}/payment-proof', [ReservationApplicationController::class, 'storeManualPaymentProof']);
 Route::post('/payments/webhook/{provider}', [PaymentWebhookController::class, 'handle']);

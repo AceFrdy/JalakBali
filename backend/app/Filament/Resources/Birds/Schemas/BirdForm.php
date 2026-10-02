@@ -14,6 +14,7 @@ class BirdForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
                 Section::make('Identitas Bird')->columns(2)->schema([
                     TextInput::make('public_id')->label('Public ID')->required()->unique(ignoreRecord: true),

@@ -50,6 +50,24 @@ class CustomerReservationController extends Controller
                 ];
             });
 
+        $totalPaid = $application->getTotalPaidAmount();
+        $remainingAmount = max(0, (float) $application->price - $totalPaid);
+
+        $transactions = $application->paymentTransactions()
+            ->latest('id')
+            ->get(['transaction_code', 'type', 'amount', 'payment_method', 'status', 'paid_at', 'created_at'])
+            ->map(function ($txn) {
+                return [
+                    'transactionCode' => $txn->transaction_code,
+                    'type' => $txn->type,
+                    'amount' => (float) $txn->amount,
+                    'paymentMethod' => $txn->payment_method,
+                    'status' => $txn->status,
+                    'paidAt' => $txn->paid_at?->toIso8601String(),
+                    'createdAt' => $txn->created_at?->toIso8601String(),
+                ];
+            });
+
         return response()->json([
             'bookingCode' => $application->booking_code,
             'customerName' => $application->customer_name,
@@ -59,10 +77,51 @@ class CustomerReservationController extends Controller
             'documentVerificationStatus' => $application->document_verification_status,
             'paymentStatus' => $application->payment_status,
             'paymentMethod' => $application->payment_method,
-            'price' => $application->price,
-            'depositAmount' => $application->deposit_amount,
-            'remainingAmount' => $application->remaining_amount,
+            'price' => (float) $application->price,
+            'depositAmount' => (float) $application->deposit_amount,
+            'totalPaid' => $totalPaid,
+            'remainingAmount' => $remainingAmount,
             'documents' => $documents,
+            'transactions' => $transactions,
+        ]);
+
+    }
+
+    public function lookup(Request $request)
+    {
+        $validated = $request->validate([
+            'bookingCode' => ['required', 'string'],
+            'identifier' => ['required', 'string'],
+        ]);
+
+        $bookingCode = strtoupper(trim($validated['bookingCode']));
+        $identifier = strtolower(trim($validated['identifier']));
+
+        $application = ReservationApplication::query()
+            ->where('booking_code', $bookingCode)
+            ->where(function ($query) use ($identifier) {
+                $query->where('customer_phone', 'like', "%{$identifier}%")
+                    ->orWhere('customer_email', $identifier);
+            })
+            ->first();
+
+        if (! $application) {
+            return response()->json([
+                'message' => 'Pengajuan tidak ditemukan. Pastikan Kode Pengajuan dan Nomor Telepon/Email sesuai.',
+            ], 422);
+        }
+
+        $rawToken = \Illuminate\Support\Str::random(40);
+        $application->update([
+            'customer_access_token_hash' => Hash::make($rawToken),
+            'customer_access_token_expires_at' => now()->addDays(7),
+        ]);
+
+        return response()->json([
+            'bookingCode' => $application->booking_code,
+            'token' => $rawToken,
+            'redirectUrl' => "/reservation/{$application->booking_code}/confirmation?token={$rawToken}",
         ]);
     }
 }
+

@@ -22,8 +22,14 @@ class PaymentTransactionsTable
                 TextColumn::make('customer_name_snapshot')->label('Customer')->searchable(),
                 TextColumn::make('type')->label('Tipe')->badge(),
                 TextColumn::make('payment_method')->label('Metode'),
-                TextColumn::make('provider')->label('Provider'),
-                TextColumn::make('provider_transaction_id')->label('Provider Reference')->searchable(),
+                TextColumn::make('provider')
+                    ->label('Provider')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('provider_transaction_id')
+                    ->label('Provider Reference')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('amount')->label('Nominal')->money('IDR'),
                 TextColumn::make('status')->label('Status')->badge(),
                 TextColumn::make('created_at')->label('Tanggal')->dateTime('d M Y H:i')->sortable(),

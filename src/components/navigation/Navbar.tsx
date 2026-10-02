@@ -58,6 +58,14 @@ export function Navbar({ onOpenReservation }: NavbarProps) {
                 <span className="absolute bottom-0 left-0 h-px w-0 bg-[#d6be8c] transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
+            <Link
+              href="/reservation/lookup"
+              className="group relative whitespace-nowrap py-1 transition-colors hover:text-[#d6be8c] text-[#d6be8c]/80"
+            >
+              <span>Cek Reservasi</span>
+              <span className="absolute bottom-0 left-0 h-px w-0 bg-[#d6be8c] transition-all duration-300 group-hover:w-full" />
+            </Link>
+
           </nav>
 
           <div className="hidden lg:flex items-center space-x-6">
@@ -118,11 +126,19 @@ export function Navbar({ onOpenReservation }: NavbarProps) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block border-b border-[#d6be8c]/10 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#f5efeb]/80 transition-colors last:border-0 hover:text-[#d6be8c]"
+                  className="block border-b border-[#d6be8c]/10 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#f5efeb]/80 transition-colors hover:text-[#d6be8c]"
                 >
                   {item.label}
                 </a>
               ))}
+              <Link
+                href="/reservation/lookup"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block border-b border-[#d6be8c]/10 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#d6be8c] transition-colors last:border-0 hover:text-[#f5efeb]"
+              >
+                Cek Reservasi
+              </Link>
+
             </motion.nav>
           )}
         </AnimatePresence>
