@@ -7,7 +7,7 @@ import { TextReveal } from "@/components/motion/TextReveal";
 import { FadeIn } from "@/components/motion/FadeIn";
 
 interface FooterProps {
-  onOpenReservation: () => void;
+  onOpenReservation?: () => void;
 }
 
 export function Footer({ onOpenReservation }: FooterProps) {
@@ -30,16 +30,17 @@ export function Footer({ onOpenReservation }: FooterProps) {
             </div>
 
             <div className="flex-shrink-0">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={onOpenReservation}
-                data-cursor="RESERVE"
-                className="group px-8 py-4 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all shadow-[0_10px_30px_rgba(179,146,87,0.25)] flex items-center space-x-2.5 cursor-pointer"
-              >
-                <span>Reservasi Individu</span>
-                <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </motion.button>
+              <Link href="/reserve">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  data-cursor="RESERVE"
+                  className="group px-8 py-4 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all shadow-[0_10px_30px_rgba(179,146,87,0.25)] flex items-center space-x-2.5 cursor-pointer"
+                >
+                  <span>Reservasi Individu</span>
+                  <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </motion.div>
+              </Link>
             </div>
           </div>
         </FadeIn>

@@ -208,30 +208,23 @@ export default function BirdDetailPage({ params }: BirdDetailPageProps) {
 
             {/* Primary Action Button */}
             <div className="pt-2">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setReservationOpen(true)}
-                data-cursor="RESERVE"
-                className="w-full py-4 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-xs uppercase tracking-[0.25em] font-bold transition-all shadow-[0_10px_30px_rgba(179,146,87,0.3)] flex items-center justify-center space-x-2 cursor-pointer"
-              >
-                <span>Reservasi Individu ({bird.publicId})</span>
-                <ArrowRight className="w-4 h-4" />
-              </motion.button>
+              <Link href={`/reserve?type=individual&birdId=${bird.id}`}>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  data-cursor="RESERVE"
+                  className="w-full py-4 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-xs uppercase tracking-[0.25em] font-bold transition-all shadow-[0_10px_30px_rgba(179,146,87,0.3)] flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <span>Reservasi Individu ({bird.publicId})</span>
+                  <ArrowRight className="w-4 h-4" />
+                </motion.div>
+              </Link>
             </div>
           </div>
         </div>
       </div>
 
-      <Footer onOpenReservation={() => setReservationOpen(true)} />
-
-      {/* Reservation Modal with this bird pre-selected */}
-      <ReservationModal
-        isOpen={reservationOpen}
-        onClose={() => setReservationOpen(false)}
-        initialBirdId={bird.id}
-        initialType="individual"
-      />
+      <Footer />
     </main>
   );
 }

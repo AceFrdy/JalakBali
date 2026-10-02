@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/navigation/Navbar";
 import { FloatingReserveButton } from "@/components/navigation/FloatingReserveButton";
 import { HeroExperience } from "@/components/hero/HeroExperience";
@@ -10,48 +11,31 @@ import { BirdProvenanceSection } from "@/components/storytelling/BirdProvenanceS
 import { ResponsibleBreedingSection } from "@/components/breeding/ResponsibleBreedingSection";
 import { BreedingLifecycleSection } from "@/components/storytelling/BreedingLifecycleSection";
 import { AvailabilitySection } from "@/components/availability/AvailabilitySection";
-import { TrustTransparencySection } from "@/components/storytelling/TrustTransparencySection";
 import { HandoverScheduleSection } from "@/components/availability/HandoverScheduleSection";
 import { ReviewSection } from "@/components/reviews/ReviewSection";
 import { EditorialGallery } from "@/components/gallery/EditorialGallery";
 import { FinalCtaSection } from "@/components/hero/FinalCtaSection";
 import { Footer } from "@/components/footer/Footer";
-import { ReservationModal } from "@/components/reservation/ReservationModal";
 import { WaitlistModal } from "@/components/reservation/WaitlistModal";
 import { CustomCursor } from "@/components/motion/CustomCursor";
 import { AvailabilitySlot } from "@/types";
 
+
 export default function Home() {
-  const [reservationOpen, setReservationOpen] = useState(false);
+  const router = useRouter();
   const [waitlistOpen, setWaitlistOpen] = useState(false);
-  const [selectedSlotForModal, setSelectedSlotForModal] = useState<string | undefined>();
-  const [selectedBirdId, setSelectedBirdId] = useState<string | undefined>();
-  const [selectedPairId, setSelectedPairId] = useState<string | undefined>();
-  const [resType, setResType] = useState<"individual" | "pair">("individual");
   const [waitlistPrefType, setWaitlistPrefType] = useState<"individual" | "pair" | "any">("pair");
 
-  const handleOpenReservation = (
-    type: "individual" | "pair" = "individual",
-    birdId?: string,
-    pairId?: string
-  ) => {
-    setResType(type);
-    setSelectedBirdId(birdId);
-    setSelectedPairId(pairId);
-    setReservationOpen(true);
-  };
-
   const handleReserveIndividual = (birdId: string) => {
-    handleOpenReservation("individual", birdId, undefined);
+    router.push(`/reserve?type=individual&birdId=${encodeURIComponent(birdId)}`);
   };
 
   const handleReservePair = (pairId: string) => {
-    handleOpenReservation("pair", undefined, pairId);
+    router.push(`/reserve?type=pair&pairId=${encodeURIComponent(pairId)}`);
   };
 
   const handleSelectSlot = (slot: AvailabilitySlot) => {
-    setSelectedSlotForModal(slot.id);
-    setReservationOpen(true);
+    router.push(`/reserve?releaseId=${encodeURIComponent(slot.id)}`);
   };
 
   const handleJoinWaitlist = (type: "individual" | "pair" | "any" = "pair") => {
@@ -64,7 +48,7 @@ export default function Home() {
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     } else {
-      setReservationOpen(true);
+      router.push("/reserve");
     }
   };
 
@@ -81,7 +65,7 @@ export default function Home() {
       <CustomCursor />
 
       {/* Top Sticky Navigation */}
-      <Navbar onOpenReservation={() => handleOpenReservation("individual")} />
+      <Navbar />
 
       {/* Floating CTA for Desktop & Sticky Bottom Bar for Mobile */}
       <FloatingReserveButton />
@@ -136,17 +120,7 @@ export default function Home() {
       />
 
       {/* 13: Luxury Sanctuary & Legal Captive Breeding Footer */}
-      <Footer onOpenReservation={() => handleOpenReservation("individual")} />
-
-      {/* 7-Step Multi-Step Reservation Modal */}
-      <ReservationModal
-        isOpen={reservationOpen}
-        onClose={() => setReservationOpen(false)}
-        initialReleaseId={selectedSlotForModal}
-        initialBirdId={selectedBirdId}
-        initialPairId={selectedPairId}
-        initialType={resType}
-      />
+      <Footer />
 
       {/* Priority Waitlist Modal */}
       <WaitlistModal

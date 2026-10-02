@@ -46,14 +46,31 @@ class ReservationApplicationsTable
             ])
             ->recordActions([
                 Action::make('download_identity')
-                    ->label('Lihat KTP')
+                    ->label('Unduh KTP')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->action(fn (ReservationApplication $record) => self::downloadDocument($record, 'identity')),
+                    ->color('warning')
+                    ->url(function (ReservationApplication $record) {
+                        $doc = $record->documents()->where('document_type', 'identity')->latest('id')->first();
+                        if (! $doc) {
+                            return null;
+                        }
+                        return route('admin.documents.download', ['document' => $doc->id]);
+                    })
+                    ->openUrlInNewTab()
+                    ->visible(fn (ReservationApplication $record) => $record->documents()->where('document_type', 'identity')->exists()),
                 Action::make('download_payment_proof')
-                    ->label('Lihat Bukti Bayar')
-                    ->icon('heroicon-o-banknotes')
-                    ->visible(fn (ReservationApplication $record) => $record->documents()->where('document_type', 'payment_proof')->exists())
-                    ->action(fn (ReservationApplication $record) => self::downloadDocument($record, 'payment_proof')),
+                    ->label('Unduh Bukti Bayar')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('info')
+                    ->url(function (ReservationApplication $record) {
+                        $doc = $record->documents()->where('document_type', 'payment_proof')->latest('id')->first();
+                        if (! $doc) {
+                            return null;
+                        }
+                        return route('admin.documents.download', ['document' => $doc->id]);
+                    })
+                    ->openUrlInNewTab()
+                    ->visible(fn (ReservationApplication $record) => $record->documents()->where('document_type', 'payment_proof')->exists()),
                 EditAction::make(),
             ])
             ->toolbarActions([

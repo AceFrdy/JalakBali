@@ -27,6 +27,13 @@ class ReservationDocumentController extends Controller
             'Berkas dokumen tidak ditemukan di penyimpanan.'
         );
 
+        if ($request->boolean('download')) {
+            return Storage::disk($document->disk)->download(
+                $document->path,
+                $document->original_name
+            );
+        }
+
         return Storage::disk($document->disk)->response(
             $document->path,
             $document->original_name,
@@ -35,5 +42,11 @@ class ReservationDocumentController extends Controller
                 'Cache-Control' => 'private, max-age=3600',
             ]
         );
+    }
+
+    public function download(Request $request, ReservationDocument $document)
+    {
+        $request->merge(['download' => true]);
+        return $this->show($request, $document);
     }
 }

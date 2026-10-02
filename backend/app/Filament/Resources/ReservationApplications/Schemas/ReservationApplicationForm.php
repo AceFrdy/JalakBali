@@ -182,6 +182,12 @@ class ReservationApplicationForm
             ';
         }
 
+        try {
+            $downloadUrl = route('admin.documents.download', ['document' => $doc->id]);
+        } catch (\Throwable) {
+            $downloadUrl = url('/admin/documents/' . $doc->id . '/download');
+        }
+
         $html = '
             <div style="border-radius: 12px; border: 1px solid rgba(214,190,140,0.3); background: rgba(13,24,17,0.85); padding: 14px;">
                 ' . $previewHtml . '
@@ -192,9 +198,14 @@ class ReservationApplicationForm
                         <span>Diunggah: ' . e($uploadedAt) . '</span>
                     </div>
                 </div>
-                <a href="' . e($url) . '" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 9px 16px; border-radius: 8px; background: #b39257; color: #08110b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; text-align: center;">
-                    Buka Berkas Penuh ↗
-                </a>
+                <div style="display: flex; gap: 8px;">
+                    <a href="' . e($url) . '" target="_blank" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 12px; border-radius: 8px; background: rgba(214,190,140,0.15); color: #d6be8c; border: 1px solid rgba(214,190,140,0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; text-align: center;">
+                        Full Screen
+                    </a>
+                    <a href="' . e($downloadUrl) . '" download style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 12px; border-radius: 8px; background: #b39257; color: #08110b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; text-align: center;">
+                        Download
+                    </a>
+                </div>
             </div>
         ';
 

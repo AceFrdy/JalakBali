@@ -8,7 +8,7 @@ import { CURRENT_RELEASE } from "@/data/weeklyReleases";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 
 interface NavbarProps {
-  onOpenReservation: () => void;
+  onOpenReservation?: () => void;
 }
 
 export function Navbar({ onOpenReservation }: NavbarProps) {
@@ -78,17 +78,17 @@ export function Navbar({ onOpenReservation }: NavbarProps) {
               </span>
             </div>
 
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="button"
-              onClick={onOpenReservation}
-              data-cursor="RESERVE"
-              className="group flex items-center space-x-2 rounded-full border border-[#b39257]/70 bg-[#b39257]/10 px-6 py-2.5 font-mono text-[10px] uppercase tracking-[0.25em] text-[#f5efeb] shadow-sm transition-all duration-300 hover:bg-[#b39257] hover:text-[#08110b]"
-            >
-              <span>Reservasi</span>
-              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </motion.button>
+            <Link href="/reserve">
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                data-cursor="RESERVE"
+                className="group flex items-center space-x-2 rounded-full border border-[#b39257]/70 bg-[#b39257]/10 px-6 py-2.5 font-mono text-[10px] uppercase tracking-[0.25em] text-[#f5efeb] shadow-sm transition-all duration-300 hover:bg-[#b39257] hover:text-[#08110b] cursor-pointer"
+              >
+                <span>Reservasi</span>
+                <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </motion.div>
+            </Link>
           </div>
 
           <motion.button

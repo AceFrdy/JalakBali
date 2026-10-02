@@ -28,12 +28,13 @@ import { submitReservationApplication } from "@/lib/api";
 import { buildReservationWhatsAppMessage, redirectToWhatsApp } from "@/lib/whatsapp";
 
 interface ReservationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
   initialReleaseId?: string;
   initialBirdId?: string;
   initialPairId?: string;
   initialType?: "individual" | "pair";
+  isModal?: boolean;
 }
 
 function hasReleaseAvailability(
@@ -54,12 +55,13 @@ function isReleaseSoldOut(release: WeeklyRelease) {
 }
 
 export function ReservationModal({
-  isOpen,
+  isOpen = true,
   onClose,
   initialReleaseId,
   initialBirdId,
   initialPairId,
   initialType = "individual",
+  isModal = false,
 }: ReservationModalProps) {
   const router = useRouter();
   // Step 1 to 5
@@ -200,7 +202,7 @@ export function ReservationModal({
       router.push(
         `/reservation/${application.bookingCode}/confirmation?token=${encodeURIComponent(application.accessToken)}`
       );
-      onClose();
+      onClose?.();
     } catch (error) {
       setSubmissionError(error instanceof Error ? error.message : "Pengajuan reservasi gagal dikirim.");
     } finally {
@@ -221,27 +223,26 @@ export function ReservationModal({
     "Pembayaran",
   ];
 
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#060e08]/94 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6 md:p-8">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 15 }}
-            transition={{ type: "spring", stiffness: 350, damping: 28 }}
-            className="relative w-full max-w-5xl bg-[#0d1811] border border-[#d6be8c]/30 rounded-3xl overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.85)] grid grid-cols-1 lg:grid-cols-12 min-h-[680px]"
-          >
-            {/* Close Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onClose}
-              className="absolute top-5 right-5 z-40 p-2.5 rounded-full bg-[#08110b]/90 text-[#f5efeb] hover:text-[#b39257] border border-[#d6be8c]/20 hover:border-[#b39257] transition-colors cursor-pointer"
-              aria-label="Tutup modal reservasi"
-            >
-              <X className="w-4 h-4" />
-            </motion.button>
+  const formContent = (
+    <motion.div
+      initial={{ opacity: 0, scale: isModal ? 0.95 : 1, y: isModal ? 15 : 0 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: isModal ? 0.95 : 1, y: isModal ? 15 : 0 }}
+      transition={{ type: "spring", stiffness: 350, damping: 28 }}
+      className="relative w-full max-w-5xl mx-auto bg-[#0d1811] border border-[#d6be8c]/30 rounded-3xl overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.85)] grid grid-cols-1 lg:grid-cols-12 min-h-[680px]"
+    >
+      {/* Close Button if modal mode or onClose provided */}
+      {onClose && (
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={onClose}
+          className="absolute top-5 right-5 z-40 p-2.5 rounded-full bg-[#08110b]/90 text-[#f5efeb] hover:text-[#b39257] border border-[#d6be8c]/20 hover:border-[#b39257] transition-colors cursor-pointer"
+          aria-label="Tutup reservasi"
+        >
+          <X className="w-4 h-4" />
+        </motion.button>
+      )}
 
             {/* ── Left Side: Live Dossier Ledger Slip ── */}
             <div className="lg:col-span-4 relative hidden lg:flex flex-col justify-between border-r border-[#d6be8c]/20 p-8 bg-[#08110b]">
@@ -1158,7 +1159,18 @@ export function ReservationModal({
                 </div>
               )}
             </div>
-          </motion.div>
+    </motion.div>
+  );
+
+  if (!isModal) {
+    return formContent;
+  }
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#060e08]/94 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6 md:p-8">
+          {formContent}
         </div>
       )}
     </AnimatePresence>
