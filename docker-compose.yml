@@ -10,8 +10,8 @@ services:
       POSTGRES_DB: ${DB_DATABASE:-jalakbali}
       POSTGRES_USER: ${DB_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-secretpassword}
-    ports:
-      - "5432:5432"
+    expose:
+      - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -36,8 +36,8 @@ services:
       DB_DATABASE: ${DB_DATABASE:-jalakbali}
       DB_USERNAME: ${DB_USERNAME:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-secretpassword}
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     volumes:
       - storage_data:/var/www/html/storage
 
@@ -52,8 +52,8 @@ services:
       - backend
     environment:
       NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:8000}
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
 
 volumes:
   postgres_data:
