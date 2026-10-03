@@ -21,10 +21,12 @@ return [
 
     'allowed_origins' => array_values(array_filter(array_map(
         'trim',
-        explode(',', env('FRONTEND_URLS', 'http://localhost:3000')),
+        explode(',', env('FRONTEND_URLS', 'http://localhost:3000,https://kabinetsengkuni.com,https://www.kabinetsengkuni.com')),
     ))),
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '#^https?://(.+\.)?kabinetsengkuni\.com$#',
+    ],
 
     'allowed_headers' => ['*'],
 
