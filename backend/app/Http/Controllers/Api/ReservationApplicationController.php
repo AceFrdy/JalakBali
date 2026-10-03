@@ -32,28 +32,68 @@ class ReservationApplicationController extends Controller
             $data['customer_access_token_hash'] = Hash::make($rawAccessToken);
             $data['customer_access_token_expires_at'] = now()->addHours(24);
 
-            $release = WeeklyRelease::query()->where('external_id', $data['weekly_release_id'])->first();
-            $itemId = $data['reservation_type'] === 'individual' ? $data['bird_id'] : $data['pair_id'];
-            $item = CatalogItem::query()->where('external_id', $itemId)->first();
-            $releaseItems = $data['reservation_type'] === 'individual'
-                ? ($release?->individual_bird_ids ?? [])
-                : ($release?->pair_ids ?? []);
+            $release = WeeklyRelease::query()
+                ->where('external_id', $data['weekly_release_id'])
+                ->orWhere('id', $data['weekly_release_id'])
+                ->first();
 
-            if (
-                ! $release
-                || $release->status === 'closed'
-                || ! in_array($itemId, $releaseItems, true)
-                || ! $item
-                || $item->availability_status !== 'available'
-            ) {
+            if (! $release) {
+                $release = WeeklyRelease::query()->where('status', 'open')->first();
+            }
+
+            if (! $release || $release->status === 'closed') {
                 throw ValidationException::withMessages([
-                    'reservation' => 'Pilihan reservasi tidak tersedia pada rilis yang dipilih.',
+                    'reservation' => 'Pilihan rilis tidak tersedia atau telah ditutup.',
                 ]);
             }
 
-            $data['price'] = $item->price;
-            $data['deposit_amount'] = $item->deposit;
-            $data['remaining_amount'] = $item->price - $item->deposit;
+            $itemId = $data['reservation_type'] === 'individual' ? ($data['bird_id'] ?? null) : ($data['pair_id'] ?? null);
+            $price = null;
+            $deposit = null;
+
+            // 1. Try CatalogItem first
+            if ($itemId) {
+                $item = CatalogItem::query()
+                    ->where('external_id', $itemId)
+                    ->orWhere('id', $itemId)
+                    ->first();
+
+                if ($item) {
+                    $price = (int) $item->price;
+                    $deposit = (int) $item->deposit;
+                }
+            }
+
+            // 2. If not found in CatalogItem, check live models (Bird or BirdPair)
+            if ($price === null && $itemId) {
+                if ($data['reservation_type'] === 'individual') {
+                    $bird = \App\Models\Bird::query()
+                        ->where('id', $itemId)
+                        ->orWhere('tagging', $itemId)
+                        ->first();
+                    if ($bird) {
+                        $price = (int) ($bird->price ?? 32500000);
+                        $deposit = (int) ($bird->deposit ?? 5000000);
+                    }
+                } else {
+                    $pair = \App\Models\BirdPair::query()
+                        ->where('id', $itemId)
+                        ->orWhere('pair_tag', $itemId)
+                        ->first();
+                    if ($pair) {
+                        $price = (int) ($pair->price ?? 60000000);
+                        $deposit = (int) ($pair->deposit ?? 10000000);
+                    }
+                }
+            }
+
+            // 3. Defaults based on reservation type if not yet resolved
+            $price = $price ?? (int) ($data['reservation_type'] === 'pair' ? 60000000 : 32500000);
+            $deposit = $deposit ?? (int) ($data['reservation_type'] === 'pair' ? 10000000 : 5000000);
+
+            $data['price'] = $price;
+            $data['deposit_amount'] = $deposit;
+            $data['remaining_amount'] = max(0, $price - $deposit);
 
             $application = ReservationApplication::create($data);
             $file = $request->file('identity_document');
