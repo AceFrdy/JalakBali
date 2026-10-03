@@ -30,6 +30,7 @@ services:
       APP_ENV: ${APP_ENV:-production}
       APP_DEBUG: ${APP_DEBUG:-false}
       APP_URL: ${APP_URL:-https://api-dev.kabinetsengkuni.com}
+      APP_KEY: ${APP_KEY}
       LOG_CHANNEL: ${LOG_CHANNEL:-stderr}
       DB_CONNECTION: pgsql
       DB_HOST: postgres
