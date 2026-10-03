@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -13,6 +13,10 @@ import {
   QrCode,
   Landmark,
   Upload,
+  User,
+  Users,
+  Sparkles,
+  RotateCcw,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WEEKLY_RELEASES, CURRENT_RELEASE } from "@/data/weeklyReleases";
@@ -20,11 +24,12 @@ import { BIRDS_COLLECTION, BREEDING_PAIRS } from "@/data/birds";
 import {
   Bird,
   BreedingPair,
+  BirdPairCatalog,
   WeeklyRelease,
   VerificationStatus,
 } from "@/types";
 import { INITIAL_DOCUMENTS_TEMPLATE } from "@/lib/documents";
-import { submitReservationApplication } from "@/lib/api";
+import { submitReservationApplication, getCatalogBirds, getCatalogPairs } from "@/lib/api";
 import { buildReservationWhatsAppMessage, redirectToWhatsApp } from "@/lib/whatsapp";
 
 interface ReservationModalProps {
@@ -68,6 +73,10 @@ export function ReservationModal({
   const [currentStep, setCurrentStep] = useState<number>(2);
   const [direction, setDirection] = useState<number>(1);
 
+  // Live collections from backend or fallback
+  const [availableBirds, setAvailableBirds] = useState<Bird[]>(BIRDS_COLLECTION);
+  const [availablePairs, setAvailablePairs] = useState<(BreedingPair | BirdPairCatalog)[]>(BREEDING_PAIRS);
+
   // Step 1: Release
   const [selectedRelease, setSelectedRelease] = useState<WeeklyRelease>(() => {
     return (
@@ -80,20 +89,60 @@ export function ReservationModal({
   const [reservationType, setReservationType] = useState<"individual" | "pair">(
     initialType
   );
-  const [selectedBird] = useState<Bird>(() => {
+  const [selectedBird, setSelectedBird] = useState<Bird>(() => {
     return (
-      BIRDS_COLLECTION.find((b) => b.id === initialBirdId || b.publicId === initialBirdId) ||
+      BIRDS_COLLECTION.find((b) => b.id === initialBirdId || b.publicId === initialBirdId || b.tagging === initialBirdId) ||
       BIRDS_COLLECTION[0]
     );
   });
-  const [selectedPair] = useState<BreedingPair>(() => {
+  const [selectedPair, setSelectedPair] = useState<BreedingPair | BirdPairCatalog>(() => {
     return (
-      BREEDING_PAIRS.find((p) => p.id === initialPairId || p.pairId === initialPairId) ||
+      BREEDING_PAIRS.find((p) => p.id === initialPairId || ('pairId' in p && p.pairId === initialPairId) || ('pairTag' in p && p.pairTag === initialPairId)) ||
       BREEDING_PAIRS[0]
     );
   });
+
+  // Track if user arrived with pre-selected item from catalog/homepage
+  const isPreselected = reservationType === "individual" ? !!initialBirdId : !!initialPairId;
+  const [showSpecimenPicker, setShowSpecimenPicker] = useState<boolean>(!isPreselected);
+
+  // Load live catalog items
+  useEffect(() => {
+    getCatalogBirds()
+      .then((liveBirds) => {
+        if (liveBirds && liveBirds.length > 0) {
+          setAvailableBirds(liveBirds);
+          if (initialBirdId) {
+            const found = liveBirds.find((b) => b.id === initialBirdId || b.publicId === initialBirdId || b.tagging === initialBirdId);
+            if (found) setSelectedBird(found);
+          }
+        }
+      })
+      .catch(() => {});
+
+    getCatalogPairs()
+      .then((livePairs) => {
+        if (livePairs && livePairs.length > 0) {
+          setAvailablePairs(livePairs);
+          if (initialPairId) {
+            const found = livePairs.find((p) => p.id === initialPairId || p.pairTag === initialPairId);
+            if (found) setSelectedPair(found);
+          }
+        }
+      })
+      .catch(() => {});
+  }, [initialBirdId, initialPairId]);
+
   const isIndividualAvailable = hasReleaseAvailability(selectedRelease, "individual");
   const isPairAvailable = hasReleaseAvailability(selectedRelease, "pair");
+
+  // Pair metadata helpers
+  const pairTag = 'pairTag' in selectedPair ? selectedPair.pairTag : selectedPair.pairId;
+  const pairDescription = 'compatibilityNote' in selectedPair ? selectedPair.compatibilityNote : (selectedPair.description || 'Kombinasi indukan serasi terverifikasi.');
+  const pairImage = ('images' in selectedPair && selectedPair.images?.[0])
+    ? selectedPair.images[0]
+    : (selectedPair.birdA?.images?.[0] || '/assets/jalak-portrait.png');
+  const birdImage = (selectedBird.images && selectedBird.images[0]) || '/assets/jalak-portrait.png';
 
   // Step 3: Customer Information
   const [customerName, setCustomerName] = useState("");
@@ -126,12 +175,12 @@ export function ReservationModal({
 
   const price =
     reservationType === "individual"
-      ? selectedBird.price || 32500000
-      : selectedPair.price;
+      ? (selectedBird.price || 32500000)
+      : (selectedPair.price || 60000000);
   const deposit =
     reservationType === "individual"
-      ? selectedBird.deposit || 5000000
-      : selectedPair.deposit;
+      ? (selectedBird.deposit || 5000000)
+      : (selectedPair.deposit || 10000000);
   const remaining = price - deposit;
   const handleNextStep = () => {
     if (!hasReleaseAvailability(selectedRelease, reservationType)) return;
@@ -253,8 +302,8 @@ export function ReservationModal({
                 </div>
                 <h3 className="font-serif text-2xl text-[#f5efeb] font-light leading-snug">
                   {reservationType === "individual"
-                    ? `Jalak Bali (${selectedBird.publicId})`
-                    : `Pasangan (${selectedPair.pairId})`}
+                    ? `Jalak Bali (${selectedBird.publicId || selectedBird.tagging || "Specimen"})`
+                    : `Pasangan (${pairTag})`}
                 </h3>
                 <p className="text-xs text-[#d6be8c] font-mono">
                   Rilis: {selectedRelease.formattedDate}
@@ -262,21 +311,18 @@ export function ReservationModal({
               </div>
 
               {/* Bird / Pair Visual Preview */}
-              <div className="my-6 relative aspect-[4/3] rounded-xl overflow-hidden border border-[#d6be8c]/20 shadow-inner">
+              <div className="my-6 relative aspect-[4/3] rounded-xl overflow-hidden border border-[#d6be8c]/20 shadow-inner bg-[#060e08]">
                 <Image
-                  src={
-                    reservationType === "individual"
-                      ? selectedBird.images[0]
-                      : selectedPair.images[0]
-                  }
+                  src={reservationType === "individual" ? birdImage : pairImage}
                   alt="Avian Specimen"
                   fill
+                  unoptimized
                   className="object-cover object-center filter brightness-90"
                 />
                 <div className="absolute bottom-2 left-2 text-[8px] uppercase tracking-widest text-[#d6be8c] font-mono bg-[#08110b]/80 px-2 py-0.5 rounded">
                   {reservationType === "individual"
-                    ? `Cincin: ${selectedBird.ringTag}`
-                    : `Pasang: ${selectedPair.pairId}`}
+                    ? `Cincin: ${selectedBird.ringTag || "—"}`
+                    : `Pasang: ${pairTag}`}
                 </div>
               </div>
 
@@ -431,56 +477,49 @@ export function ReservationModal({
                       </div>
                     )}
 
-                    {/* ── STEP 02: SELECT INDIVIDUAL OR PAIR ── */}
+                    {/* ── STEP 02: SELECT INDIVIDUAL OR PAIR & SPECIFIC SPECIMEN ── */}
                     {currentStep === 2 && (
                       <div className="space-y-6">
                         <div>
                           <h4 className="font-serif text-2xl sm:text-3xl text-[#f5efeb] font-light mb-1">
-                            Langkah 01 — Pilih Individu atau Pasangan
+                            Langkah 01 — Pilih Tipe & Spesimen
                           </h4>
                           <p className="text-xs text-[#f5efeb]/70 font-mono">
-                            Tentukan pilihan antara mereservasi satu spesimen individu atau sepasang indukan bonding.
+                            Tentukan antara mereservasi 1 spesimen individu atau sepasang indukan bonding.
                           </p>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono">
+                        {/* Top Toggle: Individual vs Pair */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono">
                           {/* Option A: Individual */}
                           <button
                             type="button"
                             disabled={!isIndividualAvailable}
                             aria-pressed={reservationType === "individual"}
-                            onClick={() => setReservationType("individual")}
-                            className={`w-full text-left p-6 rounded-2xl border transition-all flex flex-col justify-between space-y-4 ${
+                            onClick={() => {
+                              setReservationType("individual");
+                              setShowSpecimenPicker(!initialBirdId);
+                            }}
+                            className={`w-full text-left p-4 sm:p-5 rounded-2xl border transition-all flex flex-col justify-between space-y-3 cursor-pointer ${
                               reservationType === "individual"
-                                ? "bg-[#16271c] border-[#b39257] shadow-xl"
-                                : "bg-[#08110b] border-[#d6be8c]/15"
-                            } ${
-                              isIndividualAvailable
-                                ? "cursor-pointer hover:border-[#d6be8c]/35"
-                                : "cursor-not-allowed opacity-45"
-                            }`}
+                                ? "bg-[#16271c] border-[#b39257] shadow-xl ring-1 ring-[#b39257]/50"
+                                : "bg-[#08110b] border-[#d6be8c]/15 hover:border-[#d6be8c]/35"
+                            } ${!isIndividualAvailable ? "opacity-45 cursor-not-allowed" : ""}`}
                           >
-                            <div>
-                              <div className="flex items-center justify-between text-[10px] text-[#b39257] uppercase tracking-widest mb-2">
+                            <div className="flex items-center justify-between text-[10px] text-[#b39257] uppercase tracking-widest">
+                              <span className="flex items-center space-x-1.5">
+                                <User className="w-3.5 h-3.5" />
                                 <span>Alokasi Individu</span>
-                                {isIndividualAvailable ? (
-                                  reservationType === "individual" && <Check className="w-4 h-4 text-[#b39257]" />
-                                ) : (
-                                  <span className="text-[#f5efeb]/40">Kuota Habis</span>
-                                )}
-                              </div>
-                              <h5 className="font-serif text-2xl text-[#f5efeb] font-light">
+                              </span>
+                              {reservationType === "individual" && <Check className="w-4 h-4 text-[#b39257]" />}
+                            </div>
+                            <div>
+                              <h5 className="font-serif text-xl sm:text-2xl text-[#f5efeb] font-light">
                                 Individu (1 Burung)
                               </h5>
-                              <p className="text-xs text-[#f5efeb]/70 font-sans mt-2">
-                                Kandidat: {selectedBird.publicId} ({selectedBird.name}) · {selectedBird.sex === "male" ? "Jantan" : "Betina"}
+                              <p className="text-xs text-[#f5efeb]/60 font-sans mt-1">
+                                {selectedBird.publicId || selectedBird.tagging} · Deposit: Rp {(selectedBird.deposit || 5000000).toLocaleString("id-ID")}
                               </p>
-                            </div>
-                            <div className="pt-3 border-t border-[#d6be8c]/15 flex justify-between items-baseline">
-                              <span className="text-[10px] text-[#f5efeb]/50">Deposit</span>
-                              <span className="text-base text-[#d6be8c] font-bold">
-                                Rp {selectedBird.deposit?.toLocaleString("id-ID")}
-                              </span>
                             </div>
                           </button>
 
@@ -489,50 +528,234 @@ export function ReservationModal({
                             type="button"
                             disabled={!isPairAvailable}
                             aria-pressed={reservationType === "pair"}
-                            onClick={() => setReservationType("pair")}
-                            className={`w-full text-left p-6 rounded-2xl border transition-all flex flex-col justify-between space-y-4 ${
+                            onClick={() => {
+                              setReservationType("pair");
+                              setShowSpecimenPicker(!initialPairId);
+                            }}
+                            className={`w-full text-left p-4 sm:p-5 rounded-2xl border transition-all flex flex-col justify-between space-y-3 cursor-pointer ${
                               reservationType === "pair"
-                                ? "bg-[#16271c] border-[#b39257] shadow-xl"
-                                : "bg-[#08110b] border-[#d6be8c]/15"
-                            } ${
-                              isPairAvailable
-                                ? "cursor-pointer hover:border-[#d6be8c]/35"
-                                : "cursor-not-allowed opacity-45"
-                            }`}
+                                ? "bg-[#16271c] border-[#b39257] shadow-xl ring-1 ring-[#b39257]/50"
+                                : "bg-[#08110b] border-[#d6be8c]/15 hover:border-[#d6be8c]/35"
+                            } ${!isPairAvailable ? "opacity-45 cursor-not-allowed" : ""}`}
                           >
-                            <div>
-                              <div className="flex items-center justify-between text-[10px] text-[#b39257] uppercase tracking-widest mb-2">
+                            <div className="flex items-center justify-between text-[10px] text-[#b39257] uppercase tracking-widest">
+                              <span className="flex items-center space-x-1.5">
+                                <Users className="w-3.5 h-3.5" />
                                 <span>Pasangan Bonding</span>
-                                {isPairAvailable ? (
-                                  reservationType === "pair" && <Check className="w-4 h-4 text-[#b39257]" />
-                                ) : (
-                                  <span className="text-[#f5efeb]/40">Kuota Habis</span>
-                                )}
-                              </div>
-                              <h5 className="font-serif text-2xl text-[#f5efeb] font-light">
+                              </span>
+                              {reservationType === "pair" && <Check className="w-4 h-4 text-[#b39257]" />}
+                            </div>
+                            <div>
+                              <h5 className="font-serif text-xl sm:text-2xl text-[#f5efeb] font-light">
                                 Pasangan (2 Burung)
                               </h5>
-                              <p className="text-xs text-[#f5efeb]/70 font-sans mt-2">
-                                ID Pasangan: {selectedPair.pairId} ({selectedPair.birdA.publicId} & {selectedPair.birdB.publicId})
+                              <p className="text-xs text-[#f5efeb]/60 font-sans mt-1">
+                                {pairTag} · Deposit: Rp {(('deposit' in selectedPair && selectedPair.deposit) || 10000000).toLocaleString("id-ID")}
                               </p>
-                            </div>
-                            <div className="pt-3 border-t border-[#d6be8c]/15 flex justify-between items-baseline">
-                              <span className="text-[10px] text-[#f5efeb]/50">Deposit</span>
-                              <span className="text-base text-[#d6be8c] font-bold">
-                                Rp {selectedPair.deposit?.toLocaleString("id-ID")}
-                              </span>
                             </div>
                           </button>
                         </div>
 
-                        {/* Pair Information Note */}
+                        {/* ── Individual Specimen Selection Area ── */}
+                        {reservationType === "individual" && (
+                          <div className="p-4 sm:p-5 rounded-2xl bg-[#08110b] border border-[#d6be8c]/20 space-y-3 font-mono text-xs">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] uppercase tracking-[0.2em] text-[#b39257] flex items-center space-x-1.5">
+                                <Sparkles className="w-3 h-3 text-[#b39257]" />
+                                <span>Spesimen Terpilih</span>
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => setShowSpecimenPicker((prev) => !prev)}
+                                className="text-[10px] uppercase tracking-wider text-[#38bdf8] hover:underline cursor-pointer flex items-center space-x-1"
+                              >
+                                <span>{showSpecimenPicker ? "Tutup Pilihan" : "Ganti Spesimen"}</span>
+                                <RotateCcw className="w-2.5 h-2.5" />
+                              </button>
+                            </div>
+
+                            {/* Active Bird Card */}
+                            <div className="p-3 sm:p-4 rounded-xl bg-[#132218] border border-[#b39257]/40 flex items-center justify-between gap-4">
+                              <div className="flex items-center space-x-3.5">
+                                <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-[#08110b] border border-[#d6be8c]/25 shrink-0">
+                                  <Image
+                                    src={birdImage}
+                                    alt={selectedBird.publicId || "Bird"}
+                                    fill
+                                    unoptimized
+                                    className="object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <div className="font-serif text-base text-[#f5efeb] font-semibold flex items-center space-x-2">
+                                    <span>{selectedBird.publicId || selectedBird.tagging}</span>
+                                    <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30">
+                                      {selectedBird.sex === "male" ? "Jantan ♂" : "Betina ♀"}
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] text-[#d6be8c]/80 mt-0.5">
+                                    Cincin: {selectedBird.ringTag || "—"} · Usia: {selectedBird.age || "—"}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="text-right shrink-0">
+                                <span className="text-[9px] text-[#f5efeb]/50 block">Deposit</span>
+                                <span className="text-sm font-bold text-[#d6be8c]">
+                                  Rp {(selectedBird.deposit || 5000000).toLocaleString("id-ID")}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Expandable Specimen Picker Grid */}
+                            {showSpecimenPicker && availableBirds.length > 1 && (
+                              <div className="pt-2 border-t border-[#d6be8c]/15 space-y-2">
+                                <span className="text-[10px] text-[#f5efeb]/60 uppercase tracking-wider block">
+                                  Pilih dari daftar spesimen lain yang tersedia:
+                                </span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
+                                  {availableBirds.map((bird) => {
+                                    const isCurrent = bird.id === selectedBird.id || bird.publicId === selectedBird.publicId;
+                                    const birdImg = (bird.images && bird.images[0]) || '/assets/jalak-portrait.png';
+                                    return (
+                                      <button
+                                        key={bird.id}
+                                        type="button"
+                                        onClick={() => {
+                                          setSelectedBird(bird);
+                                          setShowSpecimenPicker(false);
+                                        }}
+                                        className={`p-2.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                                          isCurrent
+                                            ? "bg-[#16271c] border-[#b39257] ring-1 ring-[#b39257]"
+                                            : "bg-[#08110b] border-[#d6be8c]/15 hover:border-[#b39257]/50"
+                                        }`}
+                                      >
+                                        <div className="flex items-center space-x-2.5">
+                                          <div className="relative w-9 h-9 rounded-lg overflow-hidden bg-[#060e08] shrink-0">
+                                            <Image src={birdImg} alt={bird.publicId || "Bird"} fill unoptimized className="object-cover" />
+                                          </div>
+                                          <div>
+                                            <span className="text-xs text-[#f5efeb] font-semibold block">
+                                              {bird.publicId || bird.tagging}
+                                            </span>
+                                            <span className="text-[10px] text-[#d6be8c]/70">
+                                              {bird.sex === "male" ? "Jantan" : "Betina"} · {bird.ringTag || "—"}
+                                            </span>
+                                          </div>
+                                        </div>
+                                        {isCurrent && <Check className="w-3.5 h-3.5 text-[#b39257] shrink-0" />}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* ── Pair Specimen Selection Area ── */}
                         {reservationType === "pair" && (
-                          <div className="p-4 rounded-xl bg-[#08110b] border border-[#d6be8c]/15 font-mono text-xs text-[#f5efeb]/75 space-y-1">
-                            <span className="text-[10px] uppercase text-[#b39257] block">Asal-Usul Pasangan</span>
-                            <p>{selectedPair.compatibilityNote}</p>
-                            <span className="text-[10px] text-[#38bdf8] block pt-1">
-                              Dokumentasi silsilah tersedia setelah verifikasi
-                            </span>
+                          <div className="p-4 sm:p-5 rounded-2xl bg-[#08110b] border border-[#d6be8c]/20 space-y-3 font-mono text-xs">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] uppercase tracking-[0.2em] text-[#b39257] flex items-center space-x-1.5">
+                                <Sparkles className="w-3 h-3 text-[#b39257]" />
+                                <span>Set Pasangan Terpilih</span>
+                              </span>
+                              {availablePairs.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => setShowSpecimenPicker((prev) => !prev)}
+                                  className="text-[10px] uppercase tracking-wider text-[#38bdf8] hover:underline cursor-pointer flex items-center space-x-1"
+                                >
+                                  <span>{showSpecimenPicker ? "Tutup Pilihan" : "Ganti Pasangan"}</span>
+                                  <RotateCcw className="w-2.5 h-2.5" />
+                                </button>
+                              )}
+                            </div>
+
+                            {/* Active Pair Card */}
+                            <div className="p-3 sm:p-4 rounded-xl bg-[#132218] border border-[#b39257]/40 flex items-center justify-between gap-4">
+                              <div className="flex items-center space-x-3.5">
+                                <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-[#08110b] border border-[#d6be8c]/25 shrink-0">
+                                  <Image
+                                    src={pairImage}
+                                    alt={pairTag}
+                                    fill
+                                    unoptimized
+                                    className="object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <div className="font-serif text-base text-[#f5efeb] font-semibold flex items-center space-x-2">
+                                    <span>Pasangan {pairTag}</span>
+                                    <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-[#f472b6]/15 text-[#f472b6] border border-[#f472b6]/30">
+                                      Indukan Bonding ♂♀
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] text-[#d6be8c]/80 mt-0.5">
+                                    {selectedPair.birdA?.publicId} (♂) × {selectedPair.birdB?.publicId} (♀)
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="text-right shrink-0">
+                                <span className="text-[9px] text-[#f5efeb]/50 block">Deposit</span>
+                                <span className="text-sm font-bold text-[#d6be8c]">
+                                  Rp {(('deposit' in selectedPair && selectedPair.deposit) || 10000000).toLocaleString("id-ID")}
+                                </span>
+                              </div>
+                            </div>
+
+                            <p className="text-[11px] text-[#f5efeb]/70 font-sans leading-relaxed">
+                              {pairDescription}
+                            </p>
+
+                            {/* Expandable Pairs Grid */}
+                            {showSpecimenPicker && availablePairs.length > 1 && (
+                              <div className="pt-2 border-t border-[#d6be8c]/15 space-y-2">
+                                <span className="text-[10px] text-[#f5efeb]/60 uppercase tracking-wider block">
+                                  Pilih dari daftar pasangan lain yang tersedia:
+                                </span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
+                                  {availablePairs.map((p) => {
+                                    const pTag = 'pairTag' in p ? p.pairTag : p.pairId;
+                                    const isCurrent = pTag === pairTag;
+                                    const pImg = ('images' in p && p.images?.[0]) ? p.images[0] : (p.birdA?.images?.[0] || '/assets/jalak-portrait.png');
+                                    return (
+                                      <button
+                                        key={p.id}
+                                        type="button"
+                                        onClick={() => {
+                                          setSelectedPair(p);
+                                          setShowSpecimenPicker(false);
+                                        }}
+                                        className={`p-2.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                                          isCurrent
+                                            ? "bg-[#16271c] border-[#b39257] ring-1 ring-[#b39257]"
+                                            : "bg-[#08110b] border-[#d6be8c]/15 hover:border-[#b39257]/50"
+                                        }`}
+                                      >
+                                        <div className="flex items-center space-x-2.5">
+                                          <div className="relative w-9 h-9 rounded-lg overflow-hidden bg-[#060e08] shrink-0">
+                                            <Image src={pImg} alt={pTag} fill unoptimized className="object-cover" />
+                                          </div>
+                                          <div>
+                                            <span className="text-xs text-[#f5efeb] font-semibold block">
+                                              {pTag}
+                                            </span>
+                                            <span className="text-[10px] text-[#d6be8c]/70">
+                                              {p.birdA?.publicId} × {p.birdB?.publicId}
+                                            </span>
+                                          </div>
+                                        </div>
+                                        {isCurrent && <Check className="w-3.5 h-3.5 text-[#b39257] shrink-0" />}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
