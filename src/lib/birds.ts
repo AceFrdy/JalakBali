@@ -7,9 +7,14 @@ export async function getAllBirds(): Promise<Bird[]> {
 }
 
 export async function getBirdById(id: string): Promise<Bird | null> {
+  const searchId = id.toLowerCase();
   const bird =
-    BIRDS_COLLECTION.find((b) => b.id === id || b.publicId.toLowerCase() === id.toLowerCase()) ||
-    null;
+    BIRDS_COLLECTION.find(
+      (b) =>
+        b.id.toLowerCase() === searchId ||
+        b.tagging.toLowerCase() === searchId ||
+        (b.publicId && b.publicId.toLowerCase() === searchId)
+    ) || null;
   return bird;
 }
 

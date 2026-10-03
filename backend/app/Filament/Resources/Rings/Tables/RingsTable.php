@@ -16,7 +16,7 @@ class RingsTable
                 TextColumn::make('ring_number')->label('Nomor Ring')->searchable()->sortable(),
                 TextColumn::make('issuing_authority')->label('Authority')->searchable(),
                 TextColumn::make('status')->label('Status')->badge(),
-                TextColumn::make('assignments.bird.public_id')->label('Bird'),
+                TextColumn::make('assignments.bird.tagging')->label('Bird')->searchable(),
                 TextColumn::make('registered_at')->label('Terdaftar')->date(),
             ])
             ->filters([

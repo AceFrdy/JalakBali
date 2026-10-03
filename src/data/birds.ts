@@ -3,8 +3,8 @@ import { Bird, BreedingPair } from "@/types";
 export const BIRDS_COLLECTION: Bird[] = [
   {
     id: "bird-jb-001",
+    tagging: "JB-001",
     publicId: "JB-001",
-    name: "Ananta",
     ringTag: "B-2025-014-CB",
     sex: "male",
     age: "16 Bulan",
@@ -14,10 +14,6 @@ export const BIRDS_COLLECTION: Bird[] = [
     deposit: 5000000,
     remaining: 27500000,
     breedingLine: "Garis Keturunan Penangkaran (Generasi F2)",
-    healthCareInfo: "Lulus asesmen kesehatan dokter hewan · Skrining kesehatan rutin terkini",
-    microchipId: "Terverifikasi (Tersedia saat inspeksi serah terima)",
-    documentationStatus: "pending",
-    legalNote: "Dokumentasi hukum tersedia setelah verifikasi · Tunduk pada regulasi yang berlaku",
     description: "Spesimen jantan luar biasa dengan bulu putih bersih berkilau, jambul terbentuk sempurna, dan lingkaran mata biru safir yang cerah. Dibesarkan di aviari terbang alami yang luas dengan protokol penangkaran terkontrol.",
     images: [
       "/assets/jalak-portrait.png",
@@ -27,8 +23,8 @@ export const BIRDS_COLLECTION: Bird[] = [
   },
   {
     id: "bird-jb-002",
+    tagging: "JB-002",
     publicId: "JB-002",
-    name: "Candra",
     ringTag: "B-2025-019-CB",
     sex: "female",
     age: "14 Bulan",
@@ -38,10 +34,6 @@ export const BIRDS_COLLECTION: Bird[] = [
     deposit: 5000000,
     remaining: 28000000,
     breedingLine: "Garis Keturunan Penangkaran (Generasi F2)",
-    healthCareInfo: "Audit biometrik lengkap terdokumentasi · Vitalitas pakan tinggi dan temperamen tenang",
-    microchipId: "Terverifikasi (Tersedia saat inspeksi serah terima)",
-    documentationStatus: "pending",
-    legalNote: "Dokumentasi hukum tersedia setelah verifikasi · Tunduk pada regulasi yang berlaku",
     description: "Individu betina anggun dengan ujung sayap hitam pekat murni dan kerapatan bulu yang tebal. Menunjukkan kompatibilitas sosial yang sangat baik dan bersikap tenang terhadap interaksi perawat rutin.",
     images: [
       "/assets/pexels-photo-26754369.avif",
@@ -51,8 +43,8 @@ export const BIRDS_COLLECTION: Bird[] = [
   },
   {
     id: "bird-jb-003",
+    tagging: "JB-003",
     publicId: "JB-003",
-    name: "Danapati",
     ringTag: "B-2025-008-CB",
     sex: "male",
     age: "18 Bulan",
@@ -62,10 +54,6 @@ export const BIRDS_COLLECTION: Bird[] = [
     deposit: 5000000,
     remaining: 29000000,
     breedingLine: "Garis Keturunan Penangkaran (Generasi F2)",
-    healthCareInfo: "Sertifikat izin dokter hewan dalam proses · Konfirmasi lab DNA sexing tercatat",
-    microchipId: "Terverifikasi (Tersedia saat inspeksi serah terima)",
-    documentationStatus: "requires_review",
-    legalNote: "Sedang diverifikasi · Dokumentasi hukum tersedia setelah verifikasi",
     description: "Memiliki ciri khas jambul mahkota yang memanjang dan siulan nada ganda yang merdu. Saat ini dalam penangguhan reservasi selama pemeriksaan dokumen patron sebelum penjadwalan transfer akhir.",
     images: [
       "/assets/jalak-bali.webp",
@@ -75,8 +63,8 @@ export const BIRDS_COLLECTION: Bird[] = [
   },
   {
     id: "bird-jb-004",
+    tagging: "JB-004",
     publicId: "JB-004",
-    name: "Kalyana",
     ringTag: "B-2025-027-CB",
     sex: "female",
     age: "12 Bulan",
@@ -86,10 +74,6 @@ export const BIRDS_COLLECTION: Bird[] = [
     deposit: 5000000,
     remaining: 27000000,
     breedingLine: "Garis Keturunan Penangkaran (Generasi F2)",
-    healthCareInfo: "Masa karantina selesai · Pendaftaran microchip standar tercatat",
-    microchipId: "Terverifikasi (Tersedia saat inspeksi serah terima)",
-    documentationStatus: "verified",
-    legalNote: "Dokumentasi hukum tersedia setelah verifikasi · Tunduk pada regulasi yang berlaku",
     description: "Betina muda dengan kilau bulu putih murni. Dialokasikan untuk program rilis Pekan 41.",
     images: [
       "/assets/jalak-hero.png",

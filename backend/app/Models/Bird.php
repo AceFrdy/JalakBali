@@ -7,14 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Bird extends Model
 {
     protected $fillable = [
-        'public_id', 'name', 'sex', 'hatch_date', 'status', 'price', 'deposit',
-        'breeding_line', 'health_care_info', 'microchip_id', 'documentation_status',
-        'legal_note', 'description', 'images',
+        'tagging', 'sex', 'hatch_date', 'status', 'show_on_homepage', 'price', 'deposit',
+        'breeding_line', 'description', 'images', 'certificate_images',
     ];
 
     protected function casts(): array
     {
-        return ['hatch_date' => 'date', 'images' => 'array'];
+        return [
+            'hatch_date' => 'date',
+            'images' => 'array',
+            'certificate_images' => 'array',
+            'show_on_homepage' => 'boolean',
+        ];
     }
 
     public function ringAssignments()

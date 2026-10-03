@@ -1,38 +1,30 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('birds', function (Blueprint $table) {
+        Schema::create('bird_pairs', function (Blueprint $table) {
             $table->id();
-            $table->string('tagging', 120)->unique();
-            $table->string('sex', 20);
-            $table->date('hatch_date')->nullable();
+            $table->string('pair_tag', 60)->unique();
+            $table->foreignId('bird_a_id')->constrained('birds')->restrictOnDelete();
+            $table->foreignId('bird_b_id')->constrained('birds')->restrictOnDelete();
             $table->string('status', 30)->default('available');
+            $table->boolean('show_on_homepage')->default(false);
             $table->unsignedBigInteger('price')->nullable();
             $table->unsignedBigInteger('deposit')->nullable();
-            $table->string('breeding_line')->nullable();
             $table->text('description')->nullable();
-            $table->json('images')->nullable();
             $table->timestamps();
 
-            $table->index(['status', 'sex']);
+            $table->index(['status', 'show_on_homepage']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('birds');
+        Schema::dropIfExists('bird_pairs');
     }
 };

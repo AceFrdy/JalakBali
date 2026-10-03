@@ -84,7 +84,10 @@ export default function Home() {
       />
 
       {/* 03: The Current Collection (Asymmetrical Editorial Layout) */}
-      <AvailableBirdsSection onReserveBird={handleReserveIndividual} />
+      <AvailableBirdsSection
+        onReserveBird={handleReserveIndividual}
+        onReservePair={handleReservePair}
+      />
 
       {/* 04: Traceable From Origin (Linear Vertical Provenance) */}
       <BirdProvenanceSection />

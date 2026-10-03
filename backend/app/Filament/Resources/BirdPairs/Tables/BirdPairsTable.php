@@ -1,32 +1,26 @@
 <?php
-
-namespace App\Filament\Resources\Birds\Tables;
+namespace App\Filament\Resources\BirdPairs\Tables;
 
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
-class BirdsTable
+class BirdPairsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                ImageColumn::make('images')
-                    ->label('Foto')
-                    ->disk('public')
-                    ->stacked()
-                    ->limit(3)
-                    ->circular(),
-                TextColumn::make('tagging')
-                    ->label('Tagging')
+                TextColumn::make('pair_tag')
+                    ->label('ID Pasangan')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('sex')
-                    ->label('Jenis Kelamin'),
+                TextColumn::make('birdA.tagging')
+                    ->label('Jantan'),
+                TextColumn::make('birdB.tagging')
+                    ->label('Betina'),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge(),
@@ -40,8 +34,6 @@ class BirdsTable
                 TextColumn::make('price')
                     ->label('Harga')
                     ->money('IDR'),
-                TextColumn::make('currentRing.ring.ring_number')
-                    ->label('Ring'),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime('d M Y')
@@ -49,10 +41,9 @@ class BirdsTable
             ])
             ->filters([
                 SelectFilter::make('status')->options([
-                    'available' => 'Available',
-                    'verification' => 'Verification',
-                    'reserved' => 'Reserved',
-                    'sold' => 'Sold',
+                    'available'   => 'Available',
+                    'reserved'    => 'Reserved',
+                    'sold'        => 'Sold',
                     'unavailable' => 'Unavailable',
                 ]),
             ])

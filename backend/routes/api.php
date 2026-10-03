@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CatalogBirdController;
+use App\Http\Controllers\Api\CatalogPairController;
 use App\Http\Controllers\Api\CustomerReservationController;
 use App\Http\Controllers\Api\PaymentWebhookController;
 use App\Http\Controllers\Api\ReservationApplicationController;
@@ -20,3 +21,6 @@ Route::post('/payments/webhook/{provider}', [PaymentWebhookController::class, 'h
 Route::get('/reviews', [ReviewController::class, 'index']);
 Route::post('/reviews', [ReviewController::class, 'store']);
 Route::get('/catalog/birds', [CatalogBirdController::class, 'index']);
+Route::get('/catalog/birds/homepage', [CatalogBirdController::class, 'homepage']);
+Route::get('/catalog/pairs', [CatalogPairController::class, 'index']);
+Route::get('/catalog/pairs/homepage', [CatalogPairController::class, 'homepage']);

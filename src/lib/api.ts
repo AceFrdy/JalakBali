@@ -1,6 +1,6 @@
 import * as birds from "./birds";
 import * as availability from "./availability";
-import type { Bird } from "@/types";
+import type { Bird, BirdPairCatalog } from "@/types";
 
 export interface ReservationApplicationPayload {
   customerName: string;
@@ -72,6 +72,48 @@ export async function getCatalogBirds(): Promise<Bird[]> {
 
   if (!response.ok || !result.data) {
     throw new Error(result.message || "Katalog bird tidak dapat dimuat.");
+  }
+
+  return result.data;
+}
+
+export async function getHomepageBirds(): Promise<Bird[]> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+  if (!backendUrl) throw new Error("NEXT_PUBLIC_BACKEND_URL belum dikonfigurasi.");
+
+  const response = await fetch(`${backendUrl}/api/catalog/birds/homepage`, { cache: "no-store" });
+  const result = (await response.json()) as { data?: Bird[]; message?: string };
+
+  if (!response.ok || !result.data) {
+    throw new Error(result.message || "Katalog bird tidak dapat dimuat.");
+  }
+
+  return result.data;
+}
+
+export async function getCatalogPairs(): Promise<BirdPairCatalog[]> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+  if (!backendUrl) throw new Error("NEXT_PUBLIC_BACKEND_URL belum dikonfigurasi.");
+
+  const response = await fetch(`${backendUrl}/api/catalog/pairs`, { cache: "no-store" });
+  const result = (await response.json()) as { data?: BirdPairCatalog[]; message?: string };
+
+  if (!response.ok || !result.data) {
+    throw new Error(result.message || "Katalog pasangan tidak dapat dimuat.");
+  }
+
+  return result.data;
+}
+
+export async function getHomepagePairs(): Promise<BirdPairCatalog[]> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+  if (!backendUrl) throw new Error("NEXT_PUBLIC_BACKEND_URL belum dikonfigurasi.");
+
+  const response = await fetch(`${backendUrl}/api/catalog/pairs/homepage`, { cache: "no-store" });
+  const result = (await response.json()) as { data?: BirdPairCatalog[]; message?: string };
+
+  if (!response.ok || !result.data) {
+    throw new Error(result.message || "Katalog pasangan tidak dapat dimuat.");
   }
 
   return result.data;
@@ -244,6 +286,9 @@ export const api = {
   uploadManualPaymentProof,
   lookupReservation,
   getCatalogBirds,
+  getHomepageBirds,
+  getCatalogPairs,
+  getHomepagePairs,
 };
 
 export default api;

@@ -105,8 +105,6 @@ Sisa saat Serah Terima: Rp ${(reservation.remainingAmount || 0).toLocaleString("
 ESTIMASI SERAH TERIMA:
 Jadwal Target: Akan diinformasikan setelah verifikasi
 
-CATATAN LEGAL:
-Tunduk pada regulasi yang berlaku. Dokumentasi hukum dan catatan gelang cincin logam tertutup resmi diberikan saat transfer terverifikasi.
 ========================================
     `.trim();
 

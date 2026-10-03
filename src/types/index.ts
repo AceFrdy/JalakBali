@@ -14,23 +14,21 @@ export type DocumentationStatus =
 
 export interface Bird {
   id: string;
-  publicId: string; // e.g. "JB-2026-001"
-  name: string; // Temporary identifier e.g. "Ananta"
-  ringTag?: string; // Leg band / ring identifier placeholder
+  tagging: string; // e.g. "JB-001"
+  publicId?: string; // Legacy alias for tagging
+  name?: string;
+  ringTag?: string; // Leg band / ring identifier
   sex: "male" | "female" | "unknown";
-  age: string; // e.g. "14 Months"
+  age: string; // e.g. "14 Bulan"
   hatchDate?: string; // e.g. "2025-07-12"
   status: BirdStatus;
   price?: number; // e.g. 32500000
   deposit?: number; // e.g. 5000000
   remaining?: number; // e.g. 27500000
-  breedingLine: string; // "Captive Bred F2 · Lineage documentation available upon verification"
-  healthCareInfo: string;
-  microchipId?: string;
-  documentationStatus: DocumentationStatus;
-  legalNote: string; // "Legal documentation available upon verification · Subject to applicable regulations"
-  description: string;
+  breedingLine?: string; // "Captive Bred F2"
+  description?: string;
   images: string[];
+  certificateImages?: string[];
 }
 
 export interface BreedingPair {
@@ -49,6 +47,20 @@ export interface BreedingPair {
   legalNote: string;
   description: string;
   images: string[];
+}
+
+/** Pair data returned from /api/catalog/pairs (live backend) */
+export interface BirdPairCatalog {
+  id: string;
+  pairTag: string; // e.g. "PAIR-001"
+  status: BirdStatus;
+  showOnHomepage: boolean;
+  price?: number;
+  deposit?: number;
+  remaining?: number;
+  description?: string;
+  birdA: Bird; // jantan
+  birdB: Bird; // betina
 }
 
 export interface WeeklyRelease {
