@@ -89,16 +89,78 @@ export function ReservationModal({
   const [reservationType, setReservationType] = useState<"individual" | "pair">(
     initialType
   );
+  const DEFAULT_FALLBACK_BIRD: Bird = {
+    id: "bird-custom",
+    tagging: "JB-SPESIMEN",
+    publicId: "JB-SPESIMEN",
+    ringTag: "—",
+    sex: "male",
+    age: "Usia Remaja",
+    hatchDate: "",
+    status: "available",
+    price: 32500000,
+    deposit: 5000000,
+    remaining: 27500000,
+    breedingLine: "Garis Keturunan F2 Terverifikasi",
+    description: "Spesimen hasil penangkaran resmi berlisensi.",
+    images: ["/assets/jalak-portrait.png"],
+  };
+
+  const DEFAULT_FALLBACK_PAIR: BirdPairCatalog = {
+    id: "pair-custom",
+    pairTag: "PASANGAN-INDUKAN",
+    price: 60000000,
+    deposit: 10000000,
+    remaining: 50000000,
+    status: "available",
+    showOnHomepage: true,
+    description: "Pasangan indukan Jalak Bali serasi terverifikasi.",
+    birdA: {
+      id: "pair-bird-a",
+      tagging: "Jantan ♂",
+      publicId: "Jantan ♂",
+      ringTag: "—",
+      sex: "male",
+      age: "Usia Remaja",
+      hatchDate: "",
+      status: "available",
+      price: 30000000,
+      deposit: 5000000,
+      remaining: 25000000,
+      breedingLine: "Garis Keturunan F2",
+      description: "Indukan jantan terverifikasi.",
+      images: ["/assets/jalak-portrait.png"],
+    },
+    birdB: {
+      id: "pair-bird-b",
+      tagging: "Betina ♀",
+      publicId: "Betina ♀",
+      ringTag: "—",
+      sex: "female",
+      age: "Usia Remaja",
+      hatchDate: "",
+      status: "available",
+      price: 30000000,
+      deposit: 5000000,
+      remaining: 25000000,
+      breedingLine: "Garis Keturunan F2",
+      description: "Indukan betina terverifikasi.",
+      images: ["/assets/jalak-portrait.png"],
+    },
+  };
+
   const [selectedBird, setSelectedBird] = useState<Bird>(() => {
     return (
-      BIRDS_COLLECTION.find((b) => b.id === initialBirdId || b.publicId === initialBirdId || b.tagging === initialBirdId) ||
-      BIRDS_COLLECTION[0]
+      (availableBirds.length > 0
+        ? availableBirds.find((b) => b.id === initialBirdId || b.publicId === initialBirdId || b.tagging === initialBirdId) || availableBirds[0]
+        : null) || DEFAULT_FALLBACK_BIRD
     );
   });
   const [selectedPair, setSelectedPair] = useState<BreedingPair | BirdPairCatalog>(() => {
     return (
-      BREEDING_PAIRS.find((p) => p.id === initialPairId || ('pairId' in p && p.pairId === initialPairId) || ('pairTag' in p && p.pairTag === initialPairId)) ||
-      BREEDING_PAIRS[0]
+      (availablePairs.length > 0
+        ? availablePairs.find((p) => p && (p.id === initialPairId || ('pairId' in p && p.pairId === initialPairId) || ('pairTag' in p && p.pairTag === initialPairId))) || availablePairs[0]
+        : null) || DEFAULT_FALLBACK_PAIR
     );
   });
 
@@ -112,10 +174,10 @@ export function ReservationModal({
       .then((liveBirds) => {
         if (liveBirds && liveBirds.length > 0) {
           setAvailableBirds(liveBirds);
-          if (initialBirdId) {
-            const found = liveBirds.find((b) => b.id === initialBirdId || b.publicId === initialBirdId || b.tagging === initialBirdId);
-            if (found) setSelectedBird(found);
-          }
+          const found = initialBirdId
+            ? liveBirds.find((b) => b.id === initialBirdId || b.publicId === initialBirdId || b.tagging === initialBirdId)
+            : liveBirds[0];
+          if (found) setSelectedBird(found);
         }
       })
       .catch(() => {});
@@ -124,10 +186,10 @@ export function ReservationModal({
       .then((livePairs) => {
         if (livePairs && livePairs.length > 0) {
           setAvailablePairs(livePairs);
-          if (initialPairId) {
-            const found = livePairs.find((p) => p.id === initialPairId || p.pairTag === initialPairId);
-            if (found) setSelectedPair(found);
-          }
+          const found = initialPairId
+            ? livePairs.find((p) => p.id === initialPairId || p.pairTag === initialPairId)
+            : livePairs[0];
+          if (found) setSelectedPair(found);
         }
       })
       .catch(() => {});
@@ -137,12 +199,12 @@ export function ReservationModal({
   const isPairAvailable = hasReleaseAvailability(selectedRelease, "pair");
 
   // Pair metadata helpers
-  const pairTag = 'pairTag' in selectedPair ? selectedPair.pairTag : selectedPair.pairId;
-  const pairDescription = 'compatibilityNote' in selectedPair ? selectedPair.compatibilityNote : (selectedPair.description || 'Kombinasi indukan serasi terverifikasi.');
-  const pairImage = ('images' in selectedPair && selectedPair.images?.[0])
+  const pairTag = selectedPair && 'pairTag' in selectedPair ? selectedPair.pairTag : (selectedPair?.pairId || 'PASANGAN-INDUKAN');
+  const pairDescription = selectedPair && 'compatibilityNote' in selectedPair ? selectedPair.compatibilityNote : (selectedPair?.description || 'Kombinasi indukan serasi terverifikasi.');
+  const pairImage = (selectedPair && 'images' in selectedPair && selectedPair.images?.[0])
     ? selectedPair.images[0]
-    : (selectedPair.birdA?.images?.[0] || '/assets/jalak-portrait.png');
-  const birdImage = (selectedBird.images && selectedBird.images[0]) || '/assets/jalak-portrait.png';
+    : (selectedPair?.birdA?.images?.[0] || '/assets/jalak-portrait.png');
+  const birdImage = (selectedBird?.images && selectedBird.images[0]) || '/assets/jalak-portrait.png';
 
   // Step 3: Customer Information
   const [customerName, setCustomerName] = useState("");

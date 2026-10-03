@@ -38,18 +38,10 @@ export default function BirdDetailPage({ params }: BirdDetailPageProps) {
             b.tagging?.toLowerCase() === resolvedParams.id.toLowerCase() ||
             b.publicId?.toLowerCase() === resolvedParams.id.toLowerCase()
         );
-        if (found) {
-          setBird(found);
-        } else {
-          return getBirdById(resolvedParams.id).then((fallback) => {
-            if (isMounted) setBird(fallback);
-          });
-        }
+        setBird(found || null);
       })
       .catch(() => {
-        getBirdById(resolvedParams.id).then((fallback) => {
-          if (isMounted) setBird(fallback);
-        });
+        if (isMounted) setBird(null);
       })
       .finally(() => {
         if (isMounted) setIsLoading(false);

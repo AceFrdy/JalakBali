@@ -1,9 +1,9 @@
-"use client";
-
+import { useEffect, useState } from "react";
 import { ArrowRight, Sparkles, ShieldAlert, CheckCircle2, Info } from "lucide-react";
 import { motion } from "framer-motion";
 import { CURRENT_RELEASE } from "@/data/weeklyReleases";
-import { BREEDING_PAIRS, BIRDS_COLLECTION } from "@/data/birds";
+import { getHomepageBirds, getHomepagePairs } from "@/lib/api";
+import { Bird, BirdPairCatalog } from "@/types";
 import { TextReveal } from "@/components/motion/TextReveal";
 import { FadeIn } from "@/components/motion/FadeIn";
 
@@ -18,8 +18,22 @@ export function WeeklyReleaseSection({
   onReservePair,
   onJoinWaitlist,
 }: WeeklyReleaseSectionProps) {
-  const currentPair = BREEDING_PAIRS[0];
-  const currentSingle = BIRDS_COLLECTION[0];
+  const [currentSingle, setCurrentSingle] = useState<Bird | null>(null);
+  const [currentPair, setCurrentPair] = useState<BirdPairCatalog | null>(null);
+
+  useEffect(() => {
+    getHomepageBirds()
+      .then((birds) => {
+        if (birds && birds.length > 0) setCurrentSingle(birds[0]);
+      })
+      .catch(() => {});
+
+    getHomepagePairs()
+      .then((pairs) => {
+        if (pairs && pairs.length > 0) setCurrentPair(pairs[0]);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section id="weekly-release" className="relative py-28 md:py-36 bg-[#08110b] text-[#f5efeb] border-t border-[#d6be8c]/15">
@@ -115,11 +129,11 @@ export function WeeklyReleaseSection({
                   <div className="p-4 rounded-xl bg-[#08110b] border border-[#d6be8c]/15 space-y-2 font-mono text-xs mb-6">
                     <div className="flex justify-between text-[#f5efeb]/60">
                       <span>Kandidat Unggulan</span>
-                      <span className="text-[#f5efeb] font-semibold">{currentSingle.publicId} ({currentSingle.name})</span>
+                      <span className="text-[#f5efeb] font-semibold">{currentSingle ? `${currentSingle.publicId}` : "Spesimen Terjadwal"}</span>
                     </div>
                     <div className="flex justify-between text-[#f5efeb]/60">
                       <span>Jenis Kelamin / Usia</span>
-                      <span className="text-[#f5efeb] capitalize">{currentSingle.sex} · {currentSingle.age}</span>
+                      <span className="text-[#f5efeb] capitalize">{currentSingle ? `${currentSingle.sex === "male" ? "Jantan" : "Betina"} · ${currentSingle.age || "Usia Remaja"}` : "DNA Terverifikasi"}</span>
                     </div>
                     <div className="flex justify-between text-[#f5efeb]/60">
                       <span>Catatan Silsilah</span>
@@ -128,7 +142,7 @@ export function WeeklyReleaseSection({
                     <div className="pt-2 border-t border-[#d6be8c]/15 flex justify-between items-baseline text-sm">
                       <span className="text-[#b39257]">Deposit Reservasi</span>
                       <span className="font-serif text-lg text-[#f5efeb]">
-                        Rp {currentSingle.deposit?.toLocaleString("id-ID")}
+                        Rp {currentSingle?.deposit ? currentSingle.deposit.toLocaleString("id-ID") : "5.000.000"}
                       </span>
                     </div>
                   </div>
@@ -138,11 +152,17 @@ export function WeeklyReleaseSection({
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => onReserveIndividual(currentSingle.id)}
+                    onClick={() => {
+                      if (currentSingle) {
+                        onReserveIndividual(currentSingle.id);
+                      } else {
+                        onJoinWaitlist("individual");
+                      }
+                    }}
                     data-cursor="RESERVE"
                     className="w-full py-4 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all shadow-[0_10px_25px_rgba(179,146,87,0.25)] flex items-center justify-center space-x-2 cursor-pointer"
                   >
-                    <span>Reservasi Individu</span>
+                    <span>{currentSingle ? "Reservasi Individu" : "Gabung Daftar Tunggu"}</span>
                     <ArrowRight className="w-4 h-4" />
                   </motion.button>
                   <span className="block text-[10px] text-center text-[#f5efeb]/50 font-mono">
@@ -165,7 +185,7 @@ export function WeeklyReleaseSection({
                 <div>
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-[#b39257] font-mono pb-4 border-b border-[#d6be8c]/20 mb-6">
                     <span>Alokasi Pasang Penangkaran</span>
-                    <span className="text-[#38bdf8]">01 Pasang Tersedia</span>
+                    <span className="text-[#38bdf8]">{currentPair ? "01 Pasang Tersedia" : "Daftar Tunggu"}</span>
                   </div>
 
                   <span className="text-xs uppercase tracking-[0.25em] text-[#d6be8c] font-mono block mb-1">
@@ -184,7 +204,7 @@ export function WeeklyReleaseSection({
                     <div className="flex items-center justify-between border-b border-[#d6be8c]/15 pb-3">
                       <div>
                         <span className="text-[10px] uppercase tracking-wider text-[#b39257] block">ID PASANG</span>
-                        <span className="text-base text-[#f5efeb] font-bold">{currentPair.pairId}</span>
+                        <span className="text-base text-[#f5efeb] font-bold">{currentPair ? currentPair.pairTag : "PASANGAN INDUKAN"}</span>
                       </div>
                       <span className="text-[10px] uppercase tracking-widest text-[#38bdf8] border border-[#38bdf8]/40 px-2.5 py-1 rounded bg-[#38bdf8]/10">
                         Kompatibilitas Bonding
@@ -194,27 +214,27 @@ export function WeeklyReleaseSection({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                       <div className="p-3 rounded-lg bg-[#0d1811] border border-[#d6be8c]/15">
                         <span className="text-[9px] uppercase text-[#b39257] block">BURUNG A (JANTAN)</span>
-                        <span className="text-sm font-semibold text-[#f5efeb]">{currentPair.birdA.publicId}</span>
-                        <span className="block text-[10px] text-[#f5efeb]/60 mt-0.5">{currentPair.birdA.name} · {currentPair.birdA.age}</span>
+                        <span className="text-sm font-semibold text-[#f5efeb]">{currentPair?.birdA ? currentPair.birdA.publicId : "Jantan ♂"}</span>
+                        <span className="block text-[10px] text-[#f5efeb]/60 mt-0.5">{currentPair?.birdA?.ringTag ? `Ring: ${currentPair.birdA.ringTag}` : "DNA Terverifikasi"}</span>
                       </div>
                       <div className="p-3 rounded-lg bg-[#0d1811] border border-[#d6be8c]/15">
                         <span className="text-[9px] uppercase text-[#b39257] block">BURUNG B (BETINA)</span>
-                        <span className="text-sm font-semibold text-[#f5efeb]">{currentPair.birdB.publicId}</span>
-                        <span className="block text-[10px] text-[#f5efeb]/60 mt-0.5">{currentPair.birdB.name} · {currentPair.birdB.age}</span>
+                        <span className="text-sm font-semibold text-[#f5efeb]">{currentPair?.birdB ? currentPair.birdB.publicId : "Betina ♀"}</span>
+                        <span className="block text-[10px] text-[#f5efeb]/60 mt-0.5">{currentPair?.birdB?.ringTag ? `Ring: ${currentPair.birdB.ringTag}` : "DNA Terverifikasi"}</span>
                       </div>
                     </div>
 
                     <div className="pt-2 flex items-start space-x-2 text-[11px] text-[#f5efeb]/70">
                       <Info className="w-3.5 h-3.5 text-[#b39257] flex-shrink-0 mt-0.5" />
-                      <span>{currentPair.compatibilityNote}</span>
+                      <span>{currentPair?.description || "Perilaku saling merapikan bulu dan bertengger bersama teramati secara sinkron di aviari sosial."}</span>
                     </div>
 
                     <div className="pt-3 border-t border-[#d6be8c]/15 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-                      <span className="text-xs text-[#b39257]">Total Pasang: Rp {currentPair.price.toLocaleString("id-ID")}</span>
+                      <span className="text-xs text-[#b39257]">Total Pasang: Rp {currentPair?.price ? currentPair.price.toLocaleString("id-ID") : "60.000.000"}</span>
                       <div className="text-left sm:text-right">
                         <span className="text-[10px] uppercase text-[#f5efeb]/50 block">Deposit Reservasi</span>
                         <span className="font-serif text-2xl text-[#d6be8c]">
-                          Rp {currentPair.deposit.toLocaleString("id-ID")}
+                          Rp {currentPair?.deposit ? currentPair.deposit.toLocaleString("id-ID") : "10.000.000"}
                         </span>
                       </div>
                     </div>
@@ -226,11 +246,17 @@ export function WeeklyReleaseSection({
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => onReservePair(currentPair.id)}
+                      onClick={() => {
+                        if (currentPair) {
+                          onReservePair(currentPair.id);
+                        } else {
+                          onJoinWaitlist("pair");
+                        }
+                      }}
                       data-cursor="RESERVE"
                       className="flex-1 py-4 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all shadow-[0_12px_30px_rgba(179,146,87,0.3)] flex items-center justify-center space-x-2 cursor-pointer"
                     >
-                      <span>Reservasi Pasang</span>
+                      <span>{currentPair ? "Reservasi Pasang" : "Gabung Daftar Tunggu"}</span>
                       <ArrowRight className="w-4 h-4" />
                     </motion.button>
 

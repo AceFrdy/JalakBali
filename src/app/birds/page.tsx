@@ -38,12 +38,7 @@ function BirdsCatalogContent() {
   useEffect(() => {
     let isMounted = true;
     Promise.all([
-      getCatalogBirds()
-        .then((data) => {
-          if (data && data.length > 0) return data;
-          return getAllBirds();
-        })
-        .catch(() => getAllBirds()),
+      getCatalogBirds().catch(() => [] as Bird[]),
       getCatalogPairs().catch(() => [] as BirdPairCatalog[]),
     ])
       .then(([birdsData, pairsData]) => {
