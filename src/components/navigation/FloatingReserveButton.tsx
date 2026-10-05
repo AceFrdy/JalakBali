@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Mail, MessageCircle, X } from "lucide-react";
+import { Mail, MessageCircle, Headphones, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CURRENT_RELEASE } from "@/data/weeklyReleases";
 import { getWeeklyReleases } from "@/lib/api";
@@ -193,42 +193,48 @@ export function FloatingReserveButton() {
             </div>
           </motion.div>
 
-          {/* Mobile Sticky Bottom Action Bar */}
+          {/* Mobile: Compact circular FAB at bottom-right */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 30 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="md:hidden fixed bottom-0 left-0 right-0 z-40 p-3 bg-[#08110b]/95 backdrop-blur-xl border-t border-[#d6be8c]/20 font-mono"
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.7 }}
+            transition={{ type: "spring", stiffness: 380, damping: 28 }}
+            className="md:hidden fixed bottom-6 right-5 z-40 flex items-end gap-3"
           >
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex flex-col">
-                <span className="text-[8px] uppercase tracking-[0.25em] text-[#b39257]">
-                  Rilis Berikutnya: {releaseDateLabel}
-                </span>
-                <span className="text-[11px] text-[#f5efeb]/80">
-                  {activeRelease.availableSingle} Individu · {activeRelease.availablePair} Pasang Tersedia
-                </span>
-              </div>
-              <div className="relative shrink-0" data-customer-service-root>
-                <motion.button
-                  whileTap={{ scale: 0.96 }}
-                  type="button"
-                  onClick={() => setContactOpen((open) => !open)}
-                  aria-label="Hubungi Customer Service"
-                  aria-haspopup="dialog"
-                  aria-expanded={contactOpen}
-                  aria-controls="floating-customer-service-popover"
-                  className="rounded-full bg-[#b39257] px-4 py-2.5 text-[#08110b] text-[9px] uppercase tracking-[0.1em] font-bold flex items-center gap-1.5 shadow-lg cursor-pointer whitespace-nowrap"
-                >
-                  <span>Customer Service</span>
-                  <MessageCircle className="h-3.5 w-3.5" />
-                </motion.button>
-                <CustomerServicePopover
-                  isOpen={contactOpen}
-                  onClose={() => setContactOpen(false)}
-                />
-              </div>
+            {/* Release info pill — shown to the left of the FAB */}
+            <motion.div
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.15 }}
+              className="mb-1 flex flex-col items-end font-mono pointer-events-none"
+            >
+              <span className="text-[8px] uppercase tracking-[0.2em] text-[#b39257]">
+                Rilis Berikutnya: {releaseDateLabel}
+              </span>
+              <span className="text-[10px] text-[#f5efeb]/70">
+                {activeRelease.availableSingle} Individu · {activeRelease.availablePair} Pasang
+              </span>
+            </motion.div>
+
+            {/* Circular FAB */}
+            <div className="relative shrink-0" data-customer-service-root>
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                type="button"
+                onClick={() => setContactOpen((open) => !open)}
+                aria-label="Hubungi Customer Service"
+                aria-haspopup="dialog"
+                aria-expanded={contactOpen}
+                aria-controls="floating-customer-service-popover"
+                className="w-14 h-14 rounded-full bg-[#b39257] hover:bg-[#d6be8c] flex items-center justify-center shadow-[0_8px_24px_rgba(179,146,87,0.45)] cursor-pointer transition-colors"
+              >
+                <Headphones className="w-6 h-6 text-[#08110b]" />
+              </motion.button>
+              <CustomerServicePopover
+                isOpen={contactOpen}
+                onClose={() => setContactOpen(false)}
+              />
             </div>
           </motion.div>
         </>
