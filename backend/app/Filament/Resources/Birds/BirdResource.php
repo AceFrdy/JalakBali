@@ -21,6 +21,12 @@ class BirdResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSparkles;
 
+    protected static \UnitEnum|string|null $navigationGroup = 'Birds';
+
+    protected static ?string $navigationLabel = 'Individuals';
+
+    protected static ?int $navigationSort = 1;
+
     public static function form(Schema $schema): Schema
     {
         return BirdForm::configure($schema);

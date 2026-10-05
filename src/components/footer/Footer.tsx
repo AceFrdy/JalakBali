@@ -15,7 +15,7 @@ export function Footer({ onOpenReservation }: FooterProps) {
     <footer className="relative bg-[#050a06] text-[#f5efeb] border-t border-[#d6be8c]/20 pt-24 pb-16">
       <div className="max-w-[1760px] mx-auto site-gutter relative z-10">
         {/* Top Call to Action Banner */}
-        <FadeIn direction="up">
+        {/* <FadeIn direction="up">
           <div className="p-8 sm:p-12 md:p-16 rounded-3xl border border-[#d6be8c]/25 bg-[#0d1811] mb-20 flex flex-col lg:flex-row lg:items-center justify-between gap-8 shadow-2xl">
             <div className="max-w-xl">
               <span className="text-[10px] uppercase tracking-[0.3em] text-[#b39257] font-mono block mb-2">
@@ -43,7 +43,7 @@ export function Footer({ onOpenReservation }: FooterProps) {
               </Link>
             </div>
           </div>
-        </FadeIn>
+        </FadeIn> */}
 
         {/* ── Main Footer Grid ── */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-[#d6be8c]/15">

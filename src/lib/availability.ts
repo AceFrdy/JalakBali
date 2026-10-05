@@ -16,3 +16,20 @@ export async function getReleaseById(id: string): Promise<WeeklyRelease | null> 
 export async function getAvailabilityCalendar(): Promise<AvailabilitySlot[]> {
   return AVAILABILITY_CALENDAR_SLOTS;
 }
+
+export function getActiveUpcomingRelease(releases: WeeklyRelease[]): WeeklyRelease | undefined {
+  if (!releases || releases.length === 0) return undefined;
+
+  const nowStr = new Date().toISOString().slice(0, 10);
+
+  // 1. Prioritas 1: Rilis berstatus "open" dan belum lewat
+  const activeOpen = releases.find((r) => r.status === "open" && (!r.isPast && (!r.releaseDate || r.releaseDate >= nowStr)));
+  if (activeOpen) return activeOpen;
+
+  // 2. Prioritas 2: Rilis terjadwal (scheduled) berikutnya di masa depan
+  const upcomingScheduled = releases.find((r) => r.status === "scheduled" && (!r.isPast && (!r.releaseDate || r.releaseDate >= nowStr)));
+  if (upcomingScheduled) return upcomingScheduled;
+
+  // 3. Fallback: Rilis terbuka pertama atau rilis pertama di daftar
+  return releases.find((r) => r.status === "open") || releases[0];
+}

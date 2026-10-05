@@ -38,20 +38,36 @@ class ReservationApplicationController extends Controller
                 ->first();
 
             if (! $release) {
-                $release = WeeklyRelease::query()->where('status', 'open')->first();
+                throw ValidationException::withMessages([
+                    'weekly_release_id' => 'Pilihan jadwal rilis tidak ditemukan atau tidak valid.',
+                ]);
             }
 
-            if (! $release || $release->status === 'closed') {
+            if ($release->status === 'closed') {
                 throw ValidationException::withMessages([
-                    'reservation' => 'Pilihan rilis tidak tersedia atau telah ditutup.',
+                    'weekly_release_id' => 'Jadwal rilis pada tanggal ini telah ditutup.',
+                ]);
+            }
+
+            if ($data['reservation_type'] === 'individual' && (int) $release->available_single <= 0) {
+                throw ValidationException::withMessages([
+                    'reservation' => 'Kuota spesimen individu pada jadwal rilis ini telah habis.',
+                ]);
+            }
+
+            if ($data['reservation_type'] === 'pair' && (int) $release->available_pair <= 0) {
+                throw ValidationException::withMessages([
+                    'reservation' => 'Kuota pasangan pada jadwal rilis ini telah habis.',
                 ]);
             }
 
             $itemId = $data['reservation_type'] === 'individual' ? ($data['bird_id'] ?? null) : ($data['pair_id'] ?? null);
             $price = null;
             $deposit = null;
+            $targetBird = null;
+            $targetPair = null;
 
-            // 1. Try CatalogItem first
+            // 1. Try CatalogItem first for legacy/catalog IDs
             if ($itemId) {
                 $item = CatalogItem::query()
                     ->where('external_id', $itemId)
@@ -64,25 +80,37 @@ class ReservationApplicationController extends Controller
                 }
             }
 
-            // 2. If not found in CatalogItem, check live models (Bird or BirdPair)
-            if ($price === null && $itemId) {
+            // 2. Check live models (Bird or BirdPair) & validate availability
+            if ($itemId) {
                 if ($data['reservation_type'] === 'individual') {
-                    $bird = \App\Models\Bird::query()
+                    $targetBird = \App\Models\Bird::query()
                         ->where('id', $itemId)
                         ->orWhere('tagging', $itemId)
                         ->first();
-                    if ($bird) {
-                        $price = (int) ($bird->price ?? 32500000);
-                        $deposit = (int) ($bird->deposit ?? 5000000);
+
+                    if ($targetBird) {
+                        if ($targetBird->status !== 'available') {
+                            throw ValidationException::withMessages([
+                                'bird_id' => 'Spesimen burung ini ('.$targetBird->tagging.') sedang dalam proses reservasi pemesan lain atau tidak tersedia.',
+                            ]);
+                        }
+                        $price = (int) ($targetBird->price ?? $price ?? 32500000);
+                        $deposit = (int) ($targetBird->deposit ?? $deposit ?? 5000000);
                     }
                 } else {
-                    $pair = \App\Models\BirdPair::query()
+                    $targetPair = \App\Models\BirdPair::query()
                         ->where('id', $itemId)
                         ->orWhere('pair_tag', $itemId)
                         ->first();
-                    if ($pair) {
-                        $price = (int) ($pair->price ?? 60000000);
-                        $deposit = (int) ($pair->deposit ?? 10000000);
+
+                    if ($targetPair) {
+                        if ($targetPair->status !== 'available') {
+                            throw ValidationException::withMessages([
+                                'pair_id' => 'Pasangan burung ini ('.$targetPair->pair_tag.') sedang dalam proses reservasi pemesan lain atau tidak tersedia.',
+                            ]);
+                        }
+                        $price = (int) ($targetPair->price ?? $price ?? 60000000);
+                        $deposit = (int) ($targetPair->deposit ?? $deposit ?? 10000000);
                     }
                 }
             }
@@ -95,7 +123,24 @@ class ReservationApplicationController extends Controller
             $data['deposit_amount'] = $deposit;
             $data['remaining_amount'] = max(0, $price - $deposit);
 
+            if (! isset($data['handover_date']) && $release->release_date) {
+                $data['handover_date'] = $release->release_date->copy()->addDays(7);
+            }
+
             $application = ReservationApplication::create($data);
+
+            // Decrement release slot quota
+            if ($data['reservation_type'] === 'individual') {
+                $release->decrement('available_single');
+                if ($targetBird) {
+                    $targetBird->update(['status' => 'verification']);
+                }
+            } else {
+                $release->decrement('available_pair');
+                if ($targetPair) {
+                    $targetPair->update(['status' => 'verification']);
+                }
+            }
             $file = $request->file('identity_document');
             $path = $file->store('private/identity/'.$application->id, 'local');
 

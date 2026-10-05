@@ -1,9 +1,9 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { Mail, MessageCircle, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CURRENT_RELEASE } from "@/data/weeklyReleases";
+import { getWeeklyReleases } from "@/lib/api";
+import { WeeklyRelease } from "@/types";
 import { redirectToWhatsApp } from "@/lib/whatsapp";
 
 function CustomerServicePopover({
@@ -106,6 +106,18 @@ function CustomerServicePopover({
 export function FloatingReserveButton() {
   const [visible, setVisible] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [activeRelease, setActiveRelease] = useState<WeeklyRelease>(CURRENT_RELEASE);
+
+  useEffect(() => {
+    getWeeklyReleases()
+      .then((releases) => {
+        if (releases && releases.length > 0) {
+          const open = releases.find((r) => r.status === "open") || releases[0];
+          setActiveRelease(open);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -141,6 +153,10 @@ export function FloatingReserveButton() {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [contactOpen]);
+
+  const releaseDateLabel = activeRelease.formattedDate
+    ? activeRelease.formattedDate.replace(/\s\d{4}$/, "")
+    : "03 Okt";
 
   return (
     <AnimatePresence>
@@ -188,10 +204,10 @@ export function FloatingReserveButton() {
             <div className="flex items-center justify-between gap-3">
               <div className="flex flex-col">
                 <span className="text-[8px] uppercase tracking-[0.25em] text-[#b39257]">
-                  Rilis Berikutnya: {CURRENT_RELEASE.formattedDate.slice(0, 6)}
+                  Rilis Berikutnya: {releaseDateLabel}
                 </span>
                 <span className="text-[11px] text-[#f5efeb]/80">
-                  {CURRENT_RELEASE.availableSingle} Individu · {CURRENT_RELEASE.availablePair} Pasang Tersedia
+                  {activeRelease.availableSingle} Individu · {activeRelease.availablePair} Pasang Tersedia
                 </span>
               </div>
               <div className="relative shrink-0" data-customer-service-root>

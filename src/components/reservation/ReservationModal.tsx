@@ -29,7 +29,7 @@ import {
   VerificationStatus,
 } from "@/types";
 import { INITIAL_DOCUMENTS_TEMPLATE } from "@/lib/documents";
-import { submitReservationApplication, getCatalogBirds, getCatalogPairs } from "@/lib/api";
+import { submitReservationApplication, getCatalogBirds, getCatalogPairs, getWeeklyReleases } from "@/lib/api";
 import { buildReservationWhatsAppMessage, redirectToWhatsApp } from "@/lib/whatsapp";
 
 interface ReservationModalProps {
@@ -59,6 +59,28 @@ function isReleaseSoldOut(release: WeeklyRelease) {
   );
 }
 
+function findMatchingRelease(
+  targetIdOrDate: string | undefined,
+  list: WeeklyRelease[]
+): WeeklyRelease | undefined {
+  if (!targetIdOrDate || list.length === 0) return undefined;
+  return list.find(
+    (r) =>
+      r.id === targetIdOrDate ||
+      r.externalId === targetIdOrDate ||
+      r.week?.toLowerCase() === targetIdOrDate.toLowerCase() ||
+      r.releaseDate === targetIdOrDate ||
+      (targetIdOrDate.includes("oct-03") && r.releaseDate?.includes("10-03")) ||
+      (targetIdOrDate.includes("oct-10") && r.releaseDate?.includes("10-10")) ||
+      (targetIdOrDate.includes("oct-17") && r.releaseDate?.includes("10-17")) ||
+      (targetIdOrDate.includes("oct-24") && r.releaseDate?.includes("10-24")) ||
+      (targetIdOrDate.includes("w40") && r.id?.includes("w40")) ||
+      (targetIdOrDate.includes("w41") && r.id?.includes("w41")) ||
+      (targetIdOrDate.includes("w42") && r.id?.includes("w42")) ||
+      (targetIdOrDate.includes("w43") && r.id?.includes("w43"))
+  );
+}
+
 export function ReservationModal({
   isOpen = true,
   onClose,
@@ -76,11 +98,13 @@ export function ReservationModal({
   // Live collections from backend or fallback
   const [availableBirds, setAvailableBirds] = useState<Bird[]>(BIRDS_COLLECTION);
   const [availablePairs, setAvailablePairs] = useState<(BreedingPair | BirdPairCatalog)[]>(BREEDING_PAIRS);
+  const [releases, setReleases] = useState<WeeklyRelease[]>(WEEKLY_RELEASES);
 
   // Step 1: Release
   const [selectedRelease, setSelectedRelease] = useState<WeeklyRelease>(() => {
     return (
-      WEEKLY_RELEASES.find((r) => r.id === initialReleaseId) ||
+      findMatchingRelease(initialReleaseId, WEEKLY_RELEASES) ||
+      WEEKLY_RELEASES.find((r) => r.status === "open") ||
       CURRENT_RELEASE
     );
   });
@@ -168,15 +192,29 @@ export function ReservationModal({
   const isPreselected = reservationType === "individual" ? !!initialBirdId : !!initialPairId;
   const [showSpecimenPicker, setShowSpecimenPicker] = useState<boolean>(!isPreselected);
 
-  // Load live catalog items
+  // Load live catalog items & weekly releases
   useEffect(() => {
+    getWeeklyReleases()
+      .then((liveReleases) => {
+        if (liveReleases && liveReleases.length > 0) {
+          setReleases(liveReleases);
+          const foundRelease = findMatchingRelease(initialReleaseId, liveReleases) ||
+            liveReleases.find((r) => r.status === "open") ||
+            liveReleases[0];
+          if (foundRelease) setSelectedRelease(foundRelease);
+        }
+      })
+      .catch(() => {});
+
     getCatalogBirds()
       .then((liveBirds) => {
         if (liveBirds && liveBirds.length > 0) {
-          setAvailableBirds(liveBirds);
+          const availableOnly = liveBirds.filter((b) => b.status === "available");
+          const list = availableOnly.length > 0 ? availableOnly : liveBirds;
+          setAvailableBirds(list);
           const found = initialBirdId
-            ? liveBirds.find((b) => b.id === initialBirdId || b.publicId === initialBirdId || b.tagging === initialBirdId)
-            : liveBirds[0];
+            ? list.find((b) => b.id === initialBirdId || b.publicId === initialBirdId || b.tagging === initialBirdId)
+            : list[0];
           if (found) setSelectedBird(found);
         }
       })
@@ -185,15 +223,17 @@ export function ReservationModal({
     getCatalogPairs()
       .then((livePairs) => {
         if (livePairs && livePairs.length > 0) {
-          setAvailablePairs(livePairs);
+          const availableOnly = livePairs.filter((p) => p.status === "available");
+          const list = availableOnly.length > 0 ? availableOnly : livePairs;
+          setAvailablePairs(list);
           const found = initialPairId
-            ? livePairs.find((p) => p.id === initialPairId || p.pairTag === initialPairId)
-            : livePairs[0];
+            ? list.find((p) => p.id === initialPairId || p.pairTag === initialPairId)
+            : list[0];
           if (found) setSelectedPair(found);
         }
       })
       .catch(() => {});
-  }, [initialBirdId, initialPairId]);
+  }, [initialReleaseId, initialBirdId, initialPairId]);
 
   const isIndividualAvailable = hasReleaseAvailability(selectedRelease, "individual");
   const isPairAvailable = hasReleaseAvailability(selectedRelease, "pair");
@@ -467,8 +507,8 @@ export function ReservationModal({
                         </div>
 
                         <div className="space-y-3 font-mono">
-                          {WEEKLY_RELEASES.map((release) => {
-                            const isSelected = selectedRelease.id === release.id;
+                          {releases.map((release) => {
+                            const isSelected = selectedRelease.id === release.id || selectedRelease.externalId === release.id;
                             const isSoldOut = isReleaseSoldOut(release);
                             return (
                               <button

@@ -439,7 +439,7 @@ Jadwal Target: Akan diinformasikan setelah verifikasi
 
 
           {/* Next Steps Checklist */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h3 className="font-serif text-2xl text-[#f5efeb] font-light">
               Langkah Berikutnya untuk Serah Terima
             </h3>
@@ -481,7 +481,7 @@ Jadwal Target: Akan diinformasikan setelah verifikasi
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* WhatsApp Banner */}
           <div className="p-4 rounded-2xl bg-[#25D366]/10 border border-[#25D366]/30 flex items-start space-x-3 text-xs">

@@ -1,6 +1,6 @@
 import * as birds from "./birds";
 import * as availability from "./availability";
-import type { Bird, BirdPairCatalog } from "@/types";
+import type { Bird, BirdPairCatalog, WeeklyRelease, Review } from "@/types";
 
 export interface ReservationApplicationPayload {
   customerName: string;
@@ -118,6 +118,35 @@ export async function getHomepagePairs(): Promise<BirdPairCatalog[]> {
 
   return result.data;
 }
+
+export async function getWeeklyReleases(): Promise<WeeklyRelease[]> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+  if (!backendUrl) throw new Error("NEXT_PUBLIC_BACKEND_URL belum dikonfigurasi.");
+
+  const response = await fetch(`${backendUrl}/api/releases`, { cache: "no-store" });
+  const result = (await response.json()) as { data?: WeeklyRelease[]; message?: string };
+
+  if (!response.ok || !result.data) {
+    throw new Error(result.message || "Jadwal rilis tidak dapat dimuat.");
+  }
+
+  return result.data;
+}
+
+export async function getApprovedReviews(): Promise<Review[]> {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+  if (!backendUrl) throw new Error("NEXT_PUBLIC_BACKEND_URL belum dikonfigurasi.");
+
+  const response = await fetch(`${backendUrl}/api/reviews`, { cache: "no-store" });
+  const result = (await response.json()) as { data?: Review[]; message?: string };
+
+  if (!response.ok) {
+    throw new Error(result.message || "Ulasan tidak dapat dimuat.");
+  }
+
+  return result.data ?? [];
+}
+
 
 export async function submitReservationApplication(
   payload: ReservationApplicationPayload
@@ -289,6 +318,8 @@ export const api = {
   getHomepageBirds,
   getCatalogPairs,
   getHomepagePairs,
+  getWeeklyReleases,
+  getApprovedReviews,
 };
 
 export default api;

@@ -17,10 +17,11 @@ class BirdPairResource extends Resource
 {
     protected static ?string $model = BirdPair::class;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHeart;
-    protected static ?string $navigationLabel = 'Pasangan Burung';
+    protected static \UnitEnum|string|null $navigationGroup = 'Birds';
+    protected static ?string $navigationLabel = 'Pasangan';
     protected static ?string $modelLabel = 'Pasangan';
     protected static ?string $pluralModelLabel = 'Pasangan Burung';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

@@ -10,14 +10,40 @@ use Illuminate\Support\Facades\Hash;
 
 class ReviewController extends Controller
 {
+    private function mapReview(Review $review): array
+    {
+        return [
+            'id'             => (string) $review->id,
+            'quote'          => $review->body,
+            'patronName'     => $review->customer_name,
+            'patronTitle'    => $review->patron_title ?? 'Pelanggan Terverifikasi',
+            'location'       => $review->location ?? 'Indonesia',
+            'date'           => $review->submitted_at
+                ? $review->submitted_at->translatedFormat('F Y')
+                : ($review->created_at ? $review->created_at->translatedFormat('F Y') : '2026'),
+            'rating'         => (int) ($review->rating ?? 5),
+            'verified'       => (bool) ($review->verified ?? true),
+            'individualRef'  => $review->individual_ref,
+            // YouTube-specific fields
+            'hasVideo'       => $review->has_youtube_video,
+            'youtubeEmbedUrl' => $review->youtube_embed_url,
+            'videoThumbnail' => $review->effective_thumbnail_url,
+            // Raw YouTube URL stored (for reference / copy-paste)
+            'videoUrl'       => $review->video_url,
+        ];
+    }
+
     public function index()
     {
-        return response()->json(
-            Review::query()
-                ->where('status', 'approved')
-                ->latest('moderated_at')
-                ->get(['id', 'body', 'rating', 'customer_name', 'submitted_at'])
-        );
+        $reviews = Review::query()
+            ->where('status', 'approved')
+            ->orderBy('id', 'asc')
+            ->get()
+            ->map(fn (Review $review) => $this->mapReview($review));
+
+        return response()->json([
+            'data' => $reviews,
+        ]);
     }
 
     public function store(StoreReviewRequest $request)
@@ -37,21 +63,21 @@ class ReviewController extends Controller
         );
 
         $review = $application->reviews()->create([
-            'body' => $request->string('body')->toString(),
-            'rating' => $request->integer('rating'),
+            'body'         => $request->string('body')->toString(),
+            'rating'       => $request->integer('rating'),
             'customer_name' => $application->customer_name,
-            'status' => 'pending',
+            'status'       => 'pending',
             'submitted_at' => now(),
         ]);
 
         foreach ($request->file('media', []) as $file) {
-            $path = $file->store('private/reviews/'.$review->id, 'local');
+            $path = $file->store('private/reviews/' . $review->id, 'local');
             $review->media()->create([
-                'disk' => 'local',
-                'path' => $path,
+                'disk'          => 'local',
+                'path'          => $path,
                 'original_name' => $file->getClientOriginalName(),
-                'mime_type' => $file->getMimeType(),
-                'size' => $file->getSize(),
+                'mime_type'     => $file->getMimeType(),
+                'size'          => $file->getSize(),
             ]);
         }
 

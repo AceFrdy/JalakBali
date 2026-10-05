@@ -5,6 +5,9 @@ import Link from "next/link";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CURRENT_RELEASE } from "@/data/weeklyReleases";
+import { getWeeklyReleases } from "@/lib/api";
+import { getActiveUpcomingRelease } from "@/lib/availability";
+import { WeeklyRelease } from "@/types";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 
 interface NavbarProps {
@@ -14,12 +17,29 @@ interface NavbarProps {
 export function Navbar({ onOpenReservation }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeRelease, setActiveRelease] = useState<WeeklyRelease>(CURRENT_RELEASE);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    getWeeklyReleases()
+      .then((releases) => {
+        if (releases && releases.length > 0) {
+          const active = getActiveUpcomingRelease(releases) || releases[0];
+          setActiveRelease(active);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const totalQuota = (activeRelease.availableSingle ?? 0) + (activeRelease.availablePair ?? 0);
+  const releaseDateLabel = activeRelease.formattedDate
+    ? activeRelease.formattedDate.replace(/\s\d{4}$/, "")
+    : "03 Okt";
 
   return (
     <>
@@ -74,7 +94,9 @@ export function Navbar({ onOpenReservation }: NavbarProps) {
                 Kuota Mingguan
               </span>
               <span className="text-[10px] tracking-wide text-[#f5efeb]/80">
-                Berikutnya: {CURRENT_RELEASE.formattedDate.slice(0, 6)} ({CURRENT_RELEASE.availableSingle}I · {CURRENT_RELEASE.availablePair}P)
+                {totalQuota > 0
+                  ? `Berikutnya: ${releaseDateLabel} (${activeRelease.availableSingle} Indiv · ${activeRelease.availablePair} Pasang)`
+                  : `Rilis ${releaseDateLabel} · Kuota Penuh`}
               </span>
             </div>
 

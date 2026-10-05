@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CustomerReservationController;
 use App\Http\Controllers\Api\PaymentWebhookController;
 use App\Http\Controllers\Api\ReservationApplicationController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\WeeklyReleaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::get('/releases', [WeeklyReleaseController::class, 'index']);
+Route::get('/releases/{id}', [WeeklyReleaseController::class, 'show']);
 Route::post('/reservations', [ReservationApplicationController::class, 'store']);
 Route::post('/reservations/lookup', [CustomerReservationController::class, 'lookup']);
 Route::get('/reservations/{bookingCode}', [CustomerReservationController::class, 'show']);

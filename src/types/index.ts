@@ -65,15 +65,18 @@ export interface BirdPairCatalog {
 
 export interface WeeklyRelease {
   id: string;
+  dbId?: number;
+  externalId?: string;
   week: string; // e.g. "2026-W40"
   releaseDate: string; // ISO date "2026-10-03"
   formattedDate: string; // "03 October 2026"
   availableSingle: number;
   availablePair: number;
   status: "scheduled" | "open" | "closed";
+  isPast?: boolean;
   individualBirdIds: string[];
   pairIds: string[];
-  reservationOpenAt: string;
+  reservationOpenAt?: string;
   reservationCloseAt?: string;
   handoverEstimate: string;
   note?: string;
@@ -207,6 +210,14 @@ export interface Review {
   rating: number;
   verified: boolean;
   individualRef?: string;
+  /** Whether there is a YouTube video attached */
+  hasVideo?: boolean;
+  /** Raw YouTube URL stored on the record */
+  videoUrl?: string | null;
+  /** Privacy-enhanced YouTube embed URL (youtube-nocookie.com/embed/...) */
+  youtubeEmbedUrl?: string | null;
+  /** Thumbnail/poster URL — auto-generated from YouTube or custom upload */
+  videoThumbnail?: string | null;
 }
 
 export interface ExperiencePackage {

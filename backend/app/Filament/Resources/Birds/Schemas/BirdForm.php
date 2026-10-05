@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
 
 class BirdForm
 {
@@ -44,10 +45,16 @@ class BirdForm
                         ->columnSpanFull(),
                     TextInput::make('price')
                         ->numeric()
-                        ->prefix('Rp'),
+                        ->prefix('Rp')
+                        ->mask(RawJs::make('$money($input, \',\', \'.\', 0)'))
+                        ->stripCharacters('.')
+                        ->placeholder('Contoh: 15.000.000'),
                     TextInput::make('deposit')
                         ->numeric()
-                        ->prefix('Rp'),
+                        ->prefix('Rp')
+                        ->mask(RawJs::make('$money($input, \',\', \'.\', 0)'))
+                        ->stripCharacters('.')
+                        ->placeholder('Contoh: 5.000.000'),
                     TextInput::make('breeding_line')
                         ->columnSpanFull(),
                     Textarea::make('description')
