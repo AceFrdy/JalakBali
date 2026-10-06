@@ -176,7 +176,7 @@ export function BirdProvenanceSection() {
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
           onWheel={handleWheel}
-          className="overflow-x-auto overflow-y-hidden no-scrollbar cursor-grab active:cursor-grabbing select-none touch-pan-x"
+          className="overflow-x-auto overflow-y-hidden no-scrollbar cursor-grab active:cursor-grabbing select-none touch-auto"
           aria-label="Tahap asal-usul dan registrasi Jalak Bali"
         >
           <div className="relative flex w-max items-stretch gap-8 pb-4 pt-1 pr-6 md:pr-12">
