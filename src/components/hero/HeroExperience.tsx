@@ -118,12 +118,13 @@ export function HeroExperience({
         initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.9, delay: 0.15 }}
-        className="absolute inset-[-2%] pointer-events-none z-1"
+        className="absolute inset-[-2%] pointer-events-none z-1 blur-[3px]"
         style={{
           backgroundImage: "url('/assets/Background.png')",
           backgroundPosition: "center bottom",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
+          filter: "blur(3px)",
           // Nilai pengali scroll (* -0.08) & kursor (* -10px) menentukan intensitas parallax
           transform:
             "translate3d(calc(var(--hero-x) * -10px), calc(var(--hero-scroll) * -0.08 + var(--hero-y) * -5px), 0) rotate(calc(var(--hero-x) * 0.15deg)) scale(1.02)",
