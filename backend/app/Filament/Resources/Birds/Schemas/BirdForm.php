@@ -68,7 +68,21 @@ class BirdForm
                         ->reorderable()
                         ->maxSize(10240)
                         ->columnSpanFull()
-                        ->helperText('Maksimal 10MB per foto. Format: JPG, PNG, WEBP. Anda dapat mengunggah beberapa foto sekaligus.'),
+                        ->imageEditor()
+                        ->imageEditorMode(2)
+                        ->imageEditorAspectRatioOptions([
+                            null   => 'Bebas',
+                            '1:1'  => 'Kotak (1:1)',
+                            '4:3'  => 'Landscape (4:3)',
+                            '3:4'  => 'Portrait (3:4)',
+                            '16:9' => 'Widescreen (16:9)',
+                        ])
+                        ->imageEditorViewportWidth(1200)
+                        ->imageEditorViewportHeight(800)
+                        ->imageEditorEmptyFillColor('#060e08')
+                        ->automaticallyResizeImagesToWidth('1200')
+                        ->automaticallyResizeImagesToHeight('900')
+                        ->helperText('Klik ikon pensil (✏️) pada foto untuk crop/resize. Maksimal 10MB per foto. Format: JPG, PNG, WEBP.'),
                     FileUpload::make('certificate_images')
                         ->label('Foto / Berkas Sertifikat & Garansi (Opsional)')
                         ->disk('public')
@@ -78,7 +92,16 @@ class BirdForm
                         ->reorderable()
                         ->maxSize(10240)
                         ->columnSpanFull()
-                        ->helperText('Unggah foto/scan sertifikat penangkaran atau surat garansi jika tersedia. Jika kosong, akan menampilkan sertifikat standar.'),
+                        ->imageEditor()
+                        ->imageEditorMode(1)
+                        ->imageEditorAspectRatioOptions([
+                            null  => 'Bebas',
+                            '3:4' => 'Dokumen A4 Portrait (3:4)',
+                            '4:3' => 'Dokumen Landscape (4:3)',
+                            '1:1' => 'Kotak',
+                        ])
+                        ->imageEditorEmptyFillColor('#ffffff')
+                        ->helperText('Klik ikon pensil (✏️) untuk crop sertifikat. Format: JPG, PNG, WEBP. Jika kosong, akan menampilkan sertifikat standar.'),
                 ]),
             ]);
     }

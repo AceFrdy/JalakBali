@@ -120,7 +120,7 @@ export function HeroExperience({
         transition={{ duration: 0.9, delay: 0.15 }}
         className="absolute inset-[-2%] pointer-events-none z-1"
         style={{
-          backgroundImage: "url('/assets/02_langit_dan_latar_jauh_detail.png')",
+          backgroundImage: "url('/assets/Background.png')",
           backgroundPosition: "center bottom",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
@@ -193,6 +193,14 @@ export function HeroExperience({
       <div className="grain-overlay absolute inset-0 z-8 pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#08110b] via-[#08110b]/60 to-transparent z-8 pointer-events-none" />
 
+      {/* ── Text Scrim — gelap di sisi kiri agar teks selalu terbaca di semua ukuran ── */}
+      <div
+        className="absolute inset-0 z-9 pointer-events-none"
+        style={{
+          background: "linear-gradient(135deg, rgba(4,10,5,0.72) 0%, rgba(4,10,5,0.50) 40%, transparent 70%)",
+        }}
+      />
+
       {/* ── Main Editorial Typography & Brand Positioning ── */}
       <div
         className="relative z-10 max-w-[1760px] mx-auto site-gutter w-full pt-32 pb-20 md:py-0 min-h-[92vh] flex flex-col justify-center"
@@ -212,7 +220,7 @@ export function HeroExperience({
             className="flex items-center space-x-3 mb-6"
           >
             <span className="h-[1px] w-8 bg-[#b39257]" />
-            <span className="text-[10px] uppercase tracking-[0.35em] text-[#b39257] font-mono">
+            <span className="text-[11px] uppercase tracking-[0.3em] text-[#d6be8c] font-mono font-semibold drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
               Platform Penangkaran Legal Resmi · Bali
             </span>
           </motion.div>
@@ -222,10 +230,10 @@ export function HeroExperience({
             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, delay: 0.68, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-light tracking-tight text-[#f5efeb] leading-[0.92] uppercase mb-6"
+            className="font-serif text-[3.5rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight text-white leading-[0.92] uppercase mb-6 drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)]"
           >
             Langka. <br />
-            <span className="italic font-serif font-normal text-[#d6be8c] lowercase tracking-normal text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
+            <span className="italic font-serif font-semibold text-[#f0d080] lowercase tracking-normal text-[2.75rem] sm:text-5xl md:text-6xl lg:text-7xl">
               bertanggung jawab.
             </span>{" "}
             <br />
@@ -237,7 +245,7 @@ export function HeroExperience({
             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, delay: 0.82 }}
-            className="text-base sm:text-lg text-[#f5efeb]/80 font-light leading-relaxed mb-8 max-w-lg"
+            className="text-base sm:text-lg text-white font-normal leading-relaxed mb-8 max-w-lg drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]"
           >
             Temukan Jalak Bali dari program penangkaran legal yang dikelola dengan cermat.
             Setiap individu bercincin tertutup, berchip mikro, dan diserahterimakan secara eksklusif melalui
