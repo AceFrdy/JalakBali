@@ -34,6 +34,7 @@ export function HeroExperience({
     let pointerY = 0;
     let targetX = 0;
     let targetY = 0;
+    let isTouching = false;
 
     const onScroll = () => {
       targetScroll = window.scrollY;
@@ -48,6 +49,31 @@ export function HeroExperience({
     const onPointerLeave = () => {
       targetX = 0;
       targetY = 0;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (event.touches.length > 0) {
+        isTouching = true;
+        const touch = event.touches[0];
+        targetX = touch.clientX / window.innerWidth - 0.5;
+        targetY = touch.clientY / window.innerHeight - 0.5;
+      }
+    };
+
+    const onTouchEnd = () => {
+      isTouching = false;
+      targetX = 0;
+      targetY = 0;
+    };
+
+    const onOrientation = (event: DeviceOrientationEvent) => {
+      if (isTouching || isDesktopPointer) return;
+      if (event.gamma !== null && event.beta !== null) {
+        const clampGamma = Math.max(-30, Math.min(30, event.gamma));
+        const clampBeta = Math.max(10, Math.min(70, event.beta)) - 40;
+        targetX = clampGamma / 60;
+        targetY = clampBeta / 60;
+      }
     };
 
     const render = () => {
@@ -70,6 +96,13 @@ export function HeroExperience({
     if (isDesktopPointer) {
       window.addEventListener("pointermove", onPointer, { passive: true });
       window.addEventListener("pointerleave", onPointerLeave, { passive: true });
+    } else {
+      window.addEventListener("touchmove", onTouchMove, { passive: true });
+      window.addEventListener("touchend", onTouchEnd, { passive: true });
+      window.addEventListener("touchcancel", onTouchEnd, { passive: true });
+      if (typeof window.DeviceOrientationEvent !== "undefined") {
+        window.addEventListener("deviceorientation", onOrientation, { passive: true });
+      }
     }
     frame = requestAnimationFrame(render);
 
@@ -79,6 +112,13 @@ export function HeroExperience({
       if (isDesktopPointer) {
         window.removeEventListener("pointermove", onPointer);
         window.removeEventListener("pointerleave", onPointerLeave);
+      } else {
+        window.removeEventListener("touchmove", onTouchMove);
+        window.removeEventListener("touchend", onTouchEnd);
+        window.removeEventListener("touchcancel", onTouchEnd);
+        if (typeof window.DeviceOrientationEvent !== "undefined") {
+          window.removeEventListener("deviceorientation", onOrientation);
+        }
       }
     };
   }, []);
