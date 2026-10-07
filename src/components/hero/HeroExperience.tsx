@@ -25,8 +25,6 @@ export function HeroExperience({
       return;
     }
 
-    const isDesktopPointer = window.matchMedia("(pointer: fine)").matches;
-
     let frame = 0;
     let scroll = window.scrollY;
     let targetScroll = scroll;
@@ -39,13 +37,15 @@ export function HeroExperience({
     let touchStartX = 0;
     let touchStartY = 0;
     let time = 0;
+    let hasMouseMoved = false;
 
     const onScroll = () => {
       targetScroll = window.scrollY;
     };
 
     const onPointer = (event: PointerEvent) => {
-      if (!isDesktopPointer) return;
+      if (event.pointerType === "touch") return;
+      hasMouseMoved = true;
       targetX = (event.clientX / window.innerWidth - 0.5) * 2;
       targetY = (event.clientY / window.innerHeight - 0.5) * 2;
     };
@@ -73,7 +73,7 @@ export function HeroExperience({
     };
 
     const onOrientation = (event: DeviceOrientationEvent) => {
-      if (isDesktopPointer) return;
+      if (hasMouseMoved) return;
       if (event.gamma !== null && event.beta !== null) {
         const clampGamma = Math.max(-35, Math.min(35, event.gamma));
         const clampBeta = Math.max(10, Math.min(70, event.beta)) - 40;
@@ -94,13 +94,8 @@ export function HeroExperience({
       touchX *= 0.96;
       touchY *= 0.96;
 
-      let effectiveX = targetX + ambientX;
-      let effectiveY = targetY + ambientY;
-
-      if (!isDesktopPointer) {
-        effectiveX = ambientX + touchX;
-        effectiveY = ambientY + touchY;
-      }
+      const effectiveX = targetX + ambientX + touchX;
+      const effectiveY = targetY + ambientY + touchY;
 
       pointerX += (effectiveX - pointerX) * 0.05;
       pointerY += (effectiveY - pointerY) * 0.05;
@@ -117,30 +112,24 @@ export function HeroExperience({
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    if (isDesktopPointer) {
-      window.addEventListener("pointermove", onPointer, { passive: true });
-      window.addEventListener("pointerleave", onPointerLeave, { passive: true });
-    } else {
-      window.addEventListener("touchstart", onTouchStart, { passive: true });
-      window.addEventListener("touchmove", onTouchMove, { passive: true });
-      if (typeof window.DeviceOrientationEvent !== "undefined") {
-        window.addEventListener("deviceorientation", onOrientation, { passive: true });
-      }
+    window.addEventListener("pointermove", onPointer, { passive: true });
+    window.addEventListener("pointerleave", onPointerLeave, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    if (typeof window.DeviceOrientationEvent !== "undefined") {
+      window.addEventListener("deviceorientation", onOrientation, { passive: true });
     }
     frame = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
-      if (isDesktopPointer) {
-        window.removeEventListener("pointermove", onPointer);
-        window.removeEventListener("pointerleave", onPointerLeave);
-      } else {
-        window.removeEventListener("touchstart", onTouchStart);
-        window.removeEventListener("touchmove", onTouchMove);
-        if (typeof window.DeviceOrientationEvent !== "undefined") {
-          window.removeEventListener("deviceorientation", onOrientation);
-        }
+      window.removeEventListener("pointermove", onPointer);
+      window.removeEventListener("pointerleave", onPointerLeave);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      if (typeof window.DeviceOrientationEvent !== "undefined") {
+        window.removeEventListener("deviceorientation", onOrientation);
       }
     };
   }, []);
@@ -262,7 +251,7 @@ export function HeroExperience({
 
       {/* ── Main Editorial Typography & Brand Positioning ── */}
       <div
-        className="relative z-10 max-w-[1760px] mx-auto site-gutter w-full pt-32 pb-20 md:py-0 min-h-[92vh] flex flex-col justify-center"
+        className="relative z-10 max-w-[1760px] mx-auto site-gutter w-full pt-22 sm:pt-24 pb-16 md:py-0 min-h-[85vh] md:min-h-[92vh] flex flex-col justify-center"
         style={{
           transform:
             "translate3d(calc(var(--hero-x) * 12px), calc(var(--hero-scroll) * -0.38 + var(--hero-y) * 6px), 0)",
