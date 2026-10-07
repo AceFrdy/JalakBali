@@ -8,6 +8,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
 
 class BirdPairForm
 {
@@ -59,12 +60,18 @@ class BirdPairForm
                     TextInput::make('price')
                         ->label('Harga Pasangan')
                         ->numeric()
-                        ->prefix('Rp'),
+                        ->prefix('Rp')
+                        ->mask(RawJs::make('$money($input, \',\', \'.\', 0)'))
+                        ->stripCharacters('.')
+                        ->placeholder('Contoh: 5.000.000'),
 
                     TextInput::make('deposit')
                         ->label('Deposit Pasangan')
                         ->numeric()
-                        ->prefix('Rp'),
+                        ->prefix('Rp')
+                        ->mask(RawJs::make('$money($input, \',\', \'.\', 0)'))
+                        ->stripCharacters('.')
+                        ->placeholder('Contoh: 5.000.000'),
 
                     Textarea::make('description')
                         ->label('Deskripsi Pasangan')
