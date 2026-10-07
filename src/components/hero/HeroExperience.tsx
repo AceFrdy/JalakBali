@@ -231,14 +231,13 @@ export function HeroExperience({
             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, delay: 0.68, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-[3.5rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight text-white leading-[0.92] uppercase mb-6 drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)]"
+            className="font-serif text-[3.5rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight text-white leading-none uppercase mb-6 drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)] space-y-1 sm:space-y-2"
           >
-            Langka. <br />
-            <span className="italic font-serif font-semibold text-[#f0d080] lowercase tracking-normal text-[2.75rem] sm:text-5xl md:text-6xl lg:text-7xl">
+            <span className="block leading-[0.55]">Langka.</span>
+            <span className="block italic font-serif font-semibold text-[#f0d080] lowercase tracking-normal text-[2.75rem] sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
               bertanggung jawab.
-            </span>{" "}
-            <br />
-            Memukau.
+            </span>
+            <span className="block leading-[0.95]">Memukau.</span>
           </motion.h1>
 
           {/* Subheading */}
