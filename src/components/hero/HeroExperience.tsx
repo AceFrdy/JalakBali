@@ -34,7 +34,11 @@ export function HeroExperience({
     let pointerY = 0;
     let targetX = 0;
     let targetY = 0;
-    let isTouching = false;
+    let touchX = 0;
+    let touchY = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let time = 0;
 
     const onScroll = () => {
       targetScroll = window.scrollY;
@@ -42,8 +46,8 @@ export function HeroExperience({
 
     const onPointer = (event: PointerEvent) => {
       if (!isDesktopPointer) return;
-      targetX = event.clientX / window.innerWidth - 0.5;
-      targetY = event.clientY / window.innerHeight - 0.5;
+      targetX = (event.clientX / window.innerWidth - 0.5) * 2;
+      targetY = (event.clientY / window.innerHeight - 0.5) * 2;
     };
 
     const onPointerLeave = () => {
@@ -51,35 +55,55 @@ export function HeroExperience({
       targetY = 0;
     };
 
-    const onTouchMove = (event: TouchEvent) => {
+    const onTouchStart = (event: TouchEvent) => {
       if (event.touches.length > 0) {
-        isTouching = true;
-        const touch = event.touches[0];
-        targetX = touch.clientX / window.innerWidth - 0.5;
-        targetY = touch.clientY / window.innerHeight - 0.5;
+        touchStartX = event.touches[0].clientX;
+        touchStartY = event.touches[0].clientY;
       }
     };
 
-    const onTouchEnd = () => {
-      isTouching = false;
-      targetX = 0;
-      targetY = 0;
+    const onTouchMove = (event: TouchEvent) => {
+      if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        const deltaX = (touch.clientX - touchStartX) / (window.innerWidth * 0.4);
+        const deltaY = (touch.clientY - touchStartY) / (window.innerHeight * 0.4);
+        touchX = Math.max(-1.2, Math.min(1.2, deltaX));
+        touchY = Math.max(-1.2, Math.min(1.2, deltaY));
+      }
     };
 
     const onOrientation = (event: DeviceOrientationEvent) => {
-      if (isTouching || isDesktopPointer) return;
+      if (isDesktopPointer) return;
       if (event.gamma !== null && event.beta !== null) {
-        const clampGamma = Math.max(-30, Math.min(30, event.gamma));
+        const clampGamma = Math.max(-35, Math.min(35, event.gamma));
         const clampBeta = Math.max(10, Math.min(70, event.beta)) - 40;
-        targetX = clampGamma / 60;
-        targetY = clampBeta / 60;
+        touchX = clampGamma / 35;
+        touchY = clampBeta / 30;
       }
     };
 
     const render = () => {
+      time += 0.02;
       scroll += (targetScroll - scroll) * 0.08;
-      pointerX += (targetX - pointerX) * 0.06;
-      pointerY += (targetY - pointerY) * 0.06;
+
+      // Ambient breathing float (ensures visible cinematic motion on mobile & idle desktop)
+      const ambientX = Math.sin(time * 0.9) * 0.5;
+      const ambientY = Math.cos(time * 0.7) * 0.4;
+
+      // Slowly decay touch drag so it settles gracefully
+      touchX *= 0.96;
+      touchY *= 0.96;
+
+      let effectiveX = targetX + ambientX;
+      let effectiveY = targetY + ambientY;
+
+      if (!isDesktopPointer) {
+        effectiveX = ambientX + touchX;
+        effectiveY = ambientY + touchY;
+      }
+
+      pointerX += (effectiveX - pointerX) * 0.05;
+      pointerY += (effectiveY - pointerY) * 0.05;
 
       const offsetScroll = Math.max(0, scroll - scene.offsetTop);
       scene.style.setProperty("--hero-scroll", `${offsetScroll}px`);
@@ -97,9 +121,8 @@ export function HeroExperience({
       window.addEventListener("pointermove", onPointer, { passive: true });
       window.addEventListener("pointerleave", onPointerLeave, { passive: true });
     } else {
+      window.addEventListener("touchstart", onTouchStart, { passive: true });
       window.addEventListener("touchmove", onTouchMove, { passive: true });
-      window.addEventListener("touchend", onTouchEnd, { passive: true });
-      window.addEventListener("touchcancel", onTouchEnd, { passive: true });
       if (typeof window.DeviceOrientationEvent !== "undefined") {
         window.addEventListener("deviceorientation", onOrientation, { passive: true });
       }
@@ -113,9 +136,8 @@ export function HeroExperience({
         window.removeEventListener("pointermove", onPointer);
         window.removeEventListener("pointerleave", onPointerLeave);
       } else {
+        window.removeEventListener("touchstart", onTouchStart);
         window.removeEventListener("touchmove", onTouchMove);
-        window.removeEventListener("touchend", onTouchEnd);
-        window.removeEventListener("touchcancel", onTouchEnd);
         if (typeof window.DeviceOrientationEvent !== "undefined") {
           window.removeEventListener("deviceorientation", onOrientation);
         }
@@ -153,21 +175,19 @@ export function HeroExperience({
       />
 
       {/* ── Layer 1: Parallax Sky (Latar Belakang Jauh) ── */}
-      {/* TIP: Untuk menjauhkan/mendekatkan, atur 'scale' (contoh: scale(1.02)) dan 'inset' */}
       <motion.div
         initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.9, delay: 0.15 }}
-        className="absolute inset-[-2%] pointer-events-none z-1 blur-[3px]"
+        className="absolute inset-[-4%] pointer-events-none z-1 blur-[3px]"
         style={{
           backgroundImage: "url('/assets/Background.png')",
           backgroundPosition: "center bottom",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           filter: "blur(3px)",
-          // Nilai pengali scroll (* -0.08) & kursor (* -10px) menentukan intensitas parallax
           transform:
-            "translate3d(calc(var(--hero-x) * -10px), calc(var(--hero-scroll) * -0.08 + var(--hero-y) * -5px), 0) rotate(calc(var(--hero-x) * 0.15deg)) scale(1.02)",
+            "translate3d(calc(var(--hero-x) * -20px), calc(var(--hero-scroll) * -0.15 + var(--hero-y) * -12px), 0) rotate(calc(var(--hero-x) * 0.25deg)) scale(1.05)",
           willChange: "transform",
         }}
       >
@@ -179,36 +199,34 @@ export function HeroExperience({
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.4 }}
         transition={{ duration: 1.2, delay: 0.3 }}
-        className="absolute inset-[-2%] pointer-events-none mix-blend-screen z-2"
+        className="absolute inset-[-4%] pointer-events-none mix-blend-screen z-2"
         style={{
           background:
             "radial-gradient(ellipse at 74% 28%, rgba(240, 210, 155, 0.55), transparent 30%), linear-gradient(110deg, transparent 35%, rgba(230, 205, 150, 0.15), transparent 72%)",
           transform:
-            "translate3d(calc(var(--hero-x) * -15px), calc(var(--hero-scroll) * -0.12 + var(--hero-y) * -8px), 0)",
+            "translate3d(calc(var(--hero-x) * -30px), calc(var(--hero-scroll) * -0.2 + var(--hero-y) * -16px), 0)",
           willChange: "transform",
         }}
       />
 
       {/* ── Layer 3: Forest Canopy Layer (Latar Tengah) ── */}
-      {/* TIP: Skala diperkecil ke 1.02 agar pemandangan hutan terlihat lebih luas/jauh */}
       <motion.div
         initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute inset-[-2%] pointer-events-none z-3"
+        className="absolute inset-[-4%] pointer-events-none z-3"
         style={{
           backgroundImage: "url('/assets/01_sisi_hutan_gabungan_detail.png')",
           backgroundPosition: "center bottom",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           transform:
-            "translate3d(calc(var(--hero-x) * -20px), calc(var(--hero-scroll) * -0.20 + var(--hero-y) * -10px), 0) rotate(calc(var(--hero-x) * 0.2deg)) scale(1.02)",
+            "translate3d(calc(var(--hero-x) * -45px), calc(var(--hero-scroll) * -0.32 + var(--hero-y) * -22px), 0) rotate(calc(var(--hero-x) * 0.35deg)) scale(1.05)",
           willChange: "transform",
         }}
       />
 
       {/* ── Layer 4: Focal Subject - Jalak Bali (Foreground) ── */}
-      {/* TIP: Ukuran burung dibuat lebih proporsional & kini merespon scroll dan mouse 3D */}
       <motion.div
         initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 40, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -216,7 +234,7 @@ export function HeroExperience({
         className="absolute right-[-2%] sm:right-[1%] md:right-[4%] lg:right-[6%] bottom-0 w-[80vw] sm:w-[62vw] md:w-[50vw] lg:w-[42vw] max-w-[720px] h-[70vh] md:h-[82vh] pointer-events-none z-5"
         style={{
           transform:
-            "translate3d(calc(var(--hero-x) * 26px), calc(var(--hero-scroll) * -0.16 + var(--hero-y) * 8px), 0)",
+            "translate3d(calc(var(--hero-x) * 55px), calc(var(--hero-scroll) * -0.22 + var(--hero-y) * 22px), 0)",
           willChange: "transform",
         }}
       >
