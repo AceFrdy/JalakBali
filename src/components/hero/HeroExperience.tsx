@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { ArrowDown, Calendar, Volume2, VolumeX, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowDown, Calendar, ShieldCheck, Sparkles } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { CURRENT_RELEASE } from "@/data/weeklyReleases";
 
@@ -16,7 +16,7 @@ export function HeroExperience({
   onExploreCollection,
 }: HeroExperienceProps) {
   const heroRef = useRef<HTMLElement>(null);
-  const [audioPlaying, setAudioPlaying] = useState(false);
+
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -134,9 +134,8 @@ export function HeroExperience({
     };
   }, []);
 
-  const toggleSimulatedAudio = () => {
-    setAudioPlaying(!audioPlaying);
-  };
+
+
 
   return (
     <section
@@ -262,123 +261,90 @@ export function HeroExperience({
         <div className="max-w-2xl lg:max-w-xl">
           {/* Brand Tagline & Station Marker */}
           <motion.div
-            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.55 }}
-            className="flex items-center space-x-3 mb-6"
+            transition={{ duration: 0.5, delay: 0.45 }}
+            className="flex items-center space-x-3 mb-5"
           >
             <span className="h-[1px] w-8 bg-[#b39257]" />
-            <span className="text-[11px] uppercase tracking-[0.3em] text-[#d6be8c] font-mono font-semibold drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
-              Platform Penangkaran Legal Resmi · Bali
+            <span className="text-[11px] uppercase tracking-[0.25em] text-[#d6be8c] font-mono font-medium">
+              Penangkaran Resmi BKSDA · Konservasi Ex-Situ
             </span>
           </motion.div>
 
-          {/* Main Cinematic Title */}
+          {/* Main Editorial Headline */}
           <motion.h1
-            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 22 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.68, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-[3.5rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight text-white leading-none uppercase mb-6 drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)] space-y-1 sm:space-y-2"
+            transition={{ duration: 0.7, delay: 0.58, ease: [0.22, 1, 0.36, 1] }}
+            className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal tracking-tight text-[#f5efeb] leading-[1.08] mb-5 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
           >
-            <span className="block leading-[0.55]">Langka.</span>
-            <span className="block italic font-serif font-semibold text-[#f0d080] lowercase tracking-normal text-[2.75rem] sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
-              bertanggung jawab.
+            Penangkaran Legal &amp;{" "}
+            <span className="italic font-serif text-[#d6be8c] block sm:inline">
+              Pelestarian Jalak Bali
             </span>
-            <span className="block leading-[0.95]">Memukau.</span>
           </motion.h1>
 
           {/* Subheading */}
           <motion.p
-            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.82 }}
-            className="text-base sm:text-lg text-white font-normal leading-relaxed mb-8 max-w-lg drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]"
+            transition={{ duration: 0.7, delay: 0.7 }}
+            className="text-base sm:text-lg text-[#f5efeb]/85 font-sans font-normal leading-relaxed mb-8 max-w-lg drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]"
           >
-            Temukan Jalak Bali dari program penangkaran legal yang dikelola dengan cermat.
-            Setiap individu bercincin tertutup, berchip mikro, dan diserahterimakan secara eksklusif melalui
-            prosedur kepatuhan yang terverifikasi.
+            Pusat penangkaran terakreditasi untuk satwa Jalak Bali (<em>Leucopsar rothschildi</em>) generasi F2/F3. Dilengkapi gelang cincin tertutup, sertifikat silsilah indukan, dan pengurusan izin angkut SATS-DN resmi.
           </motion.p>
 
           {/* Small Availability Indicator */}
           <motion.div
-            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.95 }}
-            className="mb-10 p-4 rounded-xl border border-[#d6be8c]/25 bg-[#0d1811]/85 backdrop-blur-md max-w-md font-mono"
+            transition={{ duration: 0.7, delay: 0.8 }}
+            className="mb-8 p-4 rounded-xl border border-[#233527] bg-[#0e1912] max-w-md font-mono"
           >
-            <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.25em] text-[#b39257] pb-2 border-b border-[#d6be8c]/15 mb-2.5">
-              <span>Alokasi Rilis Mingguan</span>
-              <span className="text-[#38bdf8]">{CURRENT_RELEASE.week}</span>
+            <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-[#b39257] pb-2 border-b border-[#233527] mb-2.5">
+              <span>Status Rilis Mingguan</span>
+              <span className="text-[#d6be8c] font-medium">{CURRENT_RELEASE.week}</span>
             </div>
             <div className="flex items-baseline justify-between">
               <div>
-                <span className="text-xs text-[#f5efeb] font-semibold">
-                  Ketersediaan Saat Ini: 1 Individu · 1 Pasang
+                <span className="text-xs text-[#f5efeb] font-medium">
+                  Koleksi Siap Verifikasi: 1 Individu · 1 Pasang
                 </span>
-                <span className="block text-[10px] text-[#f5efeb]/60 font-light mt-0.5">
-                  Rilis Berikutnya: {CURRENT_RELEASE.formattedDate} · Verifikasi Diperlukan
+                <span className="block text-[11px] text-[#f5efeb]/60 font-sans mt-0.5">
+                  Jadwal Rilis: {CURRENT_RELEASE.formattedDate} · Kuota Terbatas
                 </span>
               </div>
-              <span className="text-[9px] uppercase tracking-wider text-[#b39257] px-2 py-0.5 rounded border border-[#b39257]/40 bg-[#b39257]/10">
-                Rilis Terbatas
+              <span className="text-[9px] uppercase tracking-wider text-[#b39257] px-2 py-0.5 rounded border border-[#b39257]/30 bg-[#b39257]/10">
+                Resmi BKSDA
               </span>
             </div>
           </motion.div>
 
           {/* Action Triggers */}
           <motion.div
-            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 1.08 }}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6"
+            transition={{ duration: 0.7, delay: 0.9 }}
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 font-mono"
           >
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+            <button
+              type="button"
               onClick={onExploreCollection}
-              data-cursor="COLLECTION"
-              className="px-8 py-4 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-colors shadow-[0_12px_30px_rgba(179,146,87,0.25)] flex items-center justify-center space-x-2.5 cursor-pointer"
+              className="px-7 py-3.5 rounded-full bg-[#b39257] hover:bg-[#c5a880] active:bg-[#9e7e43] text-[#08110b] text-[11px] uppercase tracking-[0.2em] font-semibold transition-colors flex items-center justify-center space-x-2.5 cursor-pointer shadow-sm"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Jelajahi Burung Tersedia</span>
-            </motion.button>
+              <span>Lihat Burung Tersedia</span>
+            </button>
 
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+            <button
+              type="button"
               onClick={onCheckAvailability}
-              className="px-8 py-4 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[11px] uppercase tracking-[0.25em] font-mono font-medium transition-colors text-center backdrop-blur-sm cursor-pointer flex items-center justify-center space-x-2"
+              className="px-7 py-3.5 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[11px] uppercase tracking-[0.2em] font-medium transition-colors text-center cursor-pointer flex items-center justify-center space-x-2"
             >
               <Calendar className="w-3.5 h-3.5" />
-              <span>Daftar Rilis Mingguan</span>
-            </motion.button>
-          </motion.div>
-
-          {/* Soundscape Interactive Cue */}
-          <motion.div
-            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.25 }}
-            className="mt-8 flex items-center space-x-3 text-[11px] font-mono text-[#f5efeb]/60"
-          >
-            <motion.button
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.94 }}
-              onClick={toggleSimulatedAudio}
-              className={`p-1.5 rounded-full border transition-colors cursor-pointer ${
-                audioPlaying
-                  ? "border-[#b39257] bg-[#b39257]/20 text-[#b39257]"
-                  : "border-[#d6be8c]/30 hover:border-[#b39257] text-[#b39257]"
-              }`}
-              title="Simulate Avian Vocalization"
-            >
-              {audioPlaying ? <Volume2 className="w-3.5 h-3.5 animate-pulse" /> : <VolumeX className="w-3.5 h-3.5" />}
-            </motion.button>
-            <span>
-              {audioPlaying
-                ? "Simulasi: Suara siulan teritorial jantan dewasa hasil penangkaran"
-                : "Dengarkan rekaman suara panggilan burung aviari"}
-            </span>
+              <span>Jadwal &amp; Alokasi</span>
+            </button>
           </motion.div>
         </div>
       </div>

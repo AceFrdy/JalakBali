@@ -87,3 +87,5 @@ bun-debug.log*
 # Misc
 # =========================
 *.pem
+SKILL.md
+design.md

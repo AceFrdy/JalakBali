@@ -4,9 +4,9 @@ export const EDITORIAL_REVIEWS: Review[] = [
   {
     id: "rev-01",
     quote:
-      "Transparansi catatan silsilah dan proses verifikasi yang teliti memberi kami keyakinan mutlak. Menerima pasang penangkaran dengan riwayat kesehatan lengkap dan asal-usul yang jelas adalah tolok ukur avikultur yang bertanggung jawab.",
+      "Transparansi silsilah indukan dan sertifikat DNA PCR memberikan kepastian mutlak. Pasangan indukan tiba dalam kondisi sangat prima, aktif, dan dokumen SATS-DN diterbitkan resmi tanpa kendala birokrasi.",
     patronName: "Dr. Hendra W.",
-    patronTitle: "Pengelola Aviari Berlisensi & Dokter Hewan",
+    patronTitle: "Pemilik Aviari & Praktisi Hewan",
     location: "Bandung, Jawa Barat",
     date: "Agustus 2026",
     rating: 5,
@@ -16,9 +16,9 @@ export const EDITORIAL_REVIEWS: Review[] = [
   {
     id: "rev-02",
     quote:
-      "Berbeda dengan pasar burung umum, platform ini memperlakukan Jalak Bali dengan martabat dan ketelitian hukum yang selayaknya. Verifikasi bertahap dan serah terima berfasilitas khusus ditangani dengan profesionalisme luar biasa.",
+      "Bukan sekadar transaksi, proses verifikasi kelayakan kandang dan konsultasi nutrisinya sangat profesional. Senang bisa merawat Jalak Bali generasi F2 yang 100% legal dan bersertifikat cincin tertutup resmi.",
     patronName: "Bramantyo Kusuma",
-    patronTitle: "Paviliun Flora & Fauna Privat",
+    patronTitle: "Pelestari Aviari Mandiri",
     location: "Jakarta Selatan",
     date: "Juli 2026",
     rating: 5,
@@ -28,9 +28,9 @@ export const EDITORIAL_REVIEWS: Review[] = [
   {
     id: "rev-03",
     quote:
-      "Dari pemesanan dalam rilis mingguan hingga penyerahan foto aviari untuk audit habitat, setiap langkah berjalan sangat teratur. Inisiatif penangkaran teladan yang menjunjung tinggi integritas sejati.",
+      "Dari booking rilis mingguan, audit foto kandang, hingga ekspedisi satwa ber-SOP ketat, semuanya tertata rapi. Komitmen konservasi dan etika penangkaran mereka benar-benar patut diapresiasi.",
     patronName: "Arya Daniswara",
-    patronTitle: "Penangkar Satwa Terdaftar & Biolog",
+    patronTitle: "Penangkar Burung Terdaftar BKSDA",
     location: "Surabaya, Jawa Timur",
     date: "September 2026",
     rating: 5,
@@ -43,25 +43,25 @@ export const SOCIAL_PROOF_STATS = [
   {
     value: "100",
     suffix: "%",
-    label: "Hasil Penangkaran",
-    detail: "Nol penangkapan liar · Murni breeding studbook tertutup",
+    label: "Penangkaran Legal",
+    detail: "Murni hasil penangkaran ex-situ · Bukan tangkapan alam liar",
   },
   {
     value: "F2/F3",
     suffix: "Gen",
-    label: "Silsilah Terlacak",
-    detail: "Catatan indukan terdokumentasi dan gelang cincin permanen",
+    label: "Silsilah Resmi",
+    detail: "Tercatat dalam studbook resmi & gelang cincin tertutup permanen",
   },
   {
     value: "1–2",
-    suffix: "Ekor",
-    label: "Batas Rilis Mingguan",
-    detail: "Kohort sangat terbatas untuk perhatian dokter hewan secara individual",
+    suffix: "Pasang",
+    label: "Kuota Rilis Berkala",
+    detail: "Jumlah terbatas demi memastikan kontrol kesehatan individual",
   },
   {
-    value: "Multi-Tahap",
-    suffix: "Audit",
-    label: "Verifikasi Pemilik",
-    detail: "Identitas, kelayakan habitat, dan transfer legal yang patuh",
+    value: "Resmi",
+    suffix: "BKSDA",
+    label: "Legalitas Terjamin",
+    detail: "Dilengkapi SATS-DN & sertifikasi uji jenis kelamin DNA",
   },
 ];

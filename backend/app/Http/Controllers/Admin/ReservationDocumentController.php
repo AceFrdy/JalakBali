@@ -13,10 +13,11 @@ class ReservationDocumentController extends Controller
     public function show(Request $request, ReservationDocument $document)
     {
         // Allow access if admin user is authenticated or customer with valid token
+        $token = $request->header('X-Application-Token') ?: $request->query('token');
         $isCustomerValid = false;
-        if ($request->has('token') && $document->application) {
+        if (is_string($token) && $token !== '' && $document->application) {
             $isCustomerValid = $document->application->customer_access_token_expires_at?->isFuture()
-                && Hash::check($request->query('token'), $document->application->customer_access_token_hash);
+                && Hash::check($token, (string) $document->application->customer_access_token_hash);
         }
 
         abort_unless(auth()->check() || $isCustomerValid, 403, 'Akses dokumen tidak diizinkan.');

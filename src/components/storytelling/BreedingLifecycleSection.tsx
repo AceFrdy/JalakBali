@@ -94,7 +94,7 @@ export function BreedingLifecycleSection() {
                     <span className="font-serif text-4xl text-[#b39257] font-light">
                       {item.step}
                     </span>
-                    <span className="text-[9px] uppercase tracking-[0.25em] text-[#38bdf8] bg-[#38bdf8]/10 px-2.5 py-1 rounded border border-[#38bdf8]/20">
+                    <span className="text-[9px] uppercase tracking-[0.25em] text-[#d6be8c] bg-[#d6be8c]/10 px-2.5 py-1 rounded border border-[#d6be8c]/25">
                       {item.duration}
                     </span>
                   </div>

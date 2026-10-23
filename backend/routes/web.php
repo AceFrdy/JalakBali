@@ -9,8 +9,8 @@ Route::get('/', function () {
 
 Route::get('/admin/documents/{document}', [ReservationDocumentController::class, 'show'])
     ->name('admin.documents.show')
-    ->middleware(['web']);
+    ->middleware(['web', 'throttle:60,1']);
 
 Route::get('/admin/documents/{document}/download', [ReservationDocumentController::class, 'download'])
     ->name('admin.documents.download')
-    ->middleware(['web']);
+    ->middleware(['web', 'throttle:60,1']);

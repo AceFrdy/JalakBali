@@ -105,7 +105,7 @@ export function WeeklyReleaseSection({
 
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-[#38bdf8] animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 <span className="text-[#f5efeb]">
                   {String(currentRelease.availableSingle).padStart(2, "0")} Individu Tersedia
                 </span>
@@ -141,7 +141,7 @@ export function WeeklyReleaseSection({
                     <div>
                       <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-[#b39257] font-mono pb-4 border-b border-[#d6be8c]/15 mb-6">
                         <span>Alokasi Individu</span>
-                        <span className={isSingleAvailable ? "text-[#38bdf8]" : "text-[#d6be8c]"}>
+                        <span className={isSingleAvailable ? "text-emerald-400" : "text-[#d6be8c]"}>
                           {isSingleAvailable ? `${currentRelease.availableSingle} Burung Tersedia` : "Daftar Tunggu"}
                         </span>
                       </div>
@@ -220,7 +220,7 @@ export function WeeklyReleaseSection({
                     <div>
                       <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-[#b39257] font-mono pb-4 border-b border-[#d6be8c]/20 mb-6">
                         <span>Alokasi Pasang Penangkaran</span>
-                        <span className={isPairAvailable ? "text-[#38bdf8]" : "text-[#d6be8c]"}>
+                        <span className={isPairAvailable ? "text-emerald-400" : "text-[#d6be8c]"}>
                           {isPairAvailable
                             ? `${String(currentRelease.availablePair).padStart(2, "0")} Pasang Tersedia`
                             : "Kuota Penuh / Daftar Tunggu"}
@@ -245,7 +245,7 @@ export function WeeklyReleaseSection({
                             <span className="text-[10px] uppercase tracking-wider text-[#b39257] block">ID PASANG</span>
                             <span className="text-base text-[#f5efeb] font-bold">{currentPair ? currentPair.pairTag : "PASANGAN INDUKAN"}</span>
                           </div>
-                          <span className="text-[10px] uppercase tracking-widest text-[#38bdf8] border border-[#38bdf8]/40 px-2.5 py-1 rounded bg-[#38bdf8]/10">
+                          <span className="text-[10px] uppercase tracking-widest text-emerald-300 border border-emerald-600/30 px-2.5 py-1 rounded bg-emerald-950/40">
                             Kompatibilitas Bonding
                           </span>
                         </div>

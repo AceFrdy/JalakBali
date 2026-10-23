@@ -57,8 +57,7 @@ function BirdRow({
       <div className={isEven ? "order-1" : "order-1 lg:order-2"}>
         <ImageReveal direction="bottom" duration={1.1}>
           <div
-            data-cursor="INSPECT"
-            className="relative aspect-[16/10] sm:aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#d6be8c]/25 shadow-2xl group select-none"
+            className="relative aspect-[16/10] sm:aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#d6be8c]/25 shadow-xl group select-none bg-[#08110b]"
           >
             {currentImage ? (
               <AnimatePresence mode="wait">
@@ -76,7 +75,7 @@ function BirdRow({
                     fill
                     unoptimized
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="object-cover object-center brightness-95 group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className="object-cover object-center brightness-95 opacity-95 group-hover:opacity-100 transition-opacity duration-300"
                   />
                 </motion.div>
               </AnimatePresence>
@@ -97,7 +96,7 @@ function BirdRow({
                   type="button"
                   onClick={handlePrevImage}
                   aria-label="Foto sebelumnya"
-                  className="absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#060e08]/75 hover:bg-[#b39257] text-[#f5efeb] hover:text-[#08110b] border border-[#d6be8c]/30 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg cursor-pointer hover:scale-110 active:scale-95"
+                  className="absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#060e08]/85 hover:bg-[#b39257] text-[#f5efeb] hover:text-[#08110b] border border-[#d6be8c]/30 flex items-center justify-center transition-colors duration-200 shadow-md cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
@@ -105,7 +104,7 @@ function BirdRow({
                   type="button"
                   onClick={handleNextImage}
                   aria-label="Foto selanjutnya"
-                  className="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#060e08]/75 hover:bg-[#b39257] text-[#f5efeb] hover:text-[#08110b] border border-[#d6be8c]/30 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg cursor-pointer hover:scale-110 active:scale-95"
+                  className="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#060e08]/85 hover:bg-[#b39257] text-[#f5efeb] hover:text-[#08110b] border border-[#d6be8c]/30 flex items-center justify-center transition-colors duration-200 shadow-md cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
@@ -125,10 +124,10 @@ function BirdRow({
                         e.stopPropagation();
                         setActiveImageIndex(i);
                       }}
-                      className={`relative w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl overflow-hidden border transition-all duration-300 cursor-pointer shadow-lg ${
+                      className={`relative w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl overflow-hidden border transition-all duration-200 cursor-pointer shadow-md ${
                         isActive
-                          ? "border-[#b39257] ring-2 ring-[#b39257]/70 scale-105 opacity-100"
-                          : "border-[#d6be8c]/30 opacity-60 hover:opacity-100 hover:scale-105"
+                          ? "border-[#b39257] ring-1 ring-[#b39257] opacity-100"
+                          : "border-[#d6be8c]/30 opacity-60 hover:opacity-100"
                       }`}
                     >
                       <Image
@@ -147,11 +146,11 @@ function BirdRow({
 
             {/* Registry badge + Photo counter */}
             <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-10 flex items-center gap-1.5 sm:gap-2">
-              <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-[#d6be8c] bg-[#060e08]/90 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-[#d6be8c]/20 backdrop-blur-md shadow-md">
+              <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-[#d6be8c] bg-[#060e08]/90 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-[#d6be8c]/20 shadow-md">
                 ID: {bird.publicId}
               </div>
               {hasMultipleImages && (
-                <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.1em] text-[#f5efeb] bg-[#060e08]/90 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full border border-[#d6be8c]/20 backdrop-blur-md shadow-md">
+                <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.1em] text-[#f5efeb] bg-[#060e08]/90 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full border border-[#d6be8c]/20 shadow-md">
                   {currentImageIndex + 1}/{validImages.length}
                 </div>
               )}
@@ -159,7 +158,7 @@ function BirdRow({
 
             {/* Status badge */}
             <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-10">
-              <span className="text-[8px] sm:text-[9px] uppercase tracking-wider text-[#08110b] bg-[#38bdf8] px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-mono font-bold shadow-md">
+              <span className="text-[8px] sm:text-[9px] uppercase tracking-wider text-[#7ee787] bg-[#102417] border border-[#1e462c] px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-mono font-semibold shadow-sm">
                 {bird.status.toUpperCase()}
               </span>
             </div>
@@ -229,29 +228,27 @@ function BirdRow({
         </div>
 
         {/* SATS_DN notice */}
-        <div className="py-2 px-3 sm:p-3 rounded-lg sm:rounded-xl bg-[#0d1811]/90 border border-[#d6be8c]/20 text-[10px] sm:text-xs font-mono">
-          <div className="font-bold text-[#38bdf8] flex items-center space-x-2">
-            <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#38bdf8] shrink-0" />
-            <span>SATS_DN akan diurus setelah pelunasan</span>
+        <div className="py-2.5 px-3 sm:p-3 rounded-lg sm:rounded-xl bg-[#0d1811] border border-[#233527] text-[10px] sm:text-xs font-mono">
+          <div className="font-medium text-[#d6be8c] flex items-center space-x-2">
+            <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#b39257] shrink-0" />
+            <span>Dokumen SATS-DN BKSDA diterbitkan resmi setelah pelunasan</span>
           </div>
         </div>
 
         {/* Actions */}
         <div className="pt-1 flex flex-row gap-2.5 sm:gap-4 font-mono">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
+            type="button"
             onClick={() => onReserveBird(bird.id)}
-            data-cursor="RESERVE"
-            className="flex-1 px-4 py-2.5 sm:py-3.5 sm:px-7 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[10px] sm:text-[11px] uppercase tracking-wider sm:tracking-[0.2em] font-semibold transition-all shadow-md flex items-center justify-center space-x-1.5 sm:space-x-2 cursor-pointer whitespace-nowrap"
+            className="flex-1 px-4 py-2.5 sm:py-3.5 sm:px-7 rounded-full bg-[#b39257] hover:bg-[#c5a880] active:bg-[#9e7e43] text-[#08110b] text-[10px] sm:text-[11px] uppercase tracking-wider sm:tracking-[0.2em] font-semibold transition-colors shadow-sm flex items-center justify-center space-x-1.5 sm:space-x-2 cursor-pointer whitespace-nowrap"
           >
             <span>Reservasi Individu</span>
             <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-          </motion.button>
+          </button>
 
           <Link
             href={`/birds/${bird.publicId}`}
-            className="flex-1 px-4 py-2.5 sm:py-3.5 sm:px-7 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[10px] sm:text-[11px] uppercase tracking-wider sm:tracking-[0.2em] transition-all text-center flex items-center justify-center space-x-1.5 sm:space-x-2 whitespace-nowrap"
+            className="flex-1 px-4 py-2.5 sm:py-3.5 sm:px-7 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[10px] sm:text-[11px] uppercase tracking-wider sm:tracking-[0.2em] transition-colors text-center flex items-center justify-center space-x-1.5 sm:space-x-2 whitespace-nowrap"
           >
             <span>Periksa Profil</span>
           </Link>
@@ -285,7 +282,7 @@ function PairRow({
         <ImageReveal direction="bottom" duration={1.1}>
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {/* Male Bird Image */}
-            <div className="relative aspect-[4/5] sm:aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#d6be8c]/25 shadow-2xl group select-none">
+            <div className="relative aspect-[4/5] sm:aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#d6be8c]/25 shadow-xl group select-none bg-[#08110b]">
               {maleImage ? (
                 <Image
                   src={maleImage}
@@ -293,7 +290,7 @@ function PairRow({
                   fill
                   unoptimized
                   sizes="(max-width: 1024px) 50vw, 25vw"
-                  className="object-cover object-center brightness-95 group-hover:scale-105 transition-transform duration-700 ease-out"
+                  className="object-cover object-center brightness-95 opacity-95 group-hover:opacity-100 transition-opacity duration-300"
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center bg-[#0d1811]">
@@ -305,7 +302,7 @@ function PairRow({
               <div className="absolute inset-0 bg-gradient-to-t from-[#060e08]/95 via-[#060e08]/20 to-transparent opacity-90 pointer-events-none" />
 
               <div className="absolute top-2.5 left-2.5 z-10">
-                <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-wider text-[#08110b] bg-[#38bdf8] px-2 py-0.5 rounded-full font-bold shadow-md">
+                <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-wider text-[#d6be8c] bg-[#142318] border border-[#26442e] px-2 py-0.5 rounded-full font-semibold shadow-sm">
                   Jantan ♂
                 </span>
               </div>
@@ -321,7 +318,7 @@ function PairRow({
             </div>
 
             {/* Female Bird Image */}
-            <div className="relative aspect-[4/5] sm:aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#d6be8c]/25 shadow-2xl group select-none">
+            <div className="relative aspect-[4/5] sm:aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#d6be8c]/25 shadow-xl group select-none bg-[#08110b]">
               {femaleImage ? (
                 <Image
                   src={femaleImage}
@@ -329,7 +326,7 @@ function PairRow({
                   fill
                   unoptimized
                   sizes="(max-width: 1024px) 50vw, 25vw"
-                  className="object-cover object-center brightness-95 group-hover:scale-105 transition-transform duration-700 ease-out"
+                  className="object-cover object-center brightness-95 opacity-95 group-hover:opacity-100 transition-opacity duration-300"
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center bg-[#0d1811]">
@@ -341,7 +338,7 @@ function PairRow({
               <div className="absolute inset-0 bg-gradient-to-t from-[#060e08]/95 via-[#060e08]/20 to-transparent opacity-90 pointer-events-none" />
 
               <div className="absolute top-2.5 left-2.5 z-10">
-                <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-wider text-[#08110b] bg-[#f472b6] px-2 py-0.5 rounded-full font-bold shadow-md">
+                <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-wider text-[#f4efe4] bg-[#2d1b22] border border-[#522b3b] px-2 py-0.5 rounded-full font-semibold shadow-sm">
                   Betina ♀
                 </span>
               </div>
@@ -411,29 +408,27 @@ function PairRow({
         </div>
 
         {/* SATS_DN notice */}
-        <div className="py-2 px-3 sm:p-3 rounded-lg sm:rounded-xl bg-[#0d1811]/90 border border-[#d6be8c]/20 text-[10px] sm:text-xs font-mono">
-          <div className="font-bold text-[#38bdf8] flex items-center space-x-2">
-            <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#38bdf8] shrink-0" />
-            <span>2 Berkas SATS_DN akan diterbitkan setelah pelunasan</span>
+        <div className="py-2.5 px-3 sm:p-3 rounded-lg sm:rounded-xl bg-[#0d1811] border border-[#233527] text-[10px] sm:text-xs font-mono">
+          <div className="font-medium text-[#d6be8c] flex items-center space-x-2">
+            <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#b39257] shrink-0" />
+            <span>2 Berkas SATS-DN BKSDA resmi diterbitkan setelah pelunasan</span>
           </div>
         </div>
 
         {/* Actions */}
         <div className="pt-1 flex flex-row gap-2.5 sm:gap-4 font-mono">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
+            type="button"
             onClick={() => onReservePair?.(pair.id)}
-            data-cursor="RESERVE"
-            className="flex-1 px-4 py-2.5 sm:py-3.5 sm:px-7 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[10px] sm:text-[11px] uppercase tracking-wider sm:tracking-[0.2em] font-semibold transition-all shadow-md flex items-center justify-center space-x-1.5 sm:space-x-2 cursor-pointer whitespace-nowrap"
+            className="flex-1 px-4 py-2.5 sm:py-3.5 sm:px-7 rounded-full bg-[#b39257] hover:bg-[#c5a880] active:bg-[#9e7e43] text-[#08110b] text-[10px] sm:text-[11px] uppercase tracking-wider sm:tracking-[0.2em] font-semibold transition-colors shadow-sm flex items-center justify-center space-x-1.5 sm:space-x-2 cursor-pointer whitespace-nowrap"
           >
             <span>Reservasi Pasangan</span>
             <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-          </motion.button>
+          </button>
 
           <Link
             href="/birds?type=pair"
-            className="flex-1 px-4 py-2.5 sm:py-3.5 sm:px-7 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[10px] sm:text-[11px] uppercase tracking-wider sm:tracking-[0.2em] transition-all text-center flex items-center justify-center space-x-1.5 sm:space-x-2 whitespace-nowrap"
+            className="flex-1 px-4 py-2.5 sm:py-3.5 sm:px-7 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[10px] sm:text-[11px] uppercase tracking-wider sm:tracking-[0.2em] transition-colors text-center flex items-center justify-center space-x-1.5 sm:space-x-2 whitespace-nowrap"
           >
             <span>Semua Pasangan</span>
           </Link>

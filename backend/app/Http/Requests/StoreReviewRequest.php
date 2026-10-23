@@ -25,7 +25,7 @@ class StoreReviewRequest extends FormRequest
     {
         return [
             'booking_code' => ['required', 'string', 'max:32'],
-            'access_token' => ['required', 'string', 'size:64'],
+            'access_token' => ['required', 'string', 'min:40', 'max:64'],
             'body' => ['required', 'string', 'min:20', 'max:3000'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'media' => ['nullable', 'array', 'max:3'],

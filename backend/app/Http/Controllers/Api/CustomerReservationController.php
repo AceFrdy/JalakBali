@@ -11,17 +11,23 @@ class CustomerReservationController extends Controller
 {
     public function show(Request $request, string $bookingCode)
     {
-        $application = ReservationApplication::query()
-            ->with('payment')
-            ->where('booking_code', $bookingCode)
-            ->firstOrFail();
         $token = $request->header('X-Application-Token') ?: $request->query('token');
 
+        if (! is_string($token) || $token === '') {
+            abort(403, 'Akses reservasi memerlukan token autentikasi.');
+        }
+
+        $application = ReservationApplication::query()
+            ->with('payment')
+            ->where('booking_code', strtoupper(trim($bookingCode)))
+            ->first();
+
         abort_unless(
-            $token
+            $application
                 && $application->customer_access_token_expires_at?->isFuture()
-                && Hash::check($token, $application->customer_access_token_hash),
+                && Hash::check($token, (string) $application->customer_access_token_hash),
             403,
+            'Token akses tidak valid atau telah kedaluwarsa.'
         );
 
         $documents = $application->documents()
@@ -97,21 +103,38 @@ class CustomerReservationController extends Controller
         $bookingCode = strtoupper(trim($validated['bookingCode']));
         $identifier = strtolower(trim($validated['identifier']));
 
+        // Normalise phone number to digits only, unifying Indonesian prefix 62 -> 0
+        $normalizePhone = function (?string $phone): string {
+            $digits = preg_replace('/[^0-9]/', '', (string) $phone);
+            if (str_starts_with($digits, '62')) {
+                $digits = '0' . substr($digits, 2);
+            }
+            return $digits;
+        };
+
+        $identifierDigits = $normalizePhone($identifier);
+
         $application = ReservationApplication::query()
             ->where('booking_code', $bookingCode)
-            ->where(function ($query) use ($identifier) {
-                $query->where('customer_phone', 'like', "%{$identifier}%")
-                    ->orWhere('customer_email', $identifier);
-            })
             ->first();
 
-        if (! $application) {
+        $customerPhoneDigits = $normalizePhone($application?->customer_phone);
+
+        $isOwner = $application
+            && (
+                strtolower((string) $application->customer_email) === $identifier
+                || ($identifierDigits !== ''
+                    && strlen($identifierDigits) >= 8
+                    && $customerPhoneDigits === $identifierDigits)
+            );
+
+        if (! $isOwner) {
             return response()->json([
                 'message' => 'Pengajuan tidak ditemukan. Pastikan Kode Pengajuan dan Nomor Telepon/Email sesuai.',
             ], 422);
         }
 
-        $rawToken = \Illuminate\Support\Str::random(40);
+        $rawToken = \Illuminate\Support\Str::random(64);
         $application->update([
             'customer_access_token_hash' => Hash::make($rawToken),
             'customer_access_token_expires_at' => now()->addDays(7),

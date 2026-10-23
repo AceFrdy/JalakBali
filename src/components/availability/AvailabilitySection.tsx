@@ -315,7 +315,7 @@ export function AvailabilitySection({
               {/* Status Legend */}
               <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[11px]">
                 <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8] shadow-[0_0_8px_rgba(56,189,248,0.6)]" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                   <span className="text-[#f5efeb]">Rilis Terbuka (Senin)</span>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -395,14 +395,14 @@ export function AvailabilitySection({
                     whileHover={slot && !isClosed ? { y: -3 } : undefined}
                     whileTap={slot && !isClosed ? { scale: 0.97 } : undefined}
                     disabled={!slot || isClosed}
-                    className={`relative min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded-lg sm:rounded-2xl border flex flex-col justify-between text-left transition-all duration-300 cursor-pointer overflow-hidden ${
+                    className={`relative min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded-lg sm:rounded-2xl border flex flex-col justify-between text-left transition-colors duration-200 cursor-pointer overflow-hidden ${
                       isSelected
-                        ? "bg-[#16271c] border-[#b39257] shadow-[0_0_25px_rgba(179,146,87,0.3)] ring-1 sm:ring-2 ring-[#b39257]"
+                        ? "bg-[#16271c] border-[#b39257] ring-1 ring-[#b39257]"
                         : isRelease && isAvailable
-                        ? "bg-[#0b1d14] border-[#38bdf8]/40 hover:border-[#38bdf8] shadow-md"
+                        ? "bg-[#0b1d14] border-emerald-600/40 hover:border-emerald-500"
                         : isRelease
-                        ? "bg-[#132218] border-[#b39257]/40 hover:border-[#b39257] shadow-md"
-                        : "bg-[#08110b] border-[#d6be8c]/20 hover:border-[#d6be8c]/40"
+                        ? "bg-[#132218] border-[#b39257]/40 hover:border-[#b39257]"
+                        : "bg-[#08110b] border-[#233527] hover:border-[#344d3a]"
                     } ${isClosed ? "opacity-35 cursor-not-allowed" : ""}`}
                   >
                     {/* Top Row: Week Badge & Date */}
@@ -433,11 +433,11 @@ export function AvailabilitySection({
                     <div className="mt-1 space-y-0.5 overflow-hidden">
                       {isAvailable && (
                         <div className="flex flex-col items-start gap-0.5">
-                          <span className="inline-block text-[7px] sm:text-[9px] text-[#08110b] bg-[#38bdf8] px-1 py-0.5 rounded font-bold leading-tight">
+                          <span className="inline-block text-[7px] sm:text-[9px] text-emerald-300 bg-emerald-950/80 border border-emerald-700/50 px-1 py-0.5 rounded font-bold leading-tight">
                             RILIS
                           </span>
                           {/* Hide quota text on mobile to save space */}
-                          <span className="text-[8px] text-[#38bdf8] hidden sm:block truncate">
+                          <span className="text-[8px] text-emerald-400 hidden sm:block truncate">
                             {slot?.availableSingles} S · {slot?.availablePairs} P
                           </span>
                         </div>
@@ -501,7 +501,7 @@ export function AvailabilitySection({
                       <span
                         className={`text-xs font-mono px-3 py-1 rounded-full border ${
                           selectedSlot.status === "available"
-                            ? "border-[#38bdf8]/40 bg-[#38bdf8]/10 text-[#38bdf8]"
+                            ? "border-emerald-600/40 bg-emerald-950/40 text-emerald-300"
                             : selectedSlot.status === "waitlist"
                             ? "border-[#b39257]/40 bg-[#b39257]/10 text-[#d6be8c]"
                             : "border-[#d6be8c]/20 bg-[#132218] text-[#f5efeb]/70"
@@ -517,7 +517,7 @@ export function AvailabilitySection({
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 font-mono text-xs text-[#f5efeb]/70">
                       <div className="flex items-center space-x-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#38bdf8] shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                         <span>Alokasi: {selectedSlot.availableSingles} Individu, {selectedSlot.availablePairs} Pasang</span>
                       </div>
                       <div className="flex items-center space-x-2">

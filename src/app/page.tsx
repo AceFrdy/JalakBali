@@ -17,7 +17,6 @@ import { EditorialGallery } from "@/components/gallery/EditorialGallery";
 import { FinalCtaSection } from "@/components/hero/FinalCtaSection";
 import { Footer } from "@/components/footer/Footer";
 import { WaitlistModal } from "@/components/reservation/WaitlistModal";
-import { CustomCursor } from "@/components/motion/CustomCursor";
 import { AvailabilitySlot } from "@/types";
 
 
@@ -61,9 +60,6 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen bg-[#0b1610] text-[#f4efe4] selection:bg-[#c5a880]/30 selection:text-[#fbf9f5]">
-      {/* Desktop Custom Cursor */}
-      <CustomCursor />
-
       {/* Top Sticky Navigation */}
       <Navbar />
 

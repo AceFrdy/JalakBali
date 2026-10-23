@@ -30,16 +30,16 @@ class CatalogSeeder extends Seeder
         }
 
         $birds = [
-            ['public_id' => 'JB-001', 'name' => 'Ananta', 'sex' => 'male', 'hatch_date' => '2025-05-18', 'status' => 'available', 'price' => 32500000, 'deposit' => 5000000, 'breeding_line' => 'Garis Keturunan Penangkaran (Generasi F2)', 'documentation_status' => 'pending', 'description' => 'Spesimen jantan hasil penangkaran resmi.', 'images' => ['/assets/jalak-portrait.png']],
-            ['public_id' => 'JB-002', 'name' => 'Candra', 'sex' => 'female', 'hatch_date' => '2025-07-22', 'status' => 'available', 'price' => 33000000, 'deposit' => 5000000, 'breeding_line' => 'Garis Keturunan Penangkaran (Generasi F2)', 'documentation_status' => 'pending', 'description' => 'Individu betina hasil penangkaran resmi.', 'images' => ['/assets/pexels-photo-26754369.avif']],
-            ['public_id' => 'JB-003', 'name' => 'Danapati', 'sex' => 'male', 'hatch_date' => '2025-03-09', 'status' => 'verification', 'price' => 34000000, 'deposit' => 5000000, 'breeding_line' => 'Garis Keturunan Penangkaran (Generasi F2)', 'documentation_status' => 'requires_review', 'description' => 'Individu dalam pemeriksaan dokumen.', 'images' => ['/assets/jalak-bali.webp']],
-            ['public_id' => 'JB-004', 'name' => 'Kalyana', 'sex' => 'female', 'hatch_date' => '2025-09-14', 'status' => 'reserved', 'price' => 32000000, 'deposit' => 5000000, 'breeding_line' => 'Garis Keturunan Penangkaran (Generasi F2)', 'documentation_status' => 'verified', 'description' => 'Betina muda dialokasikan untuk rilis berikutnya.', 'images' => ['/assets/jalak-hero.png']],
+            ['tagging' => 'JB-001', 'sex' => 'male', 'hatch_date' => '2025-05-18', 'status' => 'available', 'show_on_homepage' => true, 'price' => 32500000, 'deposit' => 5000000, 'breeding_line' => 'Garis Keturunan Penangkaran (Generasi F2)', 'description' => 'Spesimen jantan hasil penangkaran resmi.', 'images' => ['/assets/jalak-portrait.png']],
+            ['tagging' => 'JB-002', 'sex' => 'female', 'hatch_date' => '2025-07-22', 'status' => 'available', 'show_on_homepage' => true, 'price' => 33000000, 'deposit' => 5000000, 'breeding_line' => 'Garis Keturunan Penangkaran (Generasi F2)', 'description' => 'Individu betina hasil penangkaran resmi.', 'images' => ['/assets/pexels-photo-26754369.avif']],
+            ['tagging' => 'JB-003', 'sex' => 'male', 'hatch_date' => '2025-03-09', 'status' => 'verification', 'show_on_homepage' => false, 'price' => 34000000, 'deposit' => 5000000, 'breeding_line' => 'Garis Keturunan Penangkaran (Generasi F2)', 'description' => 'Individu dalam pemeriksaan dokumen.', 'images' => ['/assets/jalak-bali.webp']],
+            ['tagging' => 'JB-004', 'sex' => 'female', 'hatch_date' => '2025-09-14', 'status' => 'reserved', 'show_on_homepage' => false, 'price' => 32000000, 'deposit' => 5000000, 'breeding_line' => 'Garis Keturunan Penangkaran (Generasi F2)', 'description' => 'Betina muda dialokasikan untuk rilis berikutnya.', 'images' => ['/assets/jalak-hero.png']],
         ];
         $rings = ['JB-001' => 'B-2025-014-CB', 'JB-002' => 'B-2025-019-CB', 'JB-003' => 'B-2025-008-CB', 'JB-004' => 'B-2025-027-CB'];
 
         foreach ($birds as $birdData) {
-            $bird = Bird::updateOrCreate(['public_id' => $birdData['public_id']], $birdData);
-            $ringNumber = $rings[$bird->public_id];
+            $bird = Bird::updateOrCreate(['tagging' => $birdData['tagging']], $birdData);
+            $ringNumber = $rings[$bird->tagging];
             $ring = Ring::updateOrCreate(
                 ['issuing_authority' => 'Jalak Bali Registry', 'normalized_ring_number' => strtoupper(preg_replace('/[^A-Z0-9]/', '', $ringNumber))],
                 ['ring_number' => $ringNumber, 'status' => 'active', 'registered_at' => $bird->hatch_date],

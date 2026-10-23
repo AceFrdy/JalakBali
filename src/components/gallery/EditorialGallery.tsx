@@ -38,18 +38,17 @@ export function EditorialGallery() {
             className="w-[84%] shrink-0 snap-start md:col-span-7 md:row-span-2 md:w-auto"
           >
             <div
-              data-cursor="VIEW"
-              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#d6be8c]/25 group shadow-2xl cursor-pointer"
+              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#233527] group shadow-lg bg-[#08110b]"
             >
               <Image
                 src="/assets/jalak-habitat.png"
                 alt="Captive-bred Jalak Bali perched on natural branch"
                 fill
                 sizes="(max-width: 768px) 75vw, 60vw"
-                className="object-cover object-center group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-95"
+                className="object-cover object-center opacity-95 group-hover:opacity-100 transition-opacity duration-300 filter brightness-95"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80" />
-              <div className="absolute bottom-3 left-3 right-3 flex flex-col items-start gap-2 text-xs font-mono md:bottom-6 md:left-6 md:right-6 md:flex-row md:items-end md:justify-between">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80 pointer-events-none" />
+              <div className="absolute bottom-3 left-3 right-3 flex flex-col items-start gap-2 text-xs font-mono md:bottom-6 md:left-6 md:right-6 md:flex-row md:items-end md:justify-between pointer-events-none">
                 <div>
                     <span className="block font-serif text-sm text-[#f5efeb] md:text-xl">Kanopi Terbang Naturalisasi</span>
                     <span className="text-[9px] text-[#d6be8c] md:text-[10px]">Koridor Aviari Terbuka · Bali</span>
@@ -69,18 +68,17 @@ export function EditorialGallery() {
             className="w-[84%] shrink-0 snap-start md:col-span-5 md:w-auto"
           >
             <div
-              data-cursor="VIEW"
-              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#d6be8c]/25 group shadow-2xl cursor-pointer md:aspect-[4/3]"
+              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#233527] group shadow-lg md:aspect-[4/3] bg-[#08110b]"
             >
               <Image
                 src="/assets/jalak-portrait.png"
                 alt="Plumage detail and cobalt eye ring inspection"
                 fill
                 sizes="(max-width: 768px) 75vw, 40vw"
-                className="object-cover object-center group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-95"
+                className="object-cover object-center opacity-95 group-hover:opacity-100 transition-opacity duration-300 filter brightness-95"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80" />
-              <div className="absolute bottom-3 left-3 right-3 flex flex-col items-start gap-2 text-xs font-mono md:bottom-5 md:left-5 md:right-5 md:flex-row md:items-end md:justify-between">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80 pointer-events-none" />
+              <div className="absolute bottom-3 left-3 right-3 flex flex-col items-start gap-2 text-xs font-mono md:bottom-5 md:left-5 md:right-5 md:flex-row md:items-end md:justify-between pointer-events-none">
                 <div>
                     <span className="block font-serif text-sm text-[#f5efeb] md:text-lg">Audit Bulu Biometrik</span>
                     <span className="text-[9px] text-[#d6be8c] md:text-[10px]">Ruang Penyaringan Klinis</span>
@@ -100,18 +98,17 @@ export function EditorialGallery() {
             className="w-[84%] shrink-0 snap-start md:col-span-5 md:w-auto"
           >
             <div
-              data-cursor="VIEW"
-              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#d6be8c]/25 group shadow-2xl cursor-pointer md:aspect-[4/3]"
+              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#233527] group shadow-lg md:aspect-[4/3] bg-[#08110b]"
             >
               <Image
                 src="/assets/jalak-hero.png"
                 alt="Avian caretaker monitoring social interaction"
                 fill
                 sizes="(max-width: 768px) 75vw, 40vw"
-                className="object-cover object-center group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-95"
+                className="object-cover object-center opacity-95 group-hover:opacity-100 transition-opacity duration-300 filter brightness-95"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80" />
-              <div className="absolute bottom-3 left-3 right-3 flex flex-col items-start gap-2 text-xs font-mono md:bottom-5 md:left-5 md:right-5 md:flex-row md:items-end md:justify-between">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80 pointer-events-none" />
+              <div className="absolute bottom-3 left-3 right-3 flex flex-col items-start gap-2 text-xs font-mono md:bottom-5 md:left-5 md:right-5 md:flex-row md:items-end md:justify-between pointer-events-none">
                 <div>
                     <span className="block font-serif text-sm text-[#f5efeb] md:text-lg">Observasi Hierarki Sosial</span>
                     <span className="text-[9px] text-[#d6be8c] md:text-[10px]">Kandang Penjodohan 04</span>

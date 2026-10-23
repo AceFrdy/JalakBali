@@ -78,7 +78,7 @@ export function HandoverScheduleSection() {
                     {s.detail}
                   </p>
                 </div>
-                <div className="pt-3 border-t border-[#d6be8c]/10 text-[10px] text-[#38bdf8] flex items-center space-x-1.5">
+                <div className="pt-3 border-t border-[#d6be8c]/10 text-[10px] text-emerald-400 flex items-center space-x-1.5">
                   <CheckCircle2 className="w-3 h-3" />
                   <span>Izin Resmi</span>
                 </div>
@@ -109,8 +109,8 @@ export function HandoverScheduleSection() {
             </div>
 
             <div className="space-y-4 md:pl-4">
-              <div className="flex items-center space-x-2 text-[#38bdf8]">
-                <Truck className="w-4 h-4" />
+              <div className="flex items-center space-x-2 text-[#d6be8c]">
+                <Truck className="w-4 h-4 text-[#b39257]" />
                 <span className="text-[10px] uppercase tracking-[0.25em]">Opsi B</span>
               </div>
               <h4 className="font-serif text-2xl text-[#f5efeb] font-light">

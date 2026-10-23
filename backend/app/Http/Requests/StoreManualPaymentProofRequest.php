@@ -24,7 +24,7 @@ class StoreManualPaymentProofRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'access_token' => ['required', 'string', 'size:64'],
+            'access_token' => ['required', 'string', 'min:40', 'max:64'],
             'payment_proof' => [
                 'required',
                 File::types(['pdf', 'jpg', 'jpeg', 'png', 'webp'])->max(10 * 1024),

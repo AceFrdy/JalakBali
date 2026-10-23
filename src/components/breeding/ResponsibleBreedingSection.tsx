@@ -42,19 +42,18 @@ export function ResponsibleBreedingSection() {
           <div className="lg:col-span-5 relative space-y-6">
             <ImageReveal direction="bottom" duration={1.1} className="h-full">
               <div
-                data-cursor="VIEW"
-                className="relative h-full aspect-[3/4] overflow-hidden rounded-3xl border border-[#d6be8c]/25 shadow-2xl group cursor-pointer lg:aspect-auto"
+                className="relative h-full aspect-[3/4] overflow-hidden rounded-3xl border border-[#233527] shadow-lg group lg:aspect-auto bg-[#08110b]"
               >
                 <Image
                   src="/assets/Jalak Bali Biru berdiri.png"
                   alt="Responsible aviary care and flight conditioning"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
-                  className="object-cover object-center filter brightness-95 group-hover:scale-104 transition-transform duration-700 ease-out"
+                  className="object-cover object-center filter brightness-95 opacity-95 group-hover:opacity-100 transition-opacity duration-300"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#060e08] via-transparent to-transparent opacity-80 pointer-events-none" />
 
-                <div className="absolute bottom-6 left-6 right-6 font-mono text-xs">
+                <div className="absolute bottom-6 left-6 right-6 font-mono text-xs pointer-events-none">
                   <span className="text-[9px] uppercase tracking-widest text-[#b39257] block">
                     Zona Terbang Aviari Terkontrol
                   </span>
@@ -79,7 +78,7 @@ export function ResponsibleBreedingSection() {
             >
               {RESPONSIBLE_BREEDING_PILLARS.map((pillar) => (
                 <StaggerItem key={pillar.id} className="w-[84%] shrink-0 snap-start sm:w-auto">
-                  <div className="p-6 rounded-2xl border border-[#d6be8c]/15 bg-[#0d1811]/70 hover:border-[#b39257]/50 hover:bg-[#112117] transition-all duration-300 space-y-3 font-mono h-full flex flex-col justify-between">
+                  <div className="p-6 rounded-2xl border border-[#233527] bg-[#0d1811] hover:border-[#b39257]/40 transition-colors duration-200 space-y-3 font-mono h-full flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.25em] text-[#b39257] mb-2">
                         <span>{pillar.tag}</span>
@@ -99,7 +98,7 @@ export function ResponsibleBreedingSection() {
                       </p>
                     </div>
 
-                    <div className="pt-2 border-t border-[#d6be8c]/10 flex items-center space-x-1 text-[10px] text-[#38bdf8]">
+                    <div className="pt-2 border-t border-[#d6be8c]/10 flex items-center space-x-1 text-[10px] text-emerald-400">
                       <span>✓</span>
                       <span>Standar Terverifikasi</span>
                     </div>
@@ -110,10 +109,10 @@ export function ResponsibleBreedingSection() {
             <div>
               {/* Overlapping small plate */}
               <FadeIn direction="up" delay={0.2}>
-                <div className="p-6 rounded-2xl bg-[#0d1811] border border-[#d6be8c]/20 space-y-3 font-mono text-xs">
-                  <div className="flex items-center space-x-2 text-[#38bdf8]">
-                    <ShieldCheck className="w-4 h-4" />
-                    <span className="text-[10px] uppercase tracking-widest">Standar Veteriner</span>
+                <div className="p-6 rounded-2xl bg-[#0d1811] border border-[#233527] space-y-3 font-mono text-xs">
+                  <div className="flex items-center space-x-2 text-[#d6be8c]">
+                    <ShieldCheck className="w-4 h-4 text-[#b39257]" />
+                    <span className="text-[10px] uppercase tracking-widest font-semibold">Standar Veteriner</span>
                   </div>
                   <p className="font-sans font-light text-xs text-[#f5efeb]/75 leading-relaxed">
                     Pengujian PCR bulu DNA unggas secara berkala, penyaringan patogen feses, serta pengayaan pakan dengan buah ara asli Bali dan wadah mencari makan serangga hidup.

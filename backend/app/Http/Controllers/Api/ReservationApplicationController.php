@@ -35,6 +35,7 @@ class ReservationApplicationController extends Controller
             $release = WeeklyRelease::query()
                 ->where('external_id', $data['weekly_release_id'])
                 ->orWhere('id', $data['weekly_release_id'])
+                ->lockForUpdate()
                 ->first();
 
             if (! $release) {
@@ -86,6 +87,7 @@ class ReservationApplicationController extends Controller
                     $targetBird = \App\Models\Bird::query()
                         ->where('id', $itemId)
                         ->orWhere('tagging', $itemId)
+                        ->lockForUpdate()
                         ->first();
 
                     if ($targetBird) {
@@ -101,6 +103,7 @@ class ReservationApplicationController extends Controller
                     $targetPair = \App\Models\BirdPair::query()
                         ->where('id', $itemId)
                         ->orWhere('pair_tag', $itemId)
+                        ->lockForUpdate()
                         ->first();
 
                     if ($targetPair) {

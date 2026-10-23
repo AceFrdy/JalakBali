@@ -200,7 +200,7 @@ export function BirdProvenanceSection() {
                     <span
                       className={`text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
                         stage.badge === "Verified" || stage.badge === "Terverifikasi"
-                          ? "border-[#38bdf8]/40 bg-[#38bdf8]/10 text-[#38bdf8]"
+                          ? "border-emerald-600/30 bg-emerald-950/40 text-emerald-300"
                           : "border-[#d6be8c]/30 bg-[#d6be8c]/10 text-[#d6be8c]"
                       }`}
                     >
