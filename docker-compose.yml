@@ -37,6 +37,14 @@ services:
       DB_DATABASE: ${DB_DATABASE:-jalakbali}
       DB_USERNAME: ${DB_USERNAME:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
+      SESSION_DRIVER: ${SESSION_DRIVER:-database}
+      SESSION_LIFETIME: ${SESSION_LIFETIME:-120}
+      # Must match the root domain (e.g. kabinetsengkuni.com) so the session cookie
+      # is valid across subdomains and survives the Dokploy reverse-proxy hop.
+      SESSION_DOMAIN: ${SESSION_DOMAIN:-}
+      # Must be true when behind HTTPS reverse proxy; prevents cookie stripping.
+      SESSION_SECURE_COOKIE: ${SESSION_SECURE_COOKIE:-true}
+      FRONTEND_URLS: ${FRONTEND_URLS:-https://kabinetsengkuni.com,https://www.kabinetsengkuni.com}
     expose:
       - "8000"
     volumes:
