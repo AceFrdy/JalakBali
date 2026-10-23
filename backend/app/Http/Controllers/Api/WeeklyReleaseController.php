@@ -75,10 +75,13 @@ class WeeklyReleaseController extends Controller
      */
     public function show(string $id): JsonResponse
     {
-        $release = WeeklyRelease::query()
-            ->where('external_id', $id)
-            ->orWhere('id', $id)
-            ->first();
+        $query = WeeklyRelease::query()->where('external_id', $id);
+
+        if (ctype_digit($id)) {
+            $query->orWhere('id', (int) $id);
+        }
+
+        $release = $query->first();
 
         if (! $release) {
             return response()->json([

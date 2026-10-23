@@ -32,11 +32,11 @@ class ReservationApplicationController extends Controller
             $data['customer_access_token_hash'] = Hash::make($rawAccessToken);
             $data['customer_access_token_expires_at'] = now()->addHours(24);
 
-            $release = WeeklyRelease::query()
-                ->where('external_id', $data['weekly_release_id'])
-                ->orWhere('id', $data['weekly_release_id'])
-                ->lockForUpdate()
-                ->first();
+            $releaseQuery = WeeklyRelease::query()->where('external_id', $data['weekly_release_id']);
+            if (ctype_digit((string) $data['weekly_release_id'])) {
+                $releaseQuery->orWhere('id', (int) $data['weekly_release_id']);
+            }
+            $release = $releaseQuery->lockForUpdate()->first();
 
             if (! $release) {
                 throw ValidationException::withMessages([
@@ -70,10 +70,11 @@ class ReservationApplicationController extends Controller
 
             // 1. Try CatalogItem first for legacy/catalog IDs
             if ($itemId) {
-                $item = CatalogItem::query()
-                    ->where('external_id', $itemId)
-                    ->orWhere('id', $itemId)
-                    ->first();
+                $itemQuery = CatalogItem::query()->where('external_id', $itemId);
+                if (ctype_digit((string) $itemId)) {
+                    $itemQuery->orWhere('id', (int) $itemId);
+                }
+                $item = $itemQuery->first();
 
                 if ($item) {
                     $price = (int) $item->price;
@@ -84,11 +85,11 @@ class ReservationApplicationController extends Controller
             // 2. Check live models (Bird or BirdPair) & validate availability
             if ($itemId) {
                 if ($data['reservation_type'] === 'individual') {
-                    $targetBird = \App\Models\Bird::query()
-                        ->where('id', $itemId)
-                        ->orWhere('tagging', $itemId)
-                        ->lockForUpdate()
-                        ->first();
+                    $birdQuery = \App\Models\Bird::query()->where('tagging', $itemId);
+                    if (ctype_digit((string) $itemId)) {
+                        $birdQuery->orWhere('id', (int) $itemId);
+                    }
+                    $targetBird = $birdQuery->lockForUpdate()->first();
 
                     if ($targetBird) {
                         if ($targetBird->status !== 'available') {
@@ -100,11 +101,11 @@ class ReservationApplicationController extends Controller
                         $deposit = (int) ($targetBird->deposit ?? $deposit ?? 5000000);
                     }
                 } else {
-                    $targetPair = \App\Models\BirdPair::query()
-                        ->where('id', $itemId)
-                        ->orWhere('pair_tag', $itemId)
-                        ->lockForUpdate()
-                        ->first();
+                    $pairQuery = \App\Models\BirdPair::query()->where('pair_tag', $itemId);
+                    if (ctype_digit((string) $itemId)) {
+                        $pairQuery->orWhere('id', (int) $itemId);
+                    }
+                    $targetPair = $pairQuery->lockForUpdate()->first();
 
                     if ($targetPair) {
                         if ($targetPair->status !== 'available') {
