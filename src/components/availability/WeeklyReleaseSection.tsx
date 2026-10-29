@@ -85,9 +85,9 @@ export function WeeklyReleaseSection({
 
         {/* Status Banner */}
         <FadeIn direction="up" delay={0.1}>
-          <div className="p-6 rounded-2xl border border-[#d6be8c]/25 bg-[#0d1811] mb-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 font-mono text-xs">
+          <div className="p-6 rounded border border-[#d6be8c]/25 bg-[#0d1811] mb-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 font-mono text-xs">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-xl bg-[#b39257]/15 border border-[#b39257]/30 flex flex-col items-center justify-center">
+              <div className="w-12 h-12 rounded bg-[#b39257]/15 border border-[#b39257]/30 flex flex-col items-center justify-center">
                 <span className="text-[9px] uppercase tracking-wider text-[#b39257]">{currentRelease.week || "W-40"}</span>
                 <span className="font-bold text-[#f5efeb]">
                   {currentRelease.formattedDate ? currentRelease.formattedDate.slice(0, 2) : "OCT"}
@@ -105,18 +105,18 @@ export function WeeklyReleaseSection({
 
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="w-2 h-2 rounded bg-emerald-500" />
                 <span className="text-[#f5efeb]">
                   {String(currentRelease.availableSingle).padStart(2, "0")} Individu Tersedia
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-[#b39257] animate-pulse" />
+                <span className="w-2 h-2 rounded bg-[#b39257] animate-pulse" />
                 <span className="text-[#f5efeb]">
                   {String(currentRelease.availablePair).padStart(2, "0")} Pasang Tersedia
                 </span>
               </div>
-              <div className="text-[10px] text-[#d6be8c] px-3 py-1 rounded-full border border-[#d6be8c]/20 bg-[#132218]">
+              <div className="text-[10px] text-[#d6be8c] px-3 py-1 rounded border border-[#d6be8c]/20 bg-[#132218]">
                 Rilis Berikutnya: {nextReleaseDate}
               </div>
             </div>
@@ -137,7 +137,7 @@ export function WeeklyReleaseSection({
               {/* Option 1: INDIVIDUAL (5 Cols) */}
               <div className="lg:col-span-5 flex flex-col">
                 <FadeIn direction="up" delay={0.15} className="h-full">
-                  <div className="h-full p-8 sm:p-10 rounded-3xl border border-[#d6be8c]/25 bg-[#0d1811] flex flex-col justify-between space-y-8 relative overflow-hidden group shadow-xl">
+                  <div className="h-full p-8 sm:p-10 rounded border border-[#d6be8c]/25 bg-[#0d1811] flex flex-col justify-between space-y-8 relative overflow-hidden group shadow-xl">
                     <div>
                       <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-[#b39257] font-mono pb-4 border-b border-[#d6be8c]/15 mb-6">
                         <span>Alokasi Individu</span>
@@ -157,7 +157,7 @@ export function WeeklyReleaseSection({
                         Satu individu Jalak Bali hasil penangkaran dengan cincin kaki logam tertutup, konfirmasi jenis kelamin DNA, dan dokumentasi microchip. Ideal untuk koleksi aviari yang mapan.
                       </p>
 
-                      <div className="p-4 rounded-xl bg-[#08110b] border border-[#d6be8c]/15 space-y-2 font-mono text-xs mb-6">
+                      <div className="p-4 rounded bg-[#08110b] border border-[#d6be8c]/15 space-y-2 font-mono text-xs mb-6">
                         <div className="flex justify-between text-[#f5efeb]/60">
                           <span>Kandidat Unggulan</span>
                           <span className="text-[#f5efeb] font-semibold">{currentSingle ? `${currentSingle.publicId}` : "Spesimen Terjadwal"}</span>
@@ -191,7 +191,7 @@ export function WeeklyReleaseSection({
                           }
                         }}
                         data-cursor="RESERVE"
-                        className={`w-full py-4 rounded-full text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all shadow-[0_10px_25px_rgba(179,146,87,0.25)] flex items-center justify-center space-x-2 cursor-pointer ${
+                        className={`w-full py-4 rounded text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all shadow-[0_10px_25px_rgba(179,146,87,0.25)] flex items-center justify-center space-x-2 cursor-pointer ${
                           isSingleAvailable
                             ? "bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b]"
                             : "border border-[#b39257] bg-[#b39257]/15 text-[#d6be8c] hover:bg-[#b39257] hover:text-[#08110b]"
@@ -211,9 +211,9 @@ export function WeeklyReleaseSection({
               {/* Option 2: PAIR (7 Cols - Wider Editorial Feature) */}
               <div className="lg:col-span-7 flex flex-col">
                 <FadeIn direction="up" delay={0.25} className="h-full">
-                  <div className="h-full p-8 sm:p-12 rounded-3xl border border-[#b39257]/40 bg-[#101e14] flex flex-col justify-between space-y-8 relative overflow-hidden shadow-2xl">
+                  <div className="h-full p-8 sm:p-12 rounded border border-[#b39257]/40 bg-[#101e14] flex flex-col justify-between space-y-8 relative overflow-hidden shadow-2xl">
                     {/* Decorative Badge */}
-                    <div className="absolute top-0 right-0 bg-[#b39257]/20 border-b border-l border-[#b39257]/40 px-5 py-2 rounded-bl-2xl text-[9px] uppercase tracking-[0.25em] font-mono text-[#d6be8c]">
+                    <div className="absolute top-0 right-0 bg-[#b39257]/20 border-b border-l border-[#b39257]/40 px-5 py-2 rounded text-[9px] uppercase tracking-[0.25em] font-mono text-[#d6be8c]">
                       Silsilah Bonding
                     </div>
 
@@ -239,7 +239,7 @@ export function WeeklyReleaseSection({
                       </p>
 
                       {/* Pair Information Dossier Box */}
-                      <div className="p-6 rounded-2xl bg-[#08110b] border border-[#d6be8c]/25 space-y-4 font-mono text-xs mb-6">
+                      <div className="p-6 rounded bg-[#08110b] border border-[#d6be8c]/25 space-y-4 font-mono text-xs mb-6">
                         <div className="flex items-center justify-between border-b border-[#d6be8c]/15 pb-3">
                           <div>
                             <span className="text-[10px] uppercase tracking-wider text-[#b39257] block">ID PASANG</span>
@@ -251,12 +251,12 @@ export function WeeklyReleaseSection({
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                          <div className="p-3 rounded-lg bg-[#0d1811] border border-[#d6be8c]/15">
+                          <div className="p-3 rounded bg-[#0d1811] border border-[#d6be8c]/15">
                             <span className="text-[9px] uppercase text-[#b39257] block">BURUNG A (JANTAN)</span>
                             <span className="text-sm font-semibold text-[#f5efeb]">{currentPair?.birdA ? currentPair.birdA.publicId : "Jantan ♂"}</span>
                             <span className="block text-[10px] text-[#f5efeb]/60 mt-0.5">{currentPair?.birdA?.ringTag ? `Ring: ${currentPair.birdA.ringTag}` : "DNA Terverifikasi"}</span>
                           </div>
-                          <div className="p-3 rounded-lg bg-[#0d1811] border border-[#d6be8c]/15">
+                          <div className="p-3 rounded bg-[#0d1811] border border-[#d6be8c]/15">
                             <span className="text-[9px] uppercase text-[#b39257] block">BURUNG B (BETINA)</span>
                             <span className="text-sm font-semibold text-[#f5efeb]">{currentPair?.birdB ? currentPair.birdB.publicId : "Betina ♀"}</span>
                             <span className="block text-[10px] text-[#f5efeb]/60 mt-0.5">{currentPair?.birdB?.ringTag ? `Ring: ${currentPair.birdB.ringTag}` : "DNA Terverifikasi"}</span>
@@ -295,7 +295,7 @@ export function WeeklyReleaseSection({
                                 }
                               }}
                               data-cursor="RESERVE"
-                              className="flex-1 py-4 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all shadow-[0_12px_30px_rgba(179,146,87,0.3)] flex items-center justify-center space-x-2 cursor-pointer"
+                              className="flex-1 py-4 rounded bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all shadow-[0_12px_30px_rgba(179,146,87,0.3)] flex items-center justify-center space-x-2 cursor-pointer"
                             >
                               <span>Reservasi Pasang</span>
                               <ArrowRight className="w-4 h-4" />
@@ -304,7 +304,7 @@ export function WeeklyReleaseSection({
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
                               onClick={() => onJoinWaitlist("pair")}
-                              className="px-6 py-4 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[10px] uppercase tracking-[0.2em] font-mono transition-colors text-center cursor-pointer"
+                              className="px-6 py-4 rounded border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[10px] uppercase tracking-[0.2em] font-mono transition-colors text-center cursor-pointer"
                             >
                               Daftar Tunggu
                             </motion.button>
@@ -314,7 +314,7 @@ export function WeeklyReleaseSection({
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => onJoinWaitlist("pair")}
-                            className="w-full py-4 rounded-full border border-[#b39257] bg-[#b39257]/15 hover:bg-[#b39257] hover:text-[#08110b] text-[#d6be8c] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                            className="w-full py-4 rounded border border-[#b39257] bg-[#b39257]/15 hover:bg-[#b39257] hover:text-[#08110b] text-[#d6be8c] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all flex items-center justify-center space-x-2 cursor-pointer"
                           >
                             <span>Bergabung Daftar Tunggu Pasangan</span>
                             <ArrowRight className="w-4 h-4" />

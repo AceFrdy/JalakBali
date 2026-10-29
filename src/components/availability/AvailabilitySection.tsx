@@ -274,11 +274,11 @@ export function AvailabilitySection({
 
         {/* ── Calendar Container ── */}
         <FadeIn direction="up" delay={0.1}>
-          <div className="p-6 sm:p-10 rounded-3xl border border-[#d6be8c]/25 bg-[#0d1811] shadow-2xl space-y-6">
+          <div className="p-6 sm:p-10 rounded border border-[#d6be8c]/25 bg-[#0d1811] shadow-2xl space-y-6">
             {/* Calendar Top Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#d6be8c]/15 gap-4 font-mono text-xs">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-[#b39257]/15 border border-[#b39257]/30 flex items-center justify-center text-[#d6be8c] shrink-0">
+                <div className="w-10 h-10 rounded bg-[#b39257]/15 border border-[#b39257]/30 flex items-center justify-center text-[#d6be8c] shrink-0">
                   <Calendar className="w-5 h-5" />
                 </div>
                 <div>
@@ -292,7 +292,7 @@ export function AvailabilitySection({
                       onClick={() => setMonthOffset((o) => o - 1)}
                       disabled={!canGoPrev}
                       aria-label="Bulan sebelumnya"
-                      className="w-7 h-7 rounded-lg border border-[#d6be8c]/20 flex items-center justify-center text-[#d6be8c] hover:bg-[#b39257]/15 hover:border-[#b39257]/40 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                      className="w-7 h-7 rounded border border-[#d6be8c]/20 flex items-center justify-center text-[#d6be8c] hover:bg-[#b39257]/15 hover:border-[#b39257]/40 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
@@ -304,7 +304,7 @@ export function AvailabilitySection({
                       onClick={() => setMonthOffset((o) => o + 1)}
                       disabled={!canGoNext}
                       aria-label="Bulan berikutnya"
-                      className="w-7 h-7 rounded-lg border border-[#d6be8c]/20 flex items-center justify-center text-[#d6be8c] hover:bg-[#b39257]/15 hover:border-[#b39257]/40 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                      className="w-7 h-7 rounded border border-[#d6be8c]/20 flex items-center justify-center text-[#d6be8c] hover:bg-[#b39257]/15 hover:border-[#b39257]/40 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -315,15 +315,15 @@ export function AvailabilitySection({
               {/* Status Legend */}
               <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[11px]">
                 <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                  <span className="w-2.5 h-2.5 rounded bg-emerald-500" />
                   <span className="text-[#f5efeb]">Rilis Terbuka (Senin)</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#b39257]" />
+                  <span className="w-2.5 h-2.5 rounded bg-[#b39257]" />
                   <span className="text-[#d6be8c]">Waitlist / Terjadwal</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#1c2c20] border border-[#d6be8c]/20" />
+                  <span className="w-2.5 h-2.5 rounded bg-[#1c2c20] border border-[#d6be8c]/20" />
                   <span className="text-[#f5efeb]/40">Hari Non-Rilis</span>
                 </div>
               </div>
@@ -334,7 +334,7 @@ export function AvailabilitySection({
               {DAY_NAMES.map((name, i) => (
                 <div
                   key={name}
-                  className={`py-1.5 sm:py-2 rounded-lg ${
+                  className={`py-1.5 sm:py-2 rounded ${
                     i === 0
                       ? "bg-[#b39257]/15 text-[#d6be8c] font-bold border border-[#b39257]/30"
                       : "text-[#f5efeb]/60"
@@ -362,7 +362,7 @@ export function AvailabilitySection({
                   return (
                     <div
                       key={`empty-${idx}`}
-                      className="min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded-lg sm:rounded-2xl border border-[#d6be8c]/5 bg-[#08110b]/30 opacity-20 flex flex-col justify-between overflow-hidden"
+                      className="min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded sm:rounded border border-[#d6be8c]/5 bg-[#08110b]/30 opacity-20 flex flex-col justify-between overflow-hidden"
                     >
                       <span className="text-[10px] text-[#f5efeb]/30 text-right">{day.dateNumber}</span>
                     </div>
@@ -374,7 +374,7 @@ export function AvailabilitySection({
                   return (
                     <div
                       key={day.dateStr}
-                      className="min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded-lg sm:rounded-2xl border border-[#d6be8c]/10 bg-[#08110b]/50 flex flex-col justify-between text-[#f5efeb]/40 transition-colors hover:border-[#d6be8c]/25 overflow-hidden"
+                      className="min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded sm:rounded border border-[#d6be8c]/10 bg-[#08110b]/50 flex flex-col justify-between text-[#f5efeb]/40 transition-colors hover:border-[#d6be8c]/25 overflow-hidden"
                     >
                       <span className="text-[10px] sm:text-xs font-serif text-[#f5efeb]/60 text-right block">{day.dateNumber}</span>
                       <div className="text-[9px] text-[#f5efeb]/20 hidden sm:block">Perawatan Rutin</div>
@@ -395,7 +395,7 @@ export function AvailabilitySection({
                     whileHover={slot && !isClosed ? { y: -3 } : undefined}
                     whileTap={slot && !isClosed ? { scale: 0.97 } : undefined}
                     disabled={!slot || isClosed}
-                    className={`relative min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded-lg sm:rounded-2xl border flex flex-col justify-between text-left transition-colors duration-200 cursor-pointer overflow-hidden ${
+                    className={`relative min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded sm:rounded border flex flex-col justify-between text-left transition-colors duration-200 cursor-pointer overflow-hidden ${
                       isSelected
                         ? "bg-[#16271c] border-[#b39257] ring-1 ring-[#b39257]"
                         : isRelease && isAvailable
@@ -466,7 +466,7 @@ export function AvailabilitySection({
 
                     {/* Bottom active line */}
                     {isSelected && (
-                      <div className="absolute inset-x-0 bottom-0 h-0.5 sm:h-1 bg-[#b39257] rounded-b-lg sm:rounded-b-xl" />
+                      <div className="absolute inset-x-0 bottom-0 h-0.5 sm:h-1 bg-[#b39257] rounded sm:rounded" />
                     )}
                   </motion.button>
                 );
@@ -477,7 +477,7 @@ export function AvailabilitySection({
 
         {/* ── Selected Week Expanded Dossier ── */}
         <FadeIn direction="up" delay={0.2} className="mt-8 sm:mt-10">
-          <div className="p-6 sm:p-10 rounded-3xl border border-[#d6be8c]/25 bg-[#0d1811] shadow-2xl">
+          <div className="p-6 sm:p-10 rounded border border-[#d6be8c]/25 bg-[#0d1811] shadow-2xl">
             <AnimatePresence mode="wait">
               {selectedSlot ? (
                 <motion.div
@@ -499,7 +499,7 @@ export function AvailabilitySection({
                         Rilis {selectedSlot.formattedDate}
                       </h3>
                       <span
-                        className={`text-xs font-mono px-3 py-1 rounded-full border ${
+                        className={`text-xs font-mono px-3 py-1 rounded border ${
                           selectedSlot.status === "available"
                             ? "border-emerald-600/40 bg-emerald-950/40 text-emerald-300"
                             : selectedSlot.status === "waitlist"
@@ -535,7 +535,7 @@ export function AvailabilitySection({
                         whileTap={{ scale: 0.98 }}
                         onClick={() => onSelectSlot(selectedSlot)}
                         data-cursor="RESERVE"
-                        className="px-8 py-4 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-semibold transition-all shadow-[0_10px_25px_rgba(179,146,87,0.25)] flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
+                        className="px-8 py-4 rounded bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-semibold transition-all shadow-[0_10px_25px_rgba(179,146,87,0.25)] flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
                       >
                         <span>Mulai Reservasi Rilis Ini</span>
                         <ArrowRight className="w-4 h-4" />
@@ -546,7 +546,7 @@ export function AvailabilitySection({
                         whileTap={{ scale: 0.98 }}
                         onClick={() => onJoinWaitlist(selectedSlot)}
                         data-cursor="WAITLIST"
-                        className="px-8 py-4 rounded-full border border-[#b39257] hover:bg-[#b39257]/15 text-[#d6be8c] text-[11px] uppercase tracking-[0.25em] font-semibold transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
+                        className="px-8 py-4 rounded border border-[#b39257] hover:bg-[#b39257]/15 text-[#d6be8c] text-[11px] uppercase tracking-[0.25em] font-semibold transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
                       >
                         <span>Masuk Daftar Tunggu Prioritas</span>
                         <ArrowRight className="w-4 h-4" />

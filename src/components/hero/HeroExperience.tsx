@@ -300,7 +300,7 @@ export function HeroExperience({
             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.8 }}
-            className="mb-8 p-4 rounded-xl border border-[#233527] bg-[#0e1912] max-w-md font-mono"
+            className="mb-8 p-4 rounded border border-[#233527] bg-[#0e1912] max-w-md font-mono"
           >
             <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-[#b39257] pb-2 border-b border-[#233527] mb-2.5">
               <span>Status Rilis Mingguan</span>
@@ -331,7 +331,7 @@ export function HeroExperience({
             <button
               type="button"
               onClick={onExploreCollection}
-              className="px-7 py-3.5 rounded-full bg-[#b39257] hover:bg-[#c5a880] active:bg-[#9e7e43] text-[#08110b] text-[11px] uppercase tracking-[0.2em] font-semibold transition-colors flex items-center justify-center space-x-2.5 cursor-pointer shadow-sm"
+              className="px-7 py-3.5 rounded bg-[#b39257] hover:bg-[#c5a880] active:bg-[#9e7e43] text-[#08110b] text-[11px] uppercase tracking-[0.2em] font-semibold transition-colors flex items-center justify-center space-x-2.5 cursor-pointer shadow-sm"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Lihat Burung Tersedia</span>
@@ -340,7 +340,7 @@ export function HeroExperience({
             <button
               type="button"
               onClick={onCheckAvailability}
-              className="px-7 py-3.5 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[11px] uppercase tracking-[0.2em] font-medium transition-colors text-center cursor-pointer flex items-center justify-center space-x-2"
+              className="px-7 py-3.5 rounded border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[11px] uppercase tracking-[0.2em] font-medium transition-colors text-center cursor-pointer flex items-center justify-center space-x-2"
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Jadwal &amp; Alokasi</span>

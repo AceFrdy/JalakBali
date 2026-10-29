@@ -8,7 +8,6 @@ import { CURRENT_RELEASE } from "@/data/weeklyReleases";
 import { getWeeklyReleases } from "@/lib/api";
 import { getActiveUpcomingRelease } from "@/lib/availability";
 import { WeeklyRelease } from "@/types";
-import { ScrollProgress } from "@/components/motion/ScrollProgress";
 
 interface NavbarProps {
   onOpenReservation?: () => void;
@@ -33,7 +32,7 @@ export function Navbar({ onOpenReservation }: NavbarProps) {
           setActiveRelease(active);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const totalQuota = (activeRelease.availableSingle ?? 0) + (activeRelease.availablePair ?? 0);
@@ -43,13 +42,11 @@ export function Navbar({ onOpenReservation }: NavbarProps) {
 
   return (
     <>
-      <ScrollProgress />
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
             ? "bg-[#08110b]/92 backdrop-blur-md border-b border-[#d6be8c]/15 py-2.5 shadow-2xl"
             : "bg-gradient-to-b from-[#08110b]/95 via-[#08110b]/40 to-transparent py-3"
-        }`}
+          }`}
       >
         <div className="max-w-[1760px] mx-auto site-gutter flex items-center justify-between">
           <Link href="/" className="flex shrink-0 flex-col group focus:outline-none">
@@ -105,7 +102,7 @@ export function Navbar({ onOpenReservation }: NavbarProps) {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 data-cursor="RESERVE"
-                className="group flex items-center space-x-2 rounded-full border border-[#b39257]/70 bg-[#b39257]/10 px-6 py-2.5 font-mono text-[10px] uppercase tracking-[0.25em] text-[#f5efeb] shadow-sm transition-all duration-300 hover:bg-[#b39257] hover:text-[#08110b] cursor-pointer"
+                className="group flex items-center space-x-2 border border-[#b39257]/70 bg-[#b39257]/10 px-6 py-2.5 font-mono text-[10px] uppercase tracking-[0.25em] text-[#f5efeb] shadow-sm transition-all duration-300 hover:bg-[#b39257] hover:text-[#08110b] cursor-pointer"
               >
                 <span>Reservasi</span>
                 <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -120,7 +117,7 @@ export function Navbar({ onOpenReservation }: NavbarProps) {
             aria-label={mobileMenuOpen ? "Tutup menu" : "Buka menu"}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
-            className="md:hidden flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d6be8c]/30 text-[#f5efeb] transition-colors hover:border-[#b39257] hover:text-[#d6be8c]"
+            className="md:hidden flex h-10 w-10 shrink-0 items-center justify-center border border-[#d6be8c]/30 text-[#f5efeb] transition-colors hover:border-[#b39257] hover:text-[#d6be8c]"
           >
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </motion.button>

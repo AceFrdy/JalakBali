@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Mail, MessageCircle, Headphones, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CURRENT_RELEASE } from "@/data/weeklyReleases";
@@ -28,7 +28,7 @@ function CustomerServicePopover({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 8, scale: 0.98 }}
           transition={{ duration: 0.16 }}
-          className="absolute bottom-full right-0 z-[60] mb-3 w-[min(20rem,calc(100vw-2rem))] rounded-xl border border-[#d6be8c]/25 bg-[#0d1811] p-4 font-mono shadow-2xl"
+          className="absolute bottom-full right-0 z-[60] mb-3 w-[min(20rem,calc(100vw-2rem))] border border-[#d6be8c]/25 bg-[#0d1811] p-4 font-mono shadow-2xl"
         >
           <div className="mb-3 flex items-start justify-between gap-4">
             <div>
@@ -43,7 +43,7 @@ function CustomerServicePopover({
               type="button"
               onClick={onClose}
               aria-label="Tutup pilihan kontak"
-              className="rounded-full p-1.5 text-[#f5efeb]/60 transition-colors hover:bg-[#f5efeb]/5 hover:text-[#d6be8c]"
+              className=" p-1.5 text-[#f5efeb]/60 transition-colors hover:bg-[#f5efeb]/5 hover:text-[#d6be8c]"
             >
               <X className="h-4 w-4" />
             </button>
@@ -52,7 +52,7 @@ function CustomerServicePopover({
           <div className="space-y-2">
             <a
               href="mailto:registrar@jalakbali.breeding?subject=Informasi%20Jalak%20Bali"
-              className="flex items-center gap-3 rounded-lg border border-[#d6be8c]/20 bg-[#08110b] p-3 text-[#f5efeb] transition-colors hover:border-[#b39257]"
+              className="flex items-center gap-3 border border-[#d6be8c]/20 bg-[#08110b] p-3 text-[#f5efeb] transition-colors hover:border-[#b39257]"
             >
               <Mail className="h-4 w-4 shrink-0 text-[#d6be8c]" />
               <span className="min-w-0">
@@ -73,7 +73,7 @@ function CustomerServicePopover({
                   );
                   onClose();
                 }}
-                className="flex w-full items-center gap-3 rounded-lg border border-[#d6be8c]/20 bg-[#08110b] p-3 text-left text-[#f5efeb] transition-colors hover:border-[#b39257]"
+                className="flex w-full items-center gap-3 border border-[#d6be8c]/20 bg-[#08110b] p-3 text-left text-[#f5efeb] transition-colors hover:border-[#b39257]"
               >
                 <MessageCircle className="h-4 w-4 shrink-0 text-[#d6be8c]" />
                 <span>
@@ -88,7 +88,7 @@ function CustomerServicePopover({
                 </span>
               </button>
             ) : (
-              <div className="flex items-center gap-3 rounded-lg border border-[#d6be8c]/10 bg-[#08110b]/60 p-3 text-[#f5efeb]/45">
+              <div className="flex items-center gap-3 border border-[#d6be8c]/10 bg-[#08110b]/60 p-3 text-[#f5efeb]/45">
                 <MessageCircle className="h-4 w-4 shrink-0" />
                 <span>
                   <span className="block text-[10px] uppercase tracking-wider">WhatsApp</span>
@@ -116,7 +116,7 @@ export function FloatingReserveButton() {
           setActiveRelease(open);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -181,7 +181,7 @@ export function FloatingReserveButton() {
                 aria-haspopup="dialog"
                 aria-expanded={contactOpen}
                 aria-controls="floating-customer-service-popover"
-                className="flex cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full bg-[#b39257] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#08110b] shadow-md transition-all hover:bg-[#d6be8c]"
+                className="flex cursor-pointer items-center gap-1.5 whitespace-nowrap bg-[#b39257] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#08110b] shadow-md transition-all hover:bg-[#d6be8c]"
               >
                 <span>Customer Service</span>
                 <MessageCircle className="h-3.5 w-3.5" />
@@ -227,7 +227,7 @@ export function FloatingReserveButton() {
                 aria-haspopup="dialog"
                 aria-expanded={contactOpen}
                 aria-controls="floating-customer-service-popover"
-                className="w-14 h-14 rounded-full bg-[#b39257] hover:bg-[#d6be8c] flex items-center justify-center shadow-[0_8px_24px_rgba(179,146,87,0.45)] cursor-pointer transition-colors"
+                className="w-14 h-14 bg-[#b39257] hover:bg-[#d6be8c] flex items-center justify-center shadow-[0_8px_24px_rgba(179,146,87,0.45)] cursor-pointer transition-colors"
               >
                 <Headphones className="w-6 h-6 text-[#08110b]" />
               </motion.button>

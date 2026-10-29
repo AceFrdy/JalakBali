@@ -38,7 +38,7 @@ export function EditorialGallery() {
             className="w-[84%] shrink-0 snap-start md:col-span-7 md:row-span-2 md:w-auto"
           >
             <div
-              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#233527] group shadow-lg bg-[#08110b]"
+              className="relative aspect-[4/5] rounded overflow-hidden border border-[#233527] group shadow-lg bg-[#08110b]"
             >
               <Image
                 src="/assets/jalak-habitat.png"
@@ -68,7 +68,7 @@ export function EditorialGallery() {
             className="w-[84%] shrink-0 snap-start md:col-span-5 md:w-auto"
           >
             <div
-              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#233527] group shadow-lg md:aspect-[4/3] bg-[#08110b]"
+              className="relative aspect-[4/5] rounded overflow-hidden border border-[#233527] group shadow-lg md:aspect-[4/3] bg-[#08110b]"
             >
               <Image
                 src="/assets/jalak-portrait.png"
@@ -98,7 +98,7 @@ export function EditorialGallery() {
             className="w-[84%] shrink-0 snap-start md:col-span-5 md:w-auto"
           >
             <div
-              className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#233527] group shadow-lg md:aspect-[4/3] bg-[#08110b]"
+              className="relative aspect-[4/5] rounded overflow-hidden border border-[#233527] group shadow-lg md:aspect-[4/3] bg-[#08110b]"
             >
               <Image
                 src="/assets/jalak-hero.png"

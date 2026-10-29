@@ -54,7 +54,7 @@ export function ExperienceSection({ onReserve }: ExperienceSectionProps) {
               <ImageReveal direction="bottom" duration={1.1}>
                 <div
                   data-cursor="VIEW"
-                  className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-[#d6be8c]/25 shadow-2xl group cursor-pointer"
+                  className="relative aspect-[16/10] rounded overflow-hidden border border-[#d6be8c]/25 shadow-2xl group cursor-pointer"
                 >
                   <Image
                     src={STORY_STAGES[0].image}
@@ -90,7 +90,7 @@ export function ExperienceSection({ onReserve }: ExperienceSectionProps) {
                 {STORY_STAGES[0].description}
               </p>
               <div className="pt-4 border-t border-[#d6be8c]/15 flex items-center space-x-3 text-xs font-mono text-[#f5efeb]/70">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#b39257]" />
+                <span className="w-1.5 h-1.5 rounded bg-[#b39257]" />
                 <span>Nol kebisingan daratan utama · Transfer perahu kayu privat</span>
               </div>
             </FadeIn>
@@ -127,7 +127,7 @@ export function ExperienceSection({ onReserve }: ExperienceSectionProps) {
               <ImageReveal direction="bottom" duration={1.1}>
                 <div
                   data-cursor="VIEW"
-                  className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-[#d6be8c]/25 shadow-2xl group cursor-pointer"
+                  className="relative aspect-[16/10] rounded overflow-hidden border border-[#d6be8c]/25 shadow-2xl group cursor-pointer"
                 >
                   <Image
                     src={STORY_STAGES[1].image}
@@ -156,7 +156,7 @@ export function ExperienceSection({ onReserve }: ExperienceSectionProps) {
               <ImageReveal direction="bottom" duration={1.1}>
                 <div
                   data-cursor="VIEW"
-                  className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-[#d6be8c]/25 shadow-2xl group cursor-pointer"
+                  className="relative aspect-[16/10] rounded overflow-hidden border border-[#d6be8c]/25 shadow-2xl group cursor-pointer"
                 >
                   <Image
                     src={STORY_STAGES[2].image}
@@ -192,7 +192,7 @@ export function ExperienceSection({ onReserve }: ExperienceSectionProps) {
                 {STORY_STAGES[2].description}
               </p>
               <div className="pt-4 border-t border-[#d6be8c]/15 flex items-center space-x-3 text-xs font-mono text-[#f5efeb]/70">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#b39257]" />
+                <span className="w-1.5 h-1.5 rounded bg-[#b39257]" />
                 <span>Kopi Arabika Kintamani & pencatatan sensus resmi</span>
               </div>
             </FadeIn>
@@ -249,7 +249,7 @@ export function ExperienceSection({ onReserve }: ExperienceSectionProps) {
             {/* Naturalist Preparation & Etiquette Box */}
             <div className="lg:col-span-5">
               <FadeIn direction="left" delay={0.15}>
-                <div className="p-8 sm:p-10 rounded-2xl border border-[#d6be8c]/25 bg-[#0d1811] space-y-6">
+                <div className="p-8 sm:p-10 rounded border border-[#d6be8c]/25 bg-[#0d1811] space-y-6">
                   <div className="flex items-center justify-between border-b border-[#d6be8c]/15 pb-4 font-mono">
                     <span className="text-[10px] uppercase tracking-[0.25em] text-[#b39257]">
                       Protokol Suaka
@@ -268,7 +268,7 @@ export function ExperienceSection({ onReserve }: ExperienceSectionProps) {
                   <StaggerChildren stagger={0.05} className="space-y-3 font-mono text-xs text-[#f5efeb]/80">
                     {focal.preparationNotes.map((note, idx) => (
                       <StaggerItem key={idx}>
-                        <div className="p-3 rounded-lg bg-[#132218] border border-[#d6be8c]/10 flex items-start space-x-3">
+                        <div className="p-3 rounded bg-[#132218] border border-[#d6be8c]/10 flex items-start space-x-3">
                           <span className="text-[#b39257]">0{idx + 1}.</span>
                           <span className="font-sans font-light text-xs text-[#f5efeb]/85">{note}</span>
                         </div>
@@ -285,7 +285,7 @@ export function ExperienceSection({ onReserve }: ExperienceSectionProps) {
                       whileTap={{ scale: 0.98 }}
                       onClick={onReserve}
                       data-cursor="RESERVE"
-                      className="group px-6 py-2.5 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[10px] uppercase tracking-[0.2em] font-mono font-semibold transition-all flex items-center space-x-2 cursor-pointer shadow-sm"
+                      className="group px-6 py-2.5 rounded bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[10px] uppercase tracking-[0.2em] font-mono font-semibold transition-all flex items-center space-x-2 cursor-pointer shadow-sm"
                     >
                       <span>Lihat Tanggal</span>
                       <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

@@ -66,7 +66,7 @@ export function HandoverScheduleSection() {
               viewportMargin="0px"
               className="w-[84%] shrink-0 snap-start md:w-auto"
             >
-              <div className="p-6 rounded-2xl border border-[#d6be8c]/15 bg-[#0d1811] h-full flex flex-col justify-between space-y-4 font-mono">
+              <div className="p-6 rounded border border-[#d6be8c]/15 bg-[#0d1811] h-full flex flex-col justify-between space-y-4 font-mono">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.25em] text-[#b39257] mb-2">
                     Step {s.step}

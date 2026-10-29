@@ -42,7 +42,7 @@ export function ResponsibleBreedingSection() {
           <div className="lg:col-span-5 relative space-y-6">
             <ImageReveal direction="bottom" duration={1.1} className="h-full">
               <div
-                className="relative h-full aspect-[3/4] overflow-hidden rounded-3xl border border-[#233527] shadow-lg group lg:aspect-auto bg-[#08110b]"
+                className="relative h-full aspect-[3/4] overflow-hidden rounded border border-[#233527] shadow-lg group lg:aspect-auto bg-[#08110b]"
               >
                 <Image
                   src="/assets/Jalak Bali Biru berdiri.png"
@@ -78,7 +78,7 @@ export function ResponsibleBreedingSection() {
             >
               {RESPONSIBLE_BREEDING_PILLARS.map((pillar) => (
                 <StaggerItem key={pillar.id} className="w-[84%] shrink-0 snap-start sm:w-auto">
-                  <div className="p-6 rounded-2xl border border-[#233527] bg-[#0d1811] hover:border-[#b39257]/40 transition-colors duration-200 space-y-3 font-mono h-full flex flex-col justify-between">
+                  <div className="p-6 rounded border border-[#233527] bg-[#0d1811] hover:border-[#b39257]/40 transition-colors duration-200 space-y-3 font-mono h-full flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.25em] text-[#b39257] mb-2">
                         <span>{pillar.tag}</span>
@@ -109,7 +109,7 @@ export function ResponsibleBreedingSection() {
             <div>
               {/* Overlapping small plate */}
               <FadeIn direction="up" delay={0.2}>
-                <div className="p-6 rounded-2xl bg-[#0d1811] border border-[#233527] space-y-3 font-mono text-xs">
+                <div className="p-6 rounded bg-[#0d1811] border border-[#233527] space-y-3 font-mono text-xs">
                   <div className="flex items-center space-x-2 text-[#d6be8c]">
                     <ShieldCheck className="w-4 h-4 text-[#b39257]" />
                     <span className="text-[10px] uppercase tracking-widest font-semibold">Standar Veteriner</span>

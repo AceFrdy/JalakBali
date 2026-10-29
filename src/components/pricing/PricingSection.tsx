@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { ArrowRight, Check, ShieldCheck, Compass } from "lucide-react";
@@ -48,11 +48,10 @@ export function PricingSection({ onSelectPackage }: PricingSectionProps) {
                 <button
                   key={exp.id}
                   onClick={() => setSelectedIdx(idx)}
-                  className={`pb-3 transition-colors relative cursor-pointer ${
-                    isSelected
+                  className={`pb-3 transition-colors relative cursor-pointer ${isSelected
                       ? "text-[#d6be8c] font-semibold"
                       : "text-[#f5efeb]/50 hover:text-[#f5efeb]"
-                  }`}
+                    }`}
                 >
                   <span>{exp.title}</span>
                   {isSelected && (
@@ -70,7 +69,7 @@ export function PricingSection({ onSelectPackage }: PricingSectionProps) {
 
         {/* ── Single Focal Expedition Dossier (The Prestige Folio) ── */}
         <FadeIn direction="up" delay={0.15} className="max-w-4xl mx-auto">
-          <div className="rounded-3xl p-8 sm:p-12 md:p-16 border border-[#d6be8c]/30 bg-[#0d1811] shadow-[0_30px_70px_rgba(0,0,0,0.6)]">
+          <div className=" p-8 sm:p-12 md:p-16 border border-[#d6be8c]/30 bg-[#0d1811] shadow-[0_30px_70px_rgba(0,0,0,0.6)]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeExp.id}
@@ -122,7 +121,7 @@ export function PricingSection({ onSelectPackage }: PricingSectionProps) {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {activeExp.inclusions.map((item, idx) => (
                       <div key={idx} className="flex items-start space-x-3 text-xs text-[#f5efeb]/85 font-light">
-                        <span className="w-4 h-4 rounded-full border border-[#b39257]/50 flex items-center justify-center flex-shrink-0 mt-0.5 text-[#b39257] font-mono text-[9px]">
+                        <span className="w-4 h-4 border border-[#b39257]/50 flex items-center justify-center flex-shrink-0 mt-0.5 text-[#b39257] font-mono text-[9px]">
                           ✓
                         </span>
                         <span>{item}</span>
@@ -143,7 +142,7 @@ export function PricingSection({ onSelectPackage }: PricingSectionProps) {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => onSelectPackage(activeExp.id)}
                     data-cursor="RESERVE"
-                    className="group w-full sm:w-auto px-8 py-4 rounded-full bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all shadow-[0_10px_25px_rgba(179,146,87,0.25)] flex items-center justify-center space-x-2 cursor-pointer"
+                    className="group w-full sm:w-auto px-8 py-4 bg-[#b39257] hover:bg-[#d6be8c] text-[#08110b] text-[11px] uppercase tracking-[0.25em] font-mono font-semibold transition-all shadow-[0_10px_25px_rgba(179,146,87,0.25)] flex items-center justify-center space-x-2 cursor-pointer"
                   >
                     <span>Reservasi Tanggal di Registri</span>
                     <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />

@@ -28,14 +28,14 @@ export function FinalCtaSection({
 
       <div className="max-w-[1760px] mx-auto site-gutter relative z-10 text-center flex flex-col items-center">
         {/* Sub-badge */}
-        <FadeIn direction="up">
-          <div className="inline-flex items-center space-x-3 mb-6 px-4 py-1.5 rounded-full border border-[#233527] bg-[#0e1912]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#b39257]" />
+        {/* <FadeIn direction="up">
+          <div className="inline-flex items-center space-x-3 mb-6 px-4 py-1.5 rounded border border-[#233527] bg-[#0e1912]">
+            <span className="w-1.5 h-1.5 rounded bg-[#b39257]" />
             <span className="text-[10px] uppercase tracking-[0.25em] text-[#d6be8c] font-mono">
               Konservasi Resmi BKSDA
             </span>
           </div>
-        </FadeIn>
+        </FadeIn> */}
 
         {/* Editorial Headline */}
         <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal text-[#f5efeb] tracking-tight leading-[1.12] mb-5 max-w-3xl">
@@ -56,7 +56,7 @@ export function FinalCtaSection({
             <button
               type="button"
               onClick={onCheckAvailability}
-              className="px-8 py-3.5 rounded-full bg-[#b39257] hover:bg-[#c5a880] active:bg-[#9e7e43] text-[#08110b] text-[11px] uppercase tracking-[0.2em] font-semibold transition-colors flex items-center space-x-2.5 cursor-pointer shadow-sm"
+              className="px-8 py-3.5 rounded bg-[#b39257] hover:bg-[#c5a880] active:bg-[#9e7e43] text-[#08110b] text-[11px] uppercase tracking-[0.2em] font-semibold transition-colors flex items-center space-x-2.5 cursor-pointer shadow-sm"
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Cek Jadwal Ketersediaan</span>
@@ -65,7 +65,7 @@ export function FinalCtaSection({
             <button
               type="button"
               onClick={onJoinWaitlist}
-              className="px-8 py-3.5 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[11px] uppercase tracking-[0.2em] font-medium transition-colors text-center cursor-pointer"
+              className="px-8 py-3.5 rounded border border-[#d6be8c]/30 hover:border-[#b39257] hover:text-[#d6be8c] text-[#f5efeb] text-[11px] uppercase tracking-[0.2em] font-medium transition-colors text-center cursor-pointer"
             >
               <span>Daftar Verifikasi Aviari</span>
             </button>
