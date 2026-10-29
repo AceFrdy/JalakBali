@@ -29,11 +29,11 @@ export function ResponsibleBreedingSection() {
             </h2>
           </div>
 
-          <FadeIn direction="left" delay={0.2} className="max-w-md font-mono text-xs text-[#f5efeb]/70">
+          {/* <FadeIn direction="left" delay={0.2} className="max-w-md font-mono text-xs text-[#f5efeb]/70">
             <p className="font-light leading-relaxed">
               Nilai konservasi sejati dalam penangkaran berakar pada kesejahteraan etis, pengelolaan genetik, dan kepatuhan hukum tanpa kompromi.
             </p>
-          </FadeIn>
+          </FadeIn> */}
         </div>
 
         {/* ── Asymmetrical Editorial Layout: Left Photo Study, Right Staggered Pillars ── */}

@@ -153,7 +153,7 @@ function VideoPreview({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onOpen}
-      className="relative w-full rounded-2xl overflow-hidden border border-[#d6be8c]/20 bg-[#0d1811] aspect-video group cursor-pointer"
+      className="relative w-full rounded overflow-hidden border border-[#d6be8c]/20 bg-[#0d1811] aspect-video group cursor-pointer"
       aria-label={`Putar video testimoni ${review.patronName}`}
     >
       {/* YouTube thumbnail */}
@@ -191,7 +191,7 @@ function VideoPreview({
       </div>
 
       {/* YouTube badge */}
-      <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/65 backdrop-blur-sm px-2.5 py-1 rounded-full">
+      <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/65 backdrop-blur-sm px-2.5 py-1 rounded">
         <CirclePlay className="w-3 h-3 text-red-500" />
         <span className="text-[10px] uppercase tracking-[0.18em] text-[#f5efeb]/80 font-mono">
           Video Testimoni
@@ -283,7 +283,7 @@ export function ReviewSection() {
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.92 }}
                   onClick={prevReview}
-                  className="p-2.5 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] text-[#f5efeb] hover:text-[#b39257] transition-colors cursor-pointer"
+                  className="p-2.5 rounded border border-[#d6be8c]/30 hover:border-[#b39257] text-[#f5efeb] hover:text-[#b39257] transition-colors cursor-pointer"
                   aria-label="Entri tamu sebelumnya"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -292,7 +292,7 @@ export function ReviewSection() {
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.92 }}
                   onClick={nextReview}
-                  className="p-2.5 rounded-full border border-[#d6be8c]/30 hover:border-[#b39257] text-[#f5efeb] hover:text-[#b39257] transition-colors cursor-pointer"
+                  className="p-2.5 rounded border border-[#d6be8c]/30 hover:border-[#b39257] text-[#f5efeb] hover:text-[#b39257] transition-colors cursor-pointer"
                   aria-label="Entri tamu berikutnya"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -312,7 +312,7 @@ export function ReviewSection() {
                 else if (info.offset.x < -60) nextReview();
               }}
               data-cursor="DRAG"
-              className="rounded-3xl border border-[#d6be8c]/25 bg-[#0d1811] shadow-2xl mb-20 relative overflow-hidden"
+              className="rounded border border-[#d6be8c]/25 bg-[#0d1811] shadow-2xl mb-20 relative overflow-hidden"
             >
               <AnimatePresence mode="wait">
                 <motion.div
@@ -388,7 +388,7 @@ export function ReviewSection() {
                 <div className="lg:hidden px-8 pb-8">
                   <button
                     onClick={() => setVideoOpen(true)}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-[#d6be8c]/25 bg-[#0a150d] hover:border-[#b39257] hover:bg-[#0d1811] transition-colors text-[#d6be8c] font-mono text-xs uppercase tracking-widest cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded border border-[#d6be8c]/25 bg-[#0a150d] hover:border-[#b39257] hover:bg-[#0d1811] transition-colors text-[#d6be8c] font-mono text-xs uppercase tracking-widest cursor-pointer"
                   >
                     <CirclePlay className="w-4 h-4 text-red-500" />
                     Tonton Video Testimoni

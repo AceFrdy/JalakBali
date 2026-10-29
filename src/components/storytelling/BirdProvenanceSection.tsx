@@ -139,14 +139,14 @@ export function BirdProvenanceSection() {
             </h2>
           </div>
 
-          <FadeIn direction="left" delay={0.2} className="max-w-md font-mono text-xs text-[#f5efeb]/70 space-y-2 border-l border-[#d6be8c]/25 pl-6">
+          {/* <FadeIn direction="left" delay={0.2} className="max-w-md font-mono text-xs text-[#f5efeb]/70 space-y-2 border-l border-[#d6be8c]/25 pl-6">
             <div className="text-[#b39257] uppercase tracking-[0.2em] text-[10px]">
               Prinsip Legalitas Terverifikasi
             </div>
             <p className="font-light leading-relaxed">
               Kami tidak pernah memalsukan nomor izin atau klaim hukum. Setiap tahap kehidupan burung didokumentasikan dengan presisi, dari pencatatan telur awal hingga verifikasi veteriner dan serah terima legal yang terjadwal.
             </p>
-          </FadeIn>
+          </FadeIn> */}
         </div>
 
         <div className="flex items-center justify-end gap-3 mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#d6be8c]">
@@ -225,14 +225,14 @@ export function BirdProvenanceSection() {
         </div>
 
         {/* Bottom Banner Note */}
-        <FadeIn direction="up" delay={0.3} className="mt-20">
+        {/* <FadeIn direction="up" delay={0.3} className="mt-20">
           <div className="p-6 rounded-2xl bg-[#0d1811] border border-[#d6be8c]/20 max-w-3xl mx-auto flex items-center space-x-4 font-mono text-xs text-[#f5efeb]/70">
             <Shield className="w-5 h-5 text-[#b39257] flex-shrink-0" />
             <span>
               Semua otorisasi transfer dan paket dokumentasi resmi diserahkan kepada pemesan terverifikasi setelah pemeriksaan identitas dan fasilitas pemeliharaan dinyatakan lulus.
             </span>
           </div>
-        </FadeIn>
+        </FadeIn> */}
       </div>
     </section>
   );

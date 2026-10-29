@@ -20,6 +20,15 @@ export const metadata: Metadata = {
   title: "Jalak Bali — Langka, Bertanggung Jawab, Memukau",
   description:
     "Eksplorasi penangkaran resmi Jalak Bali, ketersediaan terkini, rekam silsilah asal-usul, dan kesempatan reservasi legal.",
+  icons: {
+    icon: [
+      { url: "/assets/Logo.png" },
+    ],
+    apple: [
+      { url: "/assets/Logo.png" },
+    ],
+    shortcut: "/assets/Logo.png",
+  },
   keywords: [
     "Jalak Bali",
     "penangkaran Jalak Bali",

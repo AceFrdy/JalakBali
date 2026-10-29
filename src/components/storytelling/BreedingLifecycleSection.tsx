@@ -86,7 +86,7 @@ export function BreedingLifecycleSection() {
                 key={item.step}
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                className="w-72 sm:w-80 p-8 rounded-3xl border border-[#d6be8c]/20 bg-[#0d1811] hover:border-[#b39257] hover:bg-[#112117] transition-all flex flex-col justify-between space-y-8 font-mono shadow-xl relative"
+                className="w-72 sm:w-80 p-8 rounded border border-[#d6be8c]/20 bg-[#0d1811] hover:border-[#b39257] hover:bg-[#112117] transition-all flex flex-col justify-between space-y-8 font-mono shadow-xl relative"
               >
                 <div>
                   {/* Top Step Number */}

@@ -178,6 +178,7 @@ function generateCalendarDays(
 }
 
 const DAY_NAMES = ["SEN", "SEL", "RAB", "KAM", "JUM", "SAB", "MIN"];
+const DAY_NAMES_MOBILE = ["Sn", "Sl", "Rb", "Km", "Jm", "Sb", "Mg"];
 
 
 export function AvailabilitySection({
@@ -274,29 +275,29 @@ export function AvailabilitySection({
 
         {/* ── Calendar Container ── */}
         <FadeIn direction="up" delay={0.1}>
-          <div className="p-6 sm:p-10 rounded border border-[#d6be8c]/25 bg-[#0d1811] shadow-2xl space-y-6">
+          <div className="p-3 sm:p-8 md:p-10 rounded border border-[#d6be8c]/25 bg-[#0d1811] shadow-2xl space-y-4 sm:space-y-6">
             {/* Calendar Top Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#d6be8c]/15 gap-4 font-mono text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 sm:pb-6 border-b border-[#d6be8c]/15 gap-4 font-mono text-xs">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded bg-[#b39257]/15 border border-[#b39257]/30 flex items-center justify-center text-[#d6be8c] shrink-0">
-                  <Calendar className="w-5 h-5" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded bg-[#b39257]/15 border border-[#b39257]/30 flex items-center justify-center text-[#d6be8c] shrink-0">
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
                   <span className="text-[9px] uppercase tracking-[0.25em] text-[#b39257] block">
                     Bulan Alokasi
                   </span>
                   {/* ── Month Navigation ── */}
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex items-center gap-2 mt-0.5 sm:mt-1">
                     <button
                       type="button"
                       onClick={() => setMonthOffset((o) => o - 1)}
                       disabled={!canGoPrev}
                       aria-label="Bulan sebelumnya"
-                      className="w-7 h-7 rounded border border-[#d6be8c]/20 flex items-center justify-center text-[#d6be8c] hover:bg-[#b39257]/15 hover:border-[#b39257]/40 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                      className="w-7 h-7 rounded border border-[#d6be8c]/20 flex items-center justify-center text-[#d6be8c] hover:bg-[#b39257]/15 hover:border-[#b39257]/40 transition-all disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
-                    <span className="text-base sm:text-xl font-serif text-[#f5efeb] font-light min-w-[10rem] sm:min-w-[14rem] text-center">
+                    <span className="text-base sm:text-xl font-serif text-[#f5efeb] font-light min-w-[9rem] sm:min-w-[14rem] text-center">
                       {monthLabel}
                     </span>
                     <button
@@ -304,7 +305,7 @@ export function AvailabilitySection({
                       onClick={() => setMonthOffset((o) => o + 1)}
                       disabled={!canGoNext}
                       aria-label="Bulan berikutnya"
-                      className="w-7 h-7 rounded border border-[#d6be8c]/20 flex items-center justify-center text-[#d6be8c] hover:bg-[#b39257]/15 hover:border-[#b39257]/40 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                      className="w-7 h-7 rounded border border-[#d6be8c]/20 flex items-center justify-center text-[#d6be8c] hover:bg-[#b39257]/15 hover:border-[#b39257]/40 transition-all disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -313,35 +314,34 @@ export function AvailabilitySection({
               </div>
 
               {/* Status Legend */}
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[11px]">
-                <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded bg-emerald-500" />
-                  <span className="text-[#f5efeb]">Rilis Terbuka (Senin)</span>
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-6 text-[10px] sm:text-[11px]">
+                <div className="flex items-center space-x-1.5">
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="text-[#f5efeb]">Rilis Terbuka</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded bg-[#b39257]" />
-                  <span className="text-[#d6be8c]">Waitlist / Terjadwal</span>
+                <div className="flex items-center space-x-1.5">
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#b39257] shrink-0" />
+                  <span className="text-[#d6be8c]">Waitlist</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded bg-[#1c2c20] border border-[#d6be8c]/20" />
-                  <span className="text-[#f5efeb]/40">Hari Non-Rilis</span>
+                <div className="flex items-center space-x-1.5">
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#1c2c20] border border-[#d6be8c]/20 shrink-0" />
+                  <span className="text-[#f5efeb]/40">Non-Rilis</span>
                 </div>
               </div>
             </div>
 
             {/* ── 7-Column Days Header ── */}
-            <div className="grid grid-cols-7 gap-1 sm:gap-3 text-center font-mono text-[9px] sm:text-xs uppercase tracking-wider text-[#b39257] font-semibold pb-2">
+            <div className="grid grid-cols-7 gap-1 sm:gap-3 text-center font-mono text-[9px] sm:text-xs uppercase tracking-wider text-[#b39257] font-semibold pb-1 sm:pb-2">
               {DAY_NAMES.map((name, i) => (
                 <div
                   key={name}
-                  className={`py-1.5 sm:py-2 rounded ${
+                  className={`py-1 sm:py-2 rounded ${
                     i === 0
                       ? "bg-[#b39257]/15 text-[#d6be8c] font-bold border border-[#b39257]/30"
                       : "text-[#f5efeb]/60"
                   }`}
                 >
-                  {/* Show 2-char abbreviation on mobile, full on sm+ */}
-                  <span className="sm:hidden">{name.slice(0, 2)}</span>
+                  <span className="sm:hidden">{DAY_NAMES_MOBILE[i]}</span>
                   <span className="hidden sm:inline">{name}</span>
                 </div>
               ))}
@@ -362,9 +362,9 @@ export function AvailabilitySection({
                   return (
                     <div
                       key={`empty-${idx}`}
-                      className="min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded sm:rounded border border-[#d6be8c]/5 bg-[#08110b]/30 opacity-20 flex flex-col justify-between overflow-hidden"
+                      className="min-h-[46px] sm:min-h-[115px] p-1 sm:p-3 rounded border border-[#d6be8c]/5 bg-[#08110b]/30 opacity-20 flex flex-col justify-between overflow-hidden"
                     >
-                      <span className="text-[10px] text-[#f5efeb]/30 text-right">{day.dateNumber}</span>
+                      <span className="text-[10px] sm:text-xs text-[#f5efeb]/30 text-right">{day.dateNumber}</span>
                     </div>
                   );
                 }
@@ -374,7 +374,7 @@ export function AvailabilitySection({
                   return (
                     <div
                       key={day.dateStr}
-                      className="min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded sm:rounded border border-[#d6be8c]/10 bg-[#08110b]/50 flex flex-col justify-between text-[#f5efeb]/40 transition-colors hover:border-[#d6be8c]/25 overflow-hidden"
+                      className="min-h-[46px] sm:min-h-[115px] p-1 sm:p-3 rounded border border-[#d6be8c]/10 bg-[#08110b]/50 flex flex-col justify-between text-[#f5efeb]/40 transition-colors hover:border-[#d6be8c]/25 overflow-hidden"
                     >
                       <span className="text-[10px] sm:text-xs font-serif text-[#f5efeb]/60 text-right block">{day.dateNumber}</span>
                       <div className="text-[9px] text-[#f5efeb]/20 hidden sm:block">Perawatan Rutin</div>
@@ -395,7 +395,7 @@ export function AvailabilitySection({
                     whileHover={slot && !isClosed ? { y: -3 } : undefined}
                     whileTap={slot && !isClosed ? { scale: 0.97 } : undefined}
                     disabled={!slot || isClosed}
-                    className={`relative min-h-[72px] sm:min-h-[115px] p-1 sm:p-3 rounded sm:rounded border flex flex-col justify-between text-left transition-colors duration-200 cursor-pointer overflow-hidden ${
+                    className={`relative min-h-[46px] sm:min-h-[115px] p-1 sm:p-3 rounded border flex flex-col justify-between text-left transition-colors duration-200 cursor-pointer overflow-hidden ${
                       isSelected
                         ? "bg-[#16271c] border-[#b39257] ring-1 ring-[#b39257]"
                         : isRelease && isAvailable
@@ -406,10 +406,9 @@ export function AvailabilitySection({
                     } ${isClosed ? "opacity-35 cursor-not-allowed" : ""}`}
                   >
                     {/* Top Row: Week Badge & Date */}
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-0.5">
+                    <div className="flex flex-row items-center justify-between w-full gap-0.5">
                       {day.weekLabel ? (
-                        <span className="text-[7px] sm:text-[9px] uppercase px-1 py-0.5 rounded font-bold bg-[#b39257] text-[#08110b] self-start leading-tight">
-                          {/* On mobile show just week number, sm+ show full W-XX */}
+                        <span className="text-[7px] sm:text-[9px] uppercase px-1 py-0.5 rounded font-bold bg-[#b39257] text-[#08110b] leading-tight">
                           <span className="sm:hidden">{day.weekLabel.replace("W-", "W")}</span>
                           <span className="hidden sm:inline">{day.weekLabel}</span>
                         </span>
@@ -417,7 +416,7 @@ export function AvailabilitySection({
                         <span className="text-[7px] sm:text-[8px] text-[#f5efeb]/40 hidden sm:inline">{day.dayOfWeek}</span>
                       )}
                       <span
-                        className={`text-sm sm:text-base font-serif font-bold self-end sm:self-auto ${
+                        className={`text-xs sm:text-base font-serif font-bold ${
                           isSelected
                             ? "text-[#d6be8c]"
                             : isRelease
@@ -430,23 +429,25 @@ export function AvailabilitySection({
                     </div>
 
                     {/* Bottom Status / Quota Info */}
-                    <div className="mt-1 space-y-0.5 overflow-hidden">
+                    <div className="mt-0.5 sm:mt-1 space-y-0.5 overflow-hidden">
                       {isAvailable && (
-                        <div className="flex flex-col items-start gap-0.5">
-                          <span className="inline-block text-[7px] sm:text-[9px] text-emerald-300 bg-emerald-950/80 border border-emerald-700/50 px-1 py-0.5 rounded font-bold leading-tight">
+                        <div className="flex items-center sm:flex-col sm:items-start gap-0.5">
+                          {/* Dot on mobile, badge on sm+ */}
+                          <span className="sm:hidden w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                          <span className="hidden sm:inline-block text-[9px] text-emerald-300 bg-emerald-950/80 border border-emerald-700/50 px-1 py-0.5 rounded font-bold leading-tight">
                             RILIS
                           </span>
-                          {/* Hide quota text on mobile to save space */}
                           <span className="text-[8px] text-emerald-400 hidden sm:block truncate">
                             {slot?.availableSingles} S · {slot?.availablePairs} P
                           </span>
                         </div>
                       )}
                       {isWaitlist && (
-                        <div className="flex flex-col items-start gap-0.5">
-                          <span className="inline-block text-[7px] sm:text-[9px] text-[#08110b] bg-[#b39257] px-1 py-0.5 rounded font-bold leading-tight">
-                            <span className="sm:hidden">W/L</span>
-                            <span className="hidden sm:inline">WAITLIST</span>
+                        <div className="flex items-center sm:flex-col sm:items-start gap-0.5">
+                          {/* Dot on mobile, badge on sm+ */}
+                          <span className="sm:hidden w-1.5 h-1.5 rounded-full bg-[#b39257] shrink-0" />
+                          <span className="hidden sm:inline-block text-[9px] text-[#08110b] bg-[#b39257] px-1 py-0.5 rounded font-bold leading-tight">
+                            WAITLIST
                           </span>
                           <span className="text-[8px] text-[#d6be8c] hidden sm:block truncate">
                             Pekan {day.weekLabel}
@@ -455,12 +456,15 @@ export function AvailabilitySection({
                       )}
                       {isLimited && (
                         <span className="text-[7px] sm:text-[8px] text-[#f5efeb]/60 block truncate">
-                          <span className="sm:hidden">Pre</span>
+                          <span className="sm:hidden">•</span>
                           <span className="hidden sm:inline">Pra-Rilis</span>
                         </span>
                       )}
                       {isClosed && (
-                        <span className="text-[7px] sm:text-[8px] text-[#f5efeb]/30 block truncate">Tutup</span>
+                        <span className="text-[7px] sm:text-[8px] text-[#f5efeb]/30 block truncate">
+                          <span className="sm:hidden">•</span>
+                          <span className="hidden sm:inline">Tutup</span>
+                        </span>
                       )}
                     </div>
 
@@ -477,7 +481,7 @@ export function AvailabilitySection({
 
         {/* ── Selected Week Expanded Dossier ── */}
         <FadeIn direction="up" delay={0.2} className="mt-8 sm:mt-10">
-          <div className="p-6 sm:p-10 rounded border border-[#d6be8c]/25 bg-[#0d1811] shadow-2xl">
+          <div className="p-4 sm:p-8 md:p-10 rounded border border-[#d6be8c]/25 bg-[#0d1811] shadow-2xl">
             <AnimatePresence mode="wait">
               {selectedSlot ? (
                 <motion.div

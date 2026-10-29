@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CURRENT_RELEASE } from "@/data/weeklyReleases";
@@ -49,7 +50,15 @@ export function Navbar({ onOpenReservation }: NavbarProps) {
           }`}
       >
         <div className="max-w-[1760px] mx-auto site-gutter flex items-center justify-between">
-          <Link href="/" className="flex shrink-0 flex-col group focus:outline-none">
+          <Link href="/" className="flex shrink-0 items-center gap-2.5 sm:gap-3 group focus:outline-none">
+            <Image
+              src="/assets/Logo.png"
+              alt="Logo Jalak Bali"
+              width={36}
+              height={36}
+              priority
+              className="h-8 w-auto sm:h-9 object-contain transition-transform duration-300 group-hover:scale-105"
+            />
             <span className="font-serif text-2xl md:text-3xl tracking-[0.2em] uppercase text-[#f5efeb] font-light transition-colors group-hover:text-[#d6be8c]">
               Jalak Bali
             </span>

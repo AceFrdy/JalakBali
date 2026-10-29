@@ -1,5 +1,5 @@
-﻿import { useState, useEffect } from "react";
-import { Mail, MessageCircle, Headphones, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Mail, MessageCircle, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CURRENT_RELEASE } from "@/data/weeklyReleases";
 import { getWeeklyReleases } from "@/lib/api";
@@ -172,19 +172,19 @@ export function FloatingReserveButton() {
           >
             <div className="relative" data-customer-service-root>
               <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.94 }}
                 type="button"
                 onClick={() => setContactOpen((open) => !open)}
                 data-cursor="CONTACT"
                 aria-label="Hubungi Customer Service"
+                title="Customer Service"
                 aria-haspopup="dialog"
                 aria-expanded={contactOpen}
                 aria-controls="floating-customer-service-popover"
-                className="flex cursor-pointer items-center gap-1.5 whitespace-nowrap bg-[#b39257] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#08110b] shadow-md transition-all hover:bg-[#d6be8c]"
+                className="w-14 h-14 rounded-full bg-[#b39257] hover:bg-[#d6be8c] flex items-center justify-center shadow-[0_8px_24px_rgba(179,146,87,0.45)] cursor-pointer transition-colors text-[#08110b]"
               >
-                <span>Customer Service</span>
-                <MessageCircle className="h-3.5 w-3.5" />
+                <MessageCircle className="w-6 h-6" />
               </motion.button>
               <CustomerServicePopover
                 isOpen={contactOpen}
@@ -224,12 +224,13 @@ export function FloatingReserveButton() {
                 type="button"
                 onClick={() => setContactOpen((open) => !open)}
                 aria-label="Hubungi Customer Service"
+                title="Customer Service"
                 aria-haspopup="dialog"
                 aria-expanded={contactOpen}
                 aria-controls="floating-customer-service-popover"
-                className="w-14 h-14 bg-[#b39257] hover:bg-[#d6be8c] flex items-center justify-center shadow-[0_8px_24px_rgba(179,146,87,0.45)] cursor-pointer transition-colors"
+                className="w-14 h-14 rounded-full bg-[#b39257] hover:bg-[#d6be8c] flex items-center justify-center shadow-[0_8px_24px_rgba(179,146,87,0.45)] cursor-pointer transition-colors text-[#08110b]"
               >
-                <Headphones className="w-6 h-6 text-[#08110b]" />
+                <MessageCircle className="w-6 h-6" />
               </motion.button>
               <CustomerServicePopover
                 isOpen={contactOpen}

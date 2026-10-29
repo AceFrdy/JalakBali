@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { TextReveal } from "@/components/motion/TextReveal";
@@ -49,21 +50,30 @@ export function Footer({ onOpenReservation }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-[#d6be8c]/15">
           {/* Brand Manifesto */}
           <div className="md:col-span-5 space-y-4">
-            <div className="flex flex-col">
-              <span className="font-serif text-2xl font-light tracking-[0.2em] text-[#f5efeb] uppercase">
-                Jalak Bali
-              </span>
-              <span className="text-[9px] uppercase tracking-[0.35em] text-[#b39257] font-mono">
-                Langka · Bertanggung Jawab · Memukau
-              </span>
+            <div className="flex items-center gap-3.5">
+              <Image
+                src="/assets/Logo.png"
+                alt="Logo Jalak Bali"
+                width={48}
+                height={48}
+                className="h-11 w-auto object-contain"
+              />
+              <div className="flex flex-col">
+                <span className="font-serif text-2xl font-light tracking-[0.2em] text-[#f5efeb] uppercase">
+                  Jalak Bali
+                </span>
+                <span className="text-[9px] uppercase tracking-[0.35em] text-[#b39257] font-mono">
+                  Langka · Bertanggung Jawab · Memukau
+                </span>
+              </div>
             </div>
             <p className="text-xs text-[#f5efeb]/70 font-mono leading-relaxed max-w-sm">
               Platform penangkaran legal premium yang didedikasikan untuk pelestarian Jalak Bali (Leucopsar rothschildi). Beroperasi sesuai pengelolaan studbook avikultural, sertifikasi DNA, dan pengelolaan hak asuh legal terverifikasi.
             </p>
-            <div className="flex items-center space-x-2 text-xs font-mono text-[#d6be8c] pt-2">
+            {/* <div className="flex items-center space-x-2 text-xs font-mono text-[#d6be8c] pt-2">
               <ShieldCheck className="w-4 h-4 text-[#b39257]" />
               <span>Studbook Unggas Bersertifikat & Standar Penangkaran</span>
-            </div>
+            </div> */}
           </div>
 
           {/* Quick Index */}
